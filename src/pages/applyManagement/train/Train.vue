@@ -105,36 +105,36 @@ import InfosTable from "./InfosTable";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "标题",
-    dataIndex: "title",
+    dataIndex: "title"
   },
   {
     title: "类型",
-    dataIndex: "type",
+    dataIndex: "type"
   },
   {
     title: "状态",
-    dataIndex: "status",
+    dataIndex: "status"
   },
   {
     title: "报名人数",
-    dataIndex: "applyNumber",
+    dataIndex: "applyNumber"
   },
   {
     title: "报名时间",
-    dataIndex: "applyTime",
+    dataIndex: "applyTime"
   },
   {
     title: "培训时间",
-    dataIndex: "trainTime",
+    dataIndex: "trainTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -155,8 +155,8 @@ export default {
           applyNumber: "10",
           applyTime: "2020-12-05 至 2020-12-31",
           trainTime: "2021-01-01 至 2021-01-09",
-          id: 1,
-        },
+          id: 1
+        }
       ],
       infoTableData: [], // 二级table data
       // 分页
@@ -167,28 +167,28 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       applyStatusList: [
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 },
+        { label: "已结束", value: 2 }
       ],
       form: {
         title: undefined,
-        applyStatus: undefined,
+        applyStatus: undefined
       },
       // 搜索项校验规则
       rules: {
         title: [],
-        applyStatus: [],
+        applyStatus: []
       },
       statusMapText: {
         0: "启用",
-        1: "停用",
-      },
+        1: "停用"
+      }
     };
   },
   computed: {
@@ -200,7 +200,7 @@ export default {
       } else {
         return this.$t("description");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -242,8 +242,8 @@ export default {
           applyTime: "一级",
           workplace: "北京",
           identityCard: "110723199909092230",
-          id: 1,
-        },
+          id: 1
+        }
       ];
     },
 
@@ -285,12 +285,13 @@ export default {
       // this.dataSource = [];
       this.resetPagination();
       this.configshow = false;
+      this.$refs.infosTable.detailShow = false;
     },
 
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -298,6 +299,6 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>

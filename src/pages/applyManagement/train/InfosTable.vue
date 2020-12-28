@@ -63,6 +63,12 @@
         </a-form-model>
       </div>
       <div>
+        <!-- operator -->
+        <div class="operator">
+          <a-button @click="goBack"
+                    class="mr-10"
+                    type="primary">返回上一页</a-button>
+        </div>
         <!-- table -->
         <standard-table :columns="columns"
                         rowKey="id"
@@ -115,41 +121,41 @@ import InfoDetails from "./infoDetails";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "姓名",
     dataIndex: "name",
-    scopedSlots: { customRender: "infoName" },
+    scopedSlots: { customRender: "infoName" }
   },
   {
     title: "性别",
-    dataIndex: "sex",
+    dataIndex: "sex"
   },
   {
     title: "出生日期",
-    dataIndex: "birthday",
+    dataIndex: "birthday"
   },
   {
     title: "手机号",
-    dataIndex: "mobile",
+    dataIndex: "mobile"
   },
   {
     title: "现裁判等级",
-    dataIndex: "applyTime",
+    dataIndex: "applyTime"
   },
   {
     title: "工作单位",
-    dataIndex: "workplace",
+    dataIndex: "workplace"
   },
   {
     title: "身份证号",
-    dataIndex: "identityCard",
+    dataIndex: "identityCard"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 export default {
   name: "InfosTable",
@@ -157,13 +163,13 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     dataSource: {
       type: Array,
       required: true,
-      default: new Array(),
-    },
+      default: new Array()
+    }
   },
   data() {
     return {
@@ -178,26 +184,26 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       judgeLevelList: [
         { label: "一级", value: 1 },
         { label: "二级", value: 2 },
-        { label: "三级", value: 3 },
+        { label: "三级", value: 3 }
       ],
       form: {
         name: undefined,
-        judgeLevel: undefined,
+        judgeLevel: undefined
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        judgeLevel: [],
+        judgeLevel: []
       },
       detailShow: false,
-      infoData: {}, // 详情数据
+      infoData: {} // 详情数据
     };
   },
   computed: {
@@ -208,7 +214,7 @@ export default {
       } else {
         return this.$t("configDesc");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -222,10 +228,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getInfosTableData(data).then((res) => {
+      getInfosTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -290,12 +296,13 @@ export default {
     // 导出
     exportData() {},
 
-    // 取消
-    resetForm() {
-      this.$refs.infosForm.resetFields();
+    // 返回上一页
+    goBack() {
+      // this.$refs.infosForm.resetFields();
+      this.reset();
       this.$emit("closeConfig");
-    },
-  },
+    }
+  }
 };
 </script>
 
