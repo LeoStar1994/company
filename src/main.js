@@ -13,6 +13,7 @@ import bootstrap from "@/bootstrap";
 import "./less/style.less";
 import Loading from "./components/loading/Loading.vue";
 import { isEmpty, isRihgtPhone } from "@/utils/util";
+
 Vue.prototype.$isEmpty = isEmpty;
 Vue.prototype.$isRihgtPhone = isRihgtPhone;
 

@@ -1,2 +1,2 @@
-import UsersManagement from "./UsersManagement.vue";
-export default UsersManagement;
+import CompetitionList from "./CompetitionList.vue";
+export default CompetitionList;

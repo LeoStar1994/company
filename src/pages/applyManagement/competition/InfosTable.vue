@@ -1,14 +1,15 @@
 <!--
- * @Description: 报名管理 / 培训 / 查看详情table
+ * @Description: 报名管理 / 赛事 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2020-12-29 17:42:01
+ * @LastEditTime: 2020-12-29 17:41:39
  * @LastEditors: Leo
 -->
 <template>
   <div class="infosTable-page"
        v-if="configshow">
-    <a-card :style="`min-height: ${pageMinHeight}px`">
+    <a-card v-show="!detailShow"
+            :style="`min-height: ${pageMinHeight}px`">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="infosForm"
@@ -18,21 +19,10 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 姓名 -->
+              <!-- 审核状态 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="姓名"
-                                   prop="name">
-                  <a-input v-model="form.name"
-                           allowClear
-                           :maxLength="10"
-                           placeholder="请输入姓名"></a-input>
-                </a-form-model-item>
-              </a-col>
-              <!-- 裁判等级 -->
-              <a-col :md="8"
-                     :sm="24">
-                <a-form-model-item label="裁判等级"
+                <a-form-model-item label="审核状态"
                                    prop="judgeLevel">
                   <a-select style="width: 100%"
                             v-model="form.judgeLevel"
@@ -46,13 +36,23 @@
                   </a-select>
                 </a-form-model-item>
               </a-col>
+              <!-- 球队名称 -->
+              <a-col :md="8"
+                     :sm="24">
+                <a-form-model-item label="球队名称"
+                                   prop="name">
+                  <a-input v-model="form.name"
+                           allowClear
+                           :maxLength="10"
+                           placeholder="请输入球队名称"></a-input>
+                </a-form-model-item>
+              </a-col>
             </a-row>
           </div>
           <!-- 查询、重置、收起 -->
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary"
                       @click="searchTableData()">查询</a-button>
-
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
             <a @click="toggleAdvanced"
@@ -69,8 +69,6 @@
           <a-button @click="goBackTrain"
                     class="mr-10"
                     type="primary">返回上一页</a-button>
-          <a-button type="primary"
-                    @click="exportData">导出</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
@@ -89,7 +87,16 @@
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openDetails(record.id)">查看
+               @click="openDetails(record.id)">球队信息
+            </a>
+            <a class="mr-12 text-green"
+               @click="changeAuditStatus(record.id, 1)">审核通过
+            </a>
+            <a class="mr-12 text-orange"
+               @click="changeAuditStatus(record.id, 2)">不通过
+            </a>
+            <a class="mr-12 text-green"
+               @click="exportInfo(record.id)">导出
             </a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
@@ -126,37 +133,37 @@ const imgURL = require("@/assets/img/logo_icon.jpg");
 // table columns data
 const columns = [
   {
-    title: "记录ID",
+    title: "报名ID",
     dataIndex: "id",
   },
   {
-    title: "姓名",
+    title: "球队名称",
     dataIndex: "name",
     scopedSlots: { customRender: "infoName" },
   },
   {
-    title: "性别",
+    title: "运动员人数",
     dataIndex: "sex",
   },
   {
-    title: "出生日期",
-    dataIndex: "birthday",
+    title: "官员人数",
+    dataIndex: "num",
+  },
+  {
+    title: "领队",
+    dataIndex: "workplace",
   },
   {
     title: "手机号",
     dataIndex: "mobile",
   },
   {
-    title: "现裁判等级",
+    title: "审核状态",
     dataIndex: "applyTime",
   },
   {
-    title: "工作单位",
-    dataIndex: "workplace",
-  },
-  {
-    title: "身份证号",
-    dataIndex: "identityCard",
+    title: "报名时间",
+    dataIndex: "birthday",
   },
   {
     title: "操作",
@@ -195,9 +202,9 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       judgeLevelList: [
-        { label: "一级", value: 1 },
-        { label: "二级", value: 2 },
-        { label: "三级", value: 3 },
+        { label: "待审核", value: 1 },
+        { label: "通过", value: 2 },
+        { label: "不通过", value: 3 },
       ],
       form: {
         name: undefined,
@@ -211,78 +218,111 @@ export default {
       detailShow: false,
       // 详情数据
       infoData: {
-        name: "林一",
+        name: "冰球国家队",
         imgURL: imgURL,
-        // 执裁经历 columns
-        judgeColumns: [
+        // 官员 columns
+        officerColumns: [
           {
-            title: "时间",
-            dataIndex: "time",
+            title: "ID",
+            dataIndex: "id",
           },
           {
-            title: "比赛名称",
-            dataIndex: "gameName",
+            title: "姓名",
+            dataIndex: "name",
           },
           {
-            title: "比赛级别",
+            title: "职务",
+            dataIndex: "job",
+          },
+          {
+            title: "性别",
+            dataIndex: "sex",
+          },
+          {
+            title: "国籍",
+            dataIndex: "nationality",
+          },
+          {
+            title: "身份证号/护照号码",
+            dataIndex: "identityCard",
+          },
+          {
+            title: "操作",
+            scopedSlots: { customRender: "action" },
+          },
+        ],
+        // 运动员 columns
+        playerColumns: [
+          {
+            title: "ID",
+            dataIndex: "id",
+          },
+          {
+            title: "姓名",
+            dataIndex: "name",
+            scopedSlots: { customRender: "playerName" },
+          },
+          {
+            title: "队服号",
             dataIndex: "gameLevel",
           },
           {
-            title: "担任职务",
-            dataIndex: "appointment",
+            title: "位置",
+            dataIndex: "position",
+          },
+          {
+            title: "身高cm",
+            dataIndex: "height",
+          },
+          {
+            title: "体重kg",
+            dataIndex: "weight",
+          },
+          {
+            title: "持杆手",
+            dataIndex: "cursor",
+          },
+          {
+            title: "身份证号/港澳通行证号码",
+            dataIndex: "numbers",
           },
         ],
         // 基础信息
         descList: [
           {
-            label: "性别",
-            value: "男",
+            label: "球队全称",
+            value: "冰球国家队",
             span: 1,
           },
           {
-            label: "现裁判等级",
-            value: "国际A级",
+            label: "联系人",
+            value: "刘队",
             span: 1,
           },
           {
-            label: "民族",
-            value: "汉",
+            label: "主场赛服颜色",
+            value: "红色",
             span: 1,
           },
           {
-            label: "批准日期",
-            value: "2019-12-12",
+            label: "联系电话",
+            value: "18270707678",
             span: 1,
           },
           {
-            label: "身高",
-            value: "188",
+            label: "客场赛服颜色",
+            value: "白色",
             span: 1,
           },
           {
-            label: "健康状况",
-            value: "一般",
+            label: "",
+            value: "",
             span: 1,
           },
           {
-            label: "出生日期",
-            value: "1990-10-01",
-            span: 1,
-          },
-          {
-            label: "外语能力",
-            value: "英语",
-            span: 1,
-          },
-          {
-            label: "证件照片",
+            label: "集体照",
             value: [imgURL, imgURL],
             span: 2,
-          },
-          {
-            label: "外语能力",
-            value: "英语",
-            span: 1,
           },
         ],
       },
@@ -340,7 +380,8 @@ export default {
     },
 
     // 查看某一个数据列详情
-    openDetails() {
+    openDetails(id) {
+      console.log(id);
       // this.$emit("closeConfig");
       this.detailShow = true;
     },
@@ -348,6 +389,12 @@ export default {
     closeDetail() {
       this.detailShow = false;
     },
+
+    // 审核通过 | 不通过
+    changeAuditStatus() {},
+
+    // 导出
+    exportInfo() {},
 
     // 删除
     deleteDetails(id) {

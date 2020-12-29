@@ -1,12 +1,12 @@
 <!--
- * @Description: 报名管理 / 培训
+ * @Description: 赛事管理 / 邀请码.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-29 11:07:23
+ * @LastEditTime: 2020-12-29 17:13:01
  * @LastEditors: Leo
 -->
 <template>
-  <div class="train-page">
+  <div class="invitationCode-page">
     <a-card :style="`min-height: ${pageMinHeight}px`">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
@@ -17,32 +17,26 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 标题 -->
+              <!-- 邀请码 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="标题"
-                                   prop="title">
-                  <a-input v-model="form.title"
+                <a-form-model-item label="邀请码"
+                                   prop="code">
+                  <a-input v-model="form.code"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入标题"></a-input>
+                           placeholder="请输入邀请码"></a-input>
                 </a-form-model-item>
               </a-col>
-              <!-- 报名状态 -->
+              <!-- 球队名称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="报名状态"
-                                   prop="applyStatus">
-                  <a-select style="width: 100%"
-                            v-model="form.applyStatus"
-                            allowClear
-                            placeholder="请选择">
-                    <a-select-option v-for="(item,index) in applyStatusList"
-                                     :key="index"
-                                     :value="item.value">
-                      {{item.label}}
-                    </a-select-option>
-                  </a-select>
+                <a-form-model-item label="球队名称"
+                                   prop="teamName">
+                  <a-input v-model="form.teamName"
+                           allowClear
+                           :maxLength="10"
+                           placeholder="请输入球队名称"></a-input>
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -62,6 +56,12 @@
         </a-form-model>
       </div>
       <div>
+        <!-- operator -->
+        <div class="operator">
+          <a-button @click="openAlarm(0)"
+                    class="mr-10"
+                    type="primary">新增邀请码</a-button>
+        </div>
         <!-- table -->
         <standard-table :columns="columns"
                         rowKey="id"
@@ -69,24 +69,25 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <!-- <div slot="state"
-               slot-scope="{text}">
-            <span :class="[text === 0 ? 'text-green': '', text === 1 ? 'text-red': '']">{{statusMapText[text]}}</span>
-          </div> -->
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openInfosTable(record.id)">查看
-            </a>
+               @click="openAlarm(1, record.sequenceNumber)">修改</a>
+            <a-popconfirm title="是否删除该条数据?"
+                          ok-text="确定"
+                          cancel-text="取消"
+                          @confirm="deleteInfo(record.sequenceNumber)"
+                          @cancel="deletecancel">
+              <a href="#"
+                 class="text-red">删除</a>
+            </a-popconfirm>
           </div>
         </standard-table>
       </div>
     </a-card>
-    <!-- 详情config -->
-    <InfosTable ref="infosTable"
-                :configshow="configshow"
-                :dataSource="infoTableData"
-                @closeConfig="closeConfig"></InfosTable>
+    <!-- 新增 | 修改弹框 -->
+    <CodeConfig ref="codeConfig"></CodeConfig>
+
     <!-- loading -->
     <transition name="el-fade-in">
       <loading ref="loading"></loading>
@@ -97,38 +98,37 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-// import { getTrainTableData, getInfosTableData } from "@/services/train";
-import InfosTable from "./InfosTable";
+import CodeConfig from "./CodeConfig";
 
 // table columns data
 const columns = [
   {
-    title: "记录ID",
-    dataIndex: "id",
+    title: "邀请码ID",
+    dataIndex: "sequenceNumber",
   },
   {
-    title: "标题",
-    dataIndex: "title",
+    title: "邀请码",
+    dataIndex: "name",
   },
   {
-    title: "类型",
-    dataIndex: "type",
+    title: "球队名称",
+    dataIndex: "createTime",
   },
   {
-    title: "状态",
-    dataIndex: "status",
+    title: "联系人",
+    dataIndex: "updateTime",
   },
   {
-    title: "报名人数",
-    dataIndex: "applyNumber",
+    title: "使用状态",
+    dataIndex: "state",
   },
   {
-    title: "报名时间",
-    dataIndex: "applyTime",
+    title: "昵称",
+    dataIndex: "state1",
   },
   {
-    title: "培训时间",
-    dataIndex: "trainTime",
+    title: "关联时间",
+    dataIndex: "time",
   },
   {
     title: "操作",
@@ -137,28 +137,15 @@ const columns = [
 ];
 
 export default {
-  name: "Train",
-  components: { StandardTable, InfosTable },
+  name: "train",
+  components: { StandardTable, CodeConfig },
   i18n: require("./i18n"),
   data() {
     return {
       advanced: true,
       tableLoading: false,
-      configshow: false, // 二级table显隐
       columns: columns,
-      dataSource: [
-        {
-          title: "国家教练员培训",
-          type: "培训",
-          status: "报名中",
-          applyNumber: "10",
-          applyTime: "2020-12-05 至 2020-12-31",
-          trainTime: "2021-01-01 至 2021-01-09",
-          id: 1,
-        },
-      ],
-      infoTableData: [], // 二级table data
-      // 分页
+      dataSource: [],
       pagination: {
         pageSize: 10,
         pageNo: 1,
@@ -170,23 +157,14 @@ export default {
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
-      applyStatusList: [
-        { label: "未开始", value: 0 },
-        { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 },
-      ],
       form: {
-        title: undefined,
-        applyStatus: undefined,
+        teamName: undefined,
+        code: undefined,
       },
       // 搜索项校验规则
       rules: {
-        title: [],
-        applyStatus: [],
-      },
-      statusMapText: {
-        0: "启用",
-        1: "停用",
+        teamName: [],
+        code: [],
       },
     };
   },
@@ -194,13 +172,7 @@ export default {
     ...mapState("setting", ["pageMinHeight"]),
     // page header desc
     desc() {
-      if (!this.configshow) {
-        return this.$t("description");
-      } else if (this.$refs.infosTable.detailShow) {
-        return this.$t("detailDesc");
-      } else {
-        return this.$t("configDesc");
-      }
+      return this.$t("description");
     },
   },
   created() {},
@@ -211,41 +183,59 @@ export default {
     },
 
     /**
-     * @description: 打开培训详情table
+     * @description: 打开详情页
+     * @param : status{int} 0: 新增， 1:修改
      * @param : id{int}
      * @return {*}
      * @author: Leo
      */
-    async openInfosTable(id) {
-      await this.infosTableDetail(id);
-      this.configshow = true;
+    async openAlarm(status, id) {
+      console.log(id);
+      if (status === 1 || status === 2) {
+        // await this.roleConfigDetail(id);
+      }
+      this.$refs.codeConfig.setOpenType(status);
     },
 
     // 查看 | 修改返显数据
-    infosTableDetail(id) {
+    roleConfigDetail(id) {
       console.log(id);
       // this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      // getInfosTableData(id).then((res) => {
+      // initRoleDetail(id).then((res) => {
       //   this.$refs.loading.closeLoading();
       //   const result = res.data;
       //   if (result.code === 0) {
-      //     this.infoTableData = [];
+      //     this.$message.success(result.desc);
+      //     this.$refs.roleConfig.form = {
+      //       name: result.data.name,
+      //       remark: result.data.remark,
+      //       selectedMenusList: result.data.selectedMenusList,
+      //       state: result.data.state.toString(),
+      //     };
       //   } else {
       //     this.$message.error(result.desc);
       //   }
       // });
-      this.infoTableData = [
-        {
-          name: "林一",
-          sex: "男",
-          birthday: "1999-09-09",
-          mobile: "18270707160",
-          applyTime: "一级",
-          workplace: "北京",
-          identityCard: "110723199909092230",
-          id: 1,
-        },
-      ];
+    },
+
+    // 删除
+    deleteInfo(id) {
+      console.log(id);
+      // this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      // deleteRoleInfo(id).then((res) => {
+      //   this.$refs.loading.closeLoading();
+      //   const result = res.data;
+      //   if (result.code === 0) {
+      //     this.$message.success(result.desc);
+      //     this.searchTableData();
+      //   } else {
+      //     this.$message.error(result.desc);
+      //   }
+      // });
+    },
+
+    deletecancel() {
+      this.$message.warning("删除操作已取消");
     },
 
     // 列表查询
@@ -283,15 +273,8 @@ export default {
     // 重置
     reset() {
       this.$refs.ruleForm.resetFields();
-      // this.dataSource = [];
+      this.dataSource = [];
       this.resetPagination();
-      this.configshow = false;
-      this.$refs.infosTable.detailShow = false;
-    },
-
-    // 关闭详情config
-    closeConfig() {
-      this.configshow = false;
     },
   },
   // 监听页面离开事件， 清空页面数据

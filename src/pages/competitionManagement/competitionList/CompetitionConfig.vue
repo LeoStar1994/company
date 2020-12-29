@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2020-12-25 15:31:47
+ * @LastEditTime: 2020-12-29 18:39:23
  * @LastEditors: Leo
 -->
 <template>
@@ -16,69 +16,113 @@
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item required
-                           label="用户"
+        <!-- 赛事名称 -->
+        <a-form-model-item label="赛事名称"
                            prop="name">
           <a-input v-model="form.name"
                    allowClear
-                   :disabled="openType === 1"
+                   placeholder="请输入赛事名称"
                    :maxLength="20" />
         </a-form-model-item>
-        <a-form-model-item required
-                           label="账号"
+        <!-- 比赛类型 -->
+        <a-form-model-item label="比赛类型"
+                           prop="applyStatus">
+          <a-select style="width: 100%"
+                    v-model="form.applyStatus"
+                    allowClear
+                    placeholder="请选择">
+            <a-select-option v-for="(item,index) in gameTypeList"
+                             :key="index"
+                             :value="item.value">
+              {{item.label}}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <!-- 比赛组别 -->
+        <a-form-model-item label="比赛组别"
+                           prop="applyStatus">
+          <a-checkbox-group @change="checkChange"
+                            style="width: 100%">
+            <a-row>
+              <a-col :span="4">
+                <a-checkbox value="A">
+                  A
+                </a-checkbox>
+              </a-col>
+              <a-col :span="4">
+                <a-checkbox value="B">
+                  B
+                </a-checkbox>
+              </a-col>
+              <a-col :span="4">
+                <a-checkbox value="C">
+                  C
+                </a-checkbox>
+              </a-col>
+              <a-col :span="4">
+                <a-checkbox value="D">
+                  D
+                </a-checkbox>
+              </a-col>
+              <a-col :span="4">
+                <a-checkbox value="E">
+                  E
+                </a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
+        </a-form-model-item>
+        <!-- 预报名时间 -->
+        <a-form-model-item label="预报名时间"
+                           prop="account">
+          <a-date-picker :locale="locale" />
+          <a-date-picker :locale="locale" />
+        </a-form-model-item>
+
+        <!-- 主办单位 -->
+        <a-form-model-item label="主办单位"
                            prop="account">
           <a-input v-model="form.account"
-                   auto-complete="new-account"
+                   placeholder="请输入主办单位"
                    allowClear
-                   :disabled="openType === 1"
                    :maxLength="20" />
         </a-form-model-item>
-        <a-form-model-item required
-                           label="密码"
+        <!-- 承办单位 -->
+        <a-form-model-item label="承办单位"
                            prop="password">
           <a-input v-model="form.password"
-                   type="password"
+                   placeholder="请输入承办单位"
                    allowClear
-                   :disabled="openType === 1"
-                   auto-complete="new-password"
                    :maxLength="20" />
         </a-form-model-item>
-        <a-form-model-item required
-                           label="手机号"
+        <!-- 举办场地 -->
+        <a-form-model-item label="举办场地"
                            prop="mobile">
           <a-input v-model="form.mobile"
                    allowClear
-                   :disabled="openType === 1"
+                   placeholder="请输入举办场地"
                    :maxLength="20" />
         </a-form-model-item>
         <a-form-model-item label="状态"
                            prop="state">
-          <a-radio-group v-model="form.state"
-                         :disabled="openType === 1">
-            <a-radio value="0">启用</a-radio>
-            <a-radio value="1">停用</a-radio>
+          <a-radio-group v-model="form.state">
+            <a-radio value="0">下线</a-radio>
+            <a-radio value="1">上线</a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <a-form-model-item label="备注"
-                           prop="remark">
-          <a-input v-model="form.remark"
-                   :maxLength="500"
-                   :disabled="openType === 1"
+        <a-form-model-item label="报名表接收人"
+                           prop="mobile">
+          <a-input v-model="form.mobile"
                    allowClear
-                   :auto-size="{ minRows: 3, maxRows: 5 }"
-                   type="textarea" />
+                   :maxLength="20" />
         </a-form-model-item>
-        <a-form-model-item label="角色"
-                           prop="roles">
-          <div class="treebox">
-            <a-tree v-model="form.roles"
-                    checkable
-                    :disabled="openType === 1"
-                    :replaceFields='treeDefaultObject'
-                    :tree-data="treeData" />
-            <a-empty v-if="treeData.length === 0" />
-          </div>
+        <a-form-model-item label="接受邮件"
+                           prop="mobile">
+          <a-input v-model="form.mobile"
+                   allowClear
+                   :maxLength="20" />
         </a-form-model-item>
+
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
                     class="mr-20"
@@ -101,7 +145,10 @@
 <script>
 import { mapState } from "vuex";
 import { addUser, updateUser } from "@/services/usersManagement";
-
+import locale from "ant-design-vue/es/date-picker/locale/zh_CN";
+import moment from "moment";
+import "moment/locale/zh-cn";
+moment.locale("zh-cn");
 export default {
   name: "UsersConfig",
   props: {
@@ -117,8 +164,10 @@ export default {
   },
   data() {
     return {
+      locale,
       openType: null, // 0新增 1查看 2修改
       sequenceNumber: null, // 修改时使用，id
+      gameTypeList: [],
       labelCol: { span: 5 },
       wrapperCol: { span: 11, offset: 1 },
       treeDefaultObject: {
@@ -202,6 +251,9 @@ export default {
           this.$refs.ruleForm.resetFields();
         });
       }
+    },
+    checkChange(checkedValues) {
+      console.log("checked = ", checkedValues);
     },
     // 保存
     onSubmit() {

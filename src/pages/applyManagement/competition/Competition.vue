@@ -1,13 +1,14 @@
 <!--
- * @Description: 报名管理 / 培训
+ * @Description: 报名管理 / 赛事
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-29 11:07:23
+ * @LastEditTime: 2020-12-29 15:51:16
  * @LastEditors: Leo
 -->
 <template>
-  <div class="train-page">
-    <a-card :style="`min-height: ${pageMinHeight}px`">
+  <div class="competition-page">
+    <a-card v-show="!configshow"
+            :style="`min-height: ${pageMinHeight}px`">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="ruleForm"
@@ -17,15 +18,15 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 标题 -->
+              <!-- 赛事名称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="标题"
-                                   prop="title">
-                  <a-input v-model="form.title"
+                <a-form-model-item label="赛事名称"
+                                   prop="gameName">
+                  <a-input v-model="form.gameName"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入标题"></a-input>
+                           placeholder="请输入赛事名称"></a-input>
                 </a-form-model-item>
               </a-col>
               <!-- 报名状态 -->
@@ -69,10 +70,6 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <!-- <div slot="state"
-               slot-scope="{text}">
-            <span :class="[text === 0 ? 'text-green': '', text === 1 ? 'text-red': '']">{{statusMapText[text]}}</span>
-          </div> -->
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
@@ -107,27 +104,23 @@ const columns = [
     dataIndex: "id",
   },
   {
-    title: "标题",
+    title: "赛事名称",
     dataIndex: "title",
-  },
-  {
-    title: "类型",
-    dataIndex: "type",
   },
   {
     title: "状态",
     dataIndex: "status",
   },
   {
-    title: "报名人数",
-    dataIndex: "applyNumber",
+    title: "报名球队",
+    dataIndex: "type",
   },
   {
     title: "报名时间",
     dataIndex: "applyTime",
   },
   {
-    title: "培训时间",
+    title: "比赛时间",
     dataIndex: "trainTime",
   },
   {
@@ -137,7 +130,7 @@ const columns = [
 ];
 
 export default {
-  name: "Train",
+  name: "Competition",
   components: { StandardTable, InfosTable },
   i18n: require("./i18n"),
   data() {
@@ -149,12 +142,19 @@ export default {
       dataSource: [
         {
           title: "国家教练员培训",
-          type: "培训",
+          type: "3",
           status: "报名中",
-          applyNumber: "10",
           applyTime: "2020-12-05 至 2020-12-31",
           trainTime: "2021-01-01 至 2021-01-09",
           id: 1,
+        },
+        {
+          title: "国家教练员培训",
+          type: "3",
+          status: "报名中",
+          applyTime: "2020-12-05 至 2020-12-31",
+          trainTime: "2021-01-01 至 2021-01-09",
+          id: 2,
         },
       ],
       infoTableData: [], // 二级table data
@@ -176,17 +176,13 @@ export default {
         { label: "已结束", value: 2 },
       ],
       form: {
-        title: undefined,
+        gameName: undefined,
         applyStatus: undefined,
       },
       // 搜索项校验规则
       rules: {
-        title: [],
+        gameName: [],
         applyStatus: [],
-      },
-      statusMapText: {
-        0: "启用",
-        1: "停用",
       },
     };
   },
@@ -236,13 +232,12 @@ export default {
       // });
       this.infoTableData = [
         {
-          name: "林一",
-          sex: "男",
-          birthday: "1999-09-09",
+          name: "冰球队",
+          sex: "10",
+          birthday: "2020-12-05",
+          num: "2",
           mobile: "18270707160",
-          applyTime: "一级",
-          workplace: "北京",
-          identityCard: "110723199909092230",
+          applyTime: "已通过",
           id: 1,
         },
       ];
