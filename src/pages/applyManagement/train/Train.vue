@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-29 11:07:23
+ * @LastEditTime: 2020-12-30 18:27:37
  * @LastEditors: Leo
 -->
 <template>
@@ -21,8 +21,8 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="标题"
-                                   prop="title">
-                  <a-input v-model="form.title"
+                                   prop="educationName">
+                  <a-input v-model="form.educationName"
                            allowClear
                            :maxLength="10"
                            placeholder="请输入标题"></a-input>
@@ -32,12 +32,12 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="报名状态"
-                                   prop="applyStatus">
+                                   prop="enrollStatus">
                   <a-select style="width: 100%"
-                            v-model="form.applyStatus"
+                            v-model="form.enrollStatus"
                             allowClear
                             placeholder="请选择">
-                    <a-select-option v-for="(item,index) in applyStatusList"
+                    <a-select-option v-for="(item,index) in enrollStatusList"
                                      :key="index"
                                      :value="item.value">
                       {{item.label}}
@@ -69,10 +69,14 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <!-- <div slot="state"
+          <div slot="mapEnrollType"
                slot-scope="{text}">
-            <span :class="[text === 0 ? 'text-green': '', text === 1 ? 'text-red': '']">{{statusMapText[text]}}</span>
-          </div> -->
+            {{mapEnrollType[text]}}
+          </div>
+          <div slot="mapEnrollStatus"
+               slot-scope="{text}">
+            {{mapEnrollStatus[text]}}
+          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
@@ -97,7 +101,7 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-// import { getTrainTableData, getInfosTableData } from "@/services/train";
+import { getTrainTableData, getInfosTableData } from "@/services/train";
 import InfosTable from "./InfosTable";
 
 // table columns data
@@ -108,27 +112,29 @@ const columns = [
   },
   {
     title: "标题",
-    dataIndex: "title",
+    dataIndex: "educationName",
   },
   {
     title: "类型",
-    dataIndex: "type",
+    dataIndex: "enrollType",
+    scopedSlots: { customRender: "mapEnrollType" },
   },
   {
     title: "状态",
-    dataIndex: "status",
+    dataIndex: "enrollStatus",
+    scopedSlots: { customRender: "mapEnrollStatus" },
   },
   {
     title: "报名人数",
-    dataIndex: "applyNumber",
+    dataIndex: "enrollCount",
   },
   {
     title: "报名时间",
-    dataIndex: "applyTime",
+    dataIndex: "enrollTimeStr",
   },
   {
     title: "培训时间",
-    dataIndex: "trainTime",
+    dataIndex: "educationTimeStr",
   },
   {
     title: "操作",
@@ -146,17 +152,7 @@ export default {
       tableLoading: false,
       configshow: false, // 二级table显隐
       columns: columns,
-      dataSource: [
-        {
-          title: "国家教练员培训",
-          type: "培训",
-          status: "报名中",
-          applyNumber: "10",
-          applyTime: "2020-12-05 至 2020-12-31",
-          trainTime: "2021-01-01 至 2021-01-09",
-          id: 1,
-        },
-      ],
+      dataSource: [],
       infoTableData: [], // 二级table data
       // 分页
       pagination: {
@@ -170,23 +166,28 @@ export default {
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
-      applyStatusList: [
-        { label: "未开始", value: 0 },
-        { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 },
+      enrollStatusList: [
+        { label: "未开始", value: 1 },
+        { label: "报名中", value: 2 },
+        { label: "已结束", value: 3 },
       ],
       form: {
-        title: undefined,
-        applyStatus: undefined,
+        educationName: undefined,
+        enrollStatus: undefined,
       },
       // 搜索项校验规则
       rules: {
-        title: [],
-        applyStatus: [],
+        educationName: [],
+        enrollStatus: [],
       },
-      statusMapText: {
-        0: "启用",
-        1: "停用",
+      mapEnrollType: {
+        1: "培训",
+        2: "考试",
+      },
+      mapEnrollStatus: {
+        1: "未开始",
+        2: "报名者",
+        3: "已结束",
       },
     };
   },
@@ -223,47 +224,38 @@ export default {
 
     // 查看 | 修改返显数据
     infosTableDetail(id) {
-      console.log(id);
-      // this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      // getInfosTableData(id).then((res) => {
-      //   this.$refs.loading.closeLoading();
-      //   const result = res.data;
-      //   if (result.code === 0) {
-      //     this.infoTableData = [];
-      //   } else {
-      //     this.$message.error(result.desc);
-      //   }
-      // });
-      this.infoTableData = [
-        {
-          name: "林一",
-          sex: "男",
-          birthday: "1999-09-09",
-          mobile: "18270707160",
-          applyTime: "一级",
-          workplace: "北京",
-          identityCard: "110723199909092230",
-          id: 1,
-        },
-      ];
+      this.$refs.loading.openLoading("数据查询中，请稍后。。");
+      getInfosTableData(id)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.infoTableData = [];
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
     },
 
     // 列表查询
     searchTableData() {
-      // const data = {
-      //   ...this.form,
-      //   pageNo: this.pagination.pageNo,
-      //   pageSize: this.pagination.pageSize,
-      // };
-      // this.tableLoading = true;
-      // getTrainTableData(data).then((res) => {
-      //   const result = res.data;
-      //   if (result.code === 0) {
-      //     this.dataSource = result.data.records;
-      //     this.pagination.total = result.data.total;
-      //   }
-      //   this.tableLoading = false;
-      // });
+      const data = {
+        ...this.form,
+        pageNo: this.pagination.pageNo,
+        pageSize: this.pagination.pageSize,
+      };
+      this.tableLoading = true;
+      getTrainTableData(data).then((res) => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.dataSource = result.data.records;
+          this.pagination.total = result.data.total;
+        }
+        this.tableLoading = false;
+      });
     },
 
     // 分页

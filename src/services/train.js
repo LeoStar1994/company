@@ -2,12 +2,9 @@
 import {
   TRAINTABLEDATA,
   TRAININFOTABLE,
-  ROLETREE,
-  ROLECHANGESTATE,
-  ROLEINITDATA,
-  ROLEADD,
-  ROLEUPDATE,
-  ROLEDELETE,
+  REFEREEDETAIL,
+  REFEREEDELETE,
+  REFEREESEXPOTR,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -21,40 +18,37 @@ export async function getTrainTableData(data) {
 }
 
 /**
- * 培训二级table查询
- * @param data {Object}
+ * 裁判table查询
+ * @param id {int}
  * @returns {Promise<AxiosResponse<T>>}
  */
-export async function getInfosTableData(data) {
-  return request(TRAININFOTABLE, METHOD.POST, data);
+export async function getInfosTableData(id) {
+  return request(TRAININFOTABLE + `/${id}`, METHOD.GET);
 }
 
-// 获取详情页角色list
-export async function roleTreeList() {
-  return request(ROLETREE, METHOD.GET);
+/**
+ * 裁判明细
+ * @param id {int}
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export async function getRefereeDetail(id) {
+  return request(REFEREEDETAIL + `/${id}`, METHOD.GET);
 }
 
-// 新增
-export async function addRole(data) {
-  return request(ROLEADD, METHOD.POST, data);
+/**
+ * 裁判删除
+ * @param id {int}
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export async function deleteReferee(id) {
+  return request(REFEREEDELETE + `/${id}`, METHOD.GET);
 }
 
-// 修改
-export async function updateRole(data) {
-  return request(ROLEUPDATE, METHOD.POST, data);
-}
-
-// 查看 | 修改返显数据
-export async function initRoleDetail(params) {
-  return request(ROLEINITDATA + `/${params}`, METHOD.GET);
-}
-
-// 启用 | 停用
-export async function changeRoleState(data) {
-  return request(ROLECHANGESTATE, METHOD.POST, data);
-}
-
-// 删除
-export async function deleteRoleInfo(data) {
-  return request(ROLEDELETE, METHOD.DELETE, data);
+/**
+ * 裁判导出
+ * @param id {int}
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export async function exportReferee(id) {
+  return request(REFEREESEXPOTR + `/${id}`, METHOD.GET);
 }

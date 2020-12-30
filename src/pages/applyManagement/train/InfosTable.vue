@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2020-12-29 17:42:01
+ * @LastEditTime: 2020-12-30 18:34:56
  * @LastEditors: Leo
 -->
 <template>
@@ -119,7 +119,13 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import { getInfosTableData } from "@/services/train";
+import {
+  getRefereeDetail,
+  deleteReferee,
+  exportReferee,
+  getInfosTableData,
+} from "@/services/train";
+
 import InfoDetails from "@/components/infoDetails/InfoDetails";
 
 const imgURL = require("@/assets/img/logo_icon.jpg");
@@ -131,28 +137,28 @@ const columns = [
   },
   {
     title: "姓名",
-    dataIndex: "name",
+    dataIndex: "refereeName",
     scopedSlots: { customRender: "infoName" },
   },
   {
     title: "性别",
-    dataIndex: "sex",
+    dataIndex: "sexType",
   },
   {
     title: "出生日期",
-    dataIndex: "birthday",
+    dataIndex: "bornDate",
   },
   {
     title: "手机号",
-    dataIndex: "mobile",
+    dataIndex: "telPhone",
   },
   {
     title: "现裁判等级",
-    dataIndex: "applyTime",
+    dataIndex: "refereeLevel",
   },
   {
     title: "工作单位",
-    dataIndex: "workplace",
+    dataIndex: "workCompany",
   },
   {
     title: "身份证号",
@@ -341,8 +347,10 @@ export default {
 
     // 查看某一个数据列详情
     openDetails() {
-      // this.$emit("closeConfig");
       this.detailShow = true;
+      getRefereeDetail().then((res) => {
+        console.log(res);
+      });
     },
 
     closeDetail() {
@@ -351,18 +359,17 @@ export default {
 
     // 删除
     deleteDetails(id) {
-      console.log(id);
-      // this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      // deleteRoleInfo(id).then((res) => {
-      //   this.$refs.loading.closeLoading();
-      //   const result = res.data;
-      //   if (result.code === 0) {
-      //     this.$message.success(result.desc);
-      //     this.searchTableData();
-      //   } else {
-      //     this.$message.error(result.desc);
-      //   }
-      // });
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      deleteReferee(id).then((res) => {
+        this.$refs.loading.closeLoading();
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.searchTableData();
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
     },
 
     deletecancel() {
@@ -370,7 +377,11 @@ export default {
     },
 
     // 导出
-    exportData() {},
+    exportData() {
+      exportReferee().then((res) => {
+        console.log(res);
+      });
+    },
 
     // 返回上一页
     goBackTrain() {
