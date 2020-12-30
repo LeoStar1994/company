@@ -1,12 +1,12 @@
 <!--
- * @Description: 赛事列表 / 详情页
+ * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
  * @LastEditTime: 2020-12-30 17:19:06
  * @LastEditors: Leo
 -->
 <template>
-  <div class="competitionConfig-page"
+  <div class="educationConfig-page"
        v-if="configshow">
     <a-card :body-style="{padding: '24px 32px'}"
             :bordered="false"
@@ -290,7 +290,7 @@ import { getBase64 } from "@/utils/util.js";
 import Editor from "@/components/wangEditor/wangEditor.vue";
 
 export default {
-  name: "CompetitionConfig",
+  name: "EducationConfig",
   props: {
     configshow: {
       type: Boolean,

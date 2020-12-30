@@ -1,12 +1,12 @@
 <!--
- * @Description: 权限管理 / 角色管理.
+ * @Description: 教学管理 / 教学列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-25 15:30:49
+ * @LastEditTime: 2020-12-29 18:17:42
  * @LastEditors: Leo
 -->
 <template>
-  <div class="usersManagement-page">
+  <div class="educationList-page">
     <a-card :style="`min-height: ${pageMinHeight}px`"
             v-show="!configshow">
       <!-- search -->
@@ -18,40 +18,34 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 用户名 -->
+              <!-- 赛事名称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="用户名"
+                <a-form-model-item label="赛事名称"
                                    prop="name">
                   <a-input v-model="form.name"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入用户名"></a-input>
+                           placeholder="请输入赛事名称"></a-input>
                 </a-form-model-item>
               </a-col>
-              <!-- 账号 -->
+              <!-- 报名状态 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="账号"
-                                   prop="account">
-                  <a-input v-model="form.account"
-                           allowClear
-                           :maxLength="10"
-                           placeholder="请输入账号"></a-input>
+                <a-form-model-item label="报名状态"
+                                   prop="applyStatus">
+                  <a-select style="width: 100%"
+                            v-model="form.applyStatus"
+                            allowClear
+                            placeholder="请选择">
+                    <a-select-option v-for="(item,index) in applyStatusList"
+                                     :key="index"
+                                     :value="item.value">
+                      {{item.label}}
+                    </a-select-option>
+                  </a-select>
                 </a-form-model-item>
               </a-col>
-              <!-- 手机号 -->
-              <a-col :md="8"
-                     :sm="24">
-                <a-form-model-item label="手机号"
-                                   prop="mobile">
-                  <a-input v-model="form.mobile"
-                           allowClear
-                           :maxLength="10"
-                           placeholder="请输入手机号"></a-input>
-                </a-form-model-item>
-              </a-col>
-
             </a-row>
           </div>
           <!-- 查询、重置、收起 -->
@@ -73,8 +67,7 @@
         <div class="operator">
           <a-button @click="openAlarm(0)"
                     class="mr-10"
-                    type="primary">新增</a-button>
-          <a-button>批量操作</a-button>
+                    type="primary">新增赛事</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
@@ -83,23 +76,15 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <div slot="state"
-               slot-scope="{text}">
-            <span :class="[text === 0 ? 'text-green': '', text === 1 ? 'text-red': '']">{{statusMapText[text]}}</span>
-          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openAlarm(1, record.sequenceNumber)">详情
+               @click="openAlarm(1, record.id)">修改
             </a>
-            <a class="mr-12"
-               @click="openAlarm(2, record.sequenceNumber)">修改</a>
-            <a @click="changeService(record.sequenceNumber, 0)"
-               v-if="record.state === 1"
-               class="text-green mr-12">启用</a>
-            <a @click="changeService(record.sequenceNumber, 1)"
-               v-if="record.state === 0"
-               class="text-orange mr-12">停用</a>
+            <a class="mr-12 text-orange"
+               @click="openGameTime(record.id)">赛事日程</a>
+            <a class="mr-12 text-green"
+               @click="downloadText(record.id)">秩序册</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
@@ -113,11 +98,12 @@
       </div>
     </a-card>
     <!-- 详情config -->
-    <UsersConfig ref="userConfig"
-                 :configshow="configshow"
-                 :treeData="treeData"
-                 @closeConfig='closeConfig'
-                 @searchTableData='searchTableData'></UsersConfig>
+    <EducationConfig ref="educationConfig"
+                     :configshow="configshow"
+                     :treeData="treeData"
+                     @closeConfig='closeConfig'
+                     @searchTableData='searchTableData'>
+    </EducationConfig>
     <!-- loading -->
     <transition name="el-fade-in">
       <loading ref="loading"></loading>
@@ -131,56 +117,46 @@ import StandardTable from "@/components/table/StandardTable";
 import {
   getUsersTableData,
   rolesTreeList,
-  changeUserState,
   deleteUserInfo,
-  initUserDetail,
+  initUserDetail
 } from "@/services/usersManagement";
-import UsersConfig from "./UsersConfig";
+import EducationConfig from "./EducationConfig";
 
 // table columns data
 const columns = [
   {
-    title: "序号",
-    dataIndex: "sequenceNumber",
+    title: "记录ID",
+    dataIndex: "sequenceNumber"
   },
   {
-    title: "用户",
-    dataIndex: "name",
-  },
-  {
-    title: "账号",
-    dataIndex: "account",
-  },
-  {
-    title: "手机号",
-    dataIndex: "mobile",
-  },
-  {
-    title: "创建时间",
-    dataIndex: "createTime",
-  },
-  {
-    title: "更新时间",
-    dataIndex: "updateTime",
-  },
-  {
-    title: "角色名称",
-    dataIndex: "rolesName",
+    title: "赛事名称",
+    dataIndex: "name"
   },
   {
     title: "状态",
-    dataIndex: "state",
-    scopedSlots: { customRender: "state" },
+    dataIndex: "account"
+  },
+  {
+    title: "报名球队",
+    dataIndex: "mobile"
+  },
+  {
+    title: "报名时间",
+    dataIndex: "createTime"
+  },
+  {
+    title: "比赛时间",
+    dataIndex: "updateTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
-  name: "UsersManageMent",
-  components: { StandardTable, UsersConfig },
+  name: "EducationList",
+  components: { StandardTable, EducationConfig },
   i18n: require("./i18n"),
   data() {
     return {
@@ -197,25 +173,24 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
         name: undefined,
-        account: undefined,
-        mobile: undefined,
+        applyStatus: undefined
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        account: [],
-        mobile: [],
+        applyStatus: []
       },
-      statusMapText: {
-        0: "启用",
-        1: "停用",
-      },
+      applyStatusList: [
+        { label: "未开始", value: 0 },
+        { label: "报名中", value: 1 },
+        { label: "已结束", value: 2 }
+      ]
     };
   },
   computed: {
@@ -227,7 +202,7 @@ export default {
       } else {
         return this.$t("description");
       }
-    },
+    }
   },
   created() {
     this.getRolesList();
@@ -235,7 +210,7 @@ export default {
   methods: {
     // 获取角色tree list
     getRolesList() {
-      rolesTreeList().then((res) => {
+      rolesTreeList().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.treeData = result.data.roleModels;
@@ -262,13 +237,13 @@ export default {
         await this.userConfigDetail(id);
       }
       this.configshow = true;
-      this.$refs.userConfig.setOpenType(status, id);
+      this.$refs.educationConfig.setOpenType(status, id);
     },
 
     // 查看 | 修改返显数据
     userConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then((res) => {
+      initUserDetail(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -280,7 +255,7 @@ export default {
             password: result.data.password,
             remark: result.data.remark,
             roles: result.data.roles,
-            state: result.data.state.toString(),
+            state: result.data.state.toString()
           };
         } else {
           this.$message.error(result.desc);
@@ -288,29 +263,16 @@ export default {
       });
     },
 
-    // 停用 | 启用
-    changeService(sequenceNumber, state) {
-      const data = {
-        sequenceNumber,
-        state,
-      };
-      this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      changeUserState(data).then((res) => {
-        this.$refs.loading.closeLoading();
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.searchTableData();
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
-    },
+    // 赛事日程
+    openGameTime() {},
+
+    //秩序册
+    downloadText() {},
 
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then((res) => {
+      deleteUserInfo(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -331,10 +293,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getUsersTableData(data).then((res) => {
+      getUsersTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -369,7 +331,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -377,7 +339,7 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>
 

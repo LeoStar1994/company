@@ -1,2 +1,2 @@
-import UsersManagement from "./UsersManagement.vue";
-export default UsersManagement;
+import EducationList from "./EducationList";
+export default EducationList;
