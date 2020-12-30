@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2020-12-29 18:39:23
+ * @LastEditTime: 2020-12-30 12:07:00
  * @LastEditors: Leo
 -->
 <template>
@@ -75,10 +75,127 @@
         <!-- 预报名时间 -->
         <a-form-model-item label="预报名时间"
                            prop="account">
-          <a-date-picker :locale="locale" />
-          <a-date-picker :locale="locale" />
+          <a-date-picker v-model="form.startTime"
+                         :disabled-date="disabledStartDate"
+                         show-time
+                         format="YYYY-MM-DD"
+                         placeholder="开始时间" />
+          ~
+          <a-date-picker v-model="form.endTime"
+                         :disabled-date="disabledEndDate"
+                         show-time
+                         format="YYYY-MM-DD"
+                         placeholder="结束时间" />
         </a-form-model-item>
+        <!-- 报名时间 -->
+        <a-form-model-item label="报名时间"
+                           prop="account">
+          <a-date-picker v-model="form.startTime"
+                         :disabled-date="disabledStartDate"
+                         show-time
+                         format="YYYY-MM-DD"
+                         placeholder="开始时间" />
+          ~
+          <a-date-picker v-model="form.endTime"
+                         :disabled-date="disabledEndDate"
+                         show-time
+                         format="YYYY-MM-DD"
+                         placeholder="结束时间" />
+        </a-form-model-item>
+        <!-- 比赛时间 -->
+        <a-form-model-item label="比赛时间"
+                           prop="account">
+          <a-date-picker v-model="form.startTime"
+                         :disabled-date="disabledStartDate"
+                         show-time
+                         format="YYYY-MM-DD"
+                         placeholder="开始时间" />
+          ~
+          <a-date-picker v-model="form.endTime"
+                         :disabled-date="disabledEndDate"
+                         show-time
+                         format="YYYY-MM-DD"
+                         placeholder="结束时间" />
+        </a-form-model-item>
+        <!-- 竞赛规程 -->
+        <a-form-model-item label="竞赛规程"
+                           prop="account">
+          <div class="d-flex">
+            <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      accept=".pdf"
+                      :multiple="true"
+                      :file-list="fileList"
+                      @change="uploadhandleChange">
+              <a-button>
+                <a-icon type="upload" /> 上传文件
+              </a-button>
+            </a-upload>
+            <span class="ml-10">仅支持pdf格式文件</span>
+          </div>
+        </a-form-model-item>
+        <!-- 宣传封面 -->
+        <a-form-model-item label="宣传封面"
+                           prop="account">
+          <div class="clearfix">
+            <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      accept=".png, .jpg"
+                      list-type="picture-card"
+                      :file-list="coverPictureList"
+                      @preview="handleImgPreview"
+                      @change="handleImgChange">
+              <a-icon type="plus" />
+              <div class="ant-upload-text">
+                上传图片
+              </div>
+            </a-upload>
+            <a-modal :visible="previewVisible"
+                     :footer="null"
+                     @cancel="handleCancel">
+              <img alt="example"
+                   style="width: 100%"
+                   :src="previewImage" />
+            </a-modal>
+            <span>宽高比4:3,格式支持jpg、png，大小不超过200KB</span>
+          </div>
+        </a-form-model-item>
+        <!-- 分享图片 -->
+        <a-form-model-item label="分享图片"
+                           prop="account">
+          <div class="clearfix">
+            <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      accept=".png, .jpg"
+                      list-type="picture-card"
+                      :file-list="coverPictureList"
+                      @preview="handleImgPreview"
+                      @change="handleImgChange">
+              <a-icon type="plus" />
+              <div class="ant-upload-text">
+                上传图片
+              </div>
+            </a-upload>
+            <a-modal :visible="previewVisible"
+                     :footer="null"
+                     @cancel="handleCancel">
+              <img alt="example"
+                   style="width: 100%"
+                   :src="previewImage" />
+            </a-modal>
+            <span>图片尺寸为5:4,格式支持jpg、png,大小不要超过200K</span>
+          </div>
+        </a-form-model-item>
+        <!-- 分享文案 -->
+        <a-form-model-item label="分享文案"
+                           prop="name">
+          <a-input v-model="form.name"
+                   allowClear
+                   placeholder="请输入分享文案（限30字）"
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 赛事介绍 -->
+        <a-form-model-item label="赛事介绍"
+                           prop="name">
 
+        </a-form-model-item>
         <!-- 主办单位 -->
         <a-form-model-item label="主办单位"
                            prop="account">
@@ -103,6 +220,7 @@
                    placeholder="请输入举办场地"
                    :maxLength="20" />
         </a-form-model-item>
+        <!-- 状态 -->
         <a-form-model-item label="状态"
                            prop="state">
           <a-radio-group v-model="form.state">
@@ -110,19 +228,23 @@
             <a-radio value="1">上线</a-radio>
           </a-radio-group>
         </a-form-model-item>
+        <!-- 报名表接收人 -->
         <a-form-model-item label="报名表接收人"
                            prop="mobile">
           <a-input v-model="form.mobile"
                    allowClear
+                   placeholder="请输入报名表接收人"
                    :maxLength="20" />
         </a-form-model-item>
+        <!-- 接受邮件 -->
         <a-form-model-item label="接受邮件"
                            prop="mobile">
           <a-input v-model="form.mobile"
                    allowClear
+                   placeholder="请输入报名表接受邮件地址"
                    :maxLength="20" />
         </a-form-model-item>
-
+        <!-- buttons -->
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
                     class="mr-20"
@@ -145,10 +267,9 @@
 <script>
 import { mapState } from "vuex";
 import { addUser, updateUser } from "@/services/usersManagement";
-import locale from "ant-design-vue/es/date-picker/locale/zh_CN";
-import moment from "moment";
-import "moment/locale/zh-cn";
-moment.locale("zh-cn");
+import { getBase64 } from "@/utils/util.js";
+// import locale from "ant-design-vue/es/date-picker/locale/zh_CN";
+
 export default {
   name: "UsersConfig",
   props: {
@@ -164,7 +285,7 @@ export default {
   },
   data() {
     return {
-      locale,
+      // locale,
       openType: null, // 0新增 1查看 2修改
       sequenceNumber: null, // 修改时使用，id
       gameTypeList: [],
@@ -182,6 +303,8 @@ export default {
         remark: "",
         roles: [],
         state: "0",
+        startTime: "",
+        endTime: "",
       },
       // 搜索项校验规则
       rules: {
@@ -236,6 +359,13 @@ export default {
           },
         ],
       },
+      fileList: [],
+
+      coverPictureList: [], // 宣传封面上传文件list
+      previewVisible: false,
+      previewImage: "",
+
+      sharePictureList: [], // 分享上传文件list
     };
   },
   computed: {
@@ -255,6 +385,42 @@ export default {
     checkChange(checkedValues) {
       console.log("checked = ", checkedValues);
     },
+    // date picker
+    disabledStartDate(startValue) {
+      const endValue = this.form.endTime;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf();
+    },
+    disabledEndDate(endValue) {
+      const startValue = this.form.startTime;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return startValue.valueOf() >= endValue.valueOf();
+    },
+
+    // upload
+    uploadhandleChange() {},
+
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    async handleImgPreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
+      this.previewVisible = true;
+    },
+    handleImgChange({ fileList }) {
+      if (fileList.length === 2) {
+        this.fileList = fileList.slice(1);
+        this.$message.warning("宣传封面只能上传一张图片");
+      }
+    },
+
     // 保存
     onSubmit() {
       this.$refs.ruleForm.validate((valid) => {

@@ -68,6 +68,15 @@ export function isRegExp(v) {
   return _toString.call(v) === "[object RegExp]";
 }
 
+export function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+
 export function enquireScreen(call) {
   const handler = {
     match: function() {
