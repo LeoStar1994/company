@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-29 18:17:42
+ * @LastEditTime: 2020-12-31 10:33:22
  * @LastEditors: Leo
 -->
 <template>
@@ -18,27 +18,27 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 赛事名称 -->
+              <!-- 标题 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="赛事名称"
-                                   prop="name">
-                  <a-input v-model="form.name"
+                <a-form-model-item label="标题"
+                                   prop="educationName">
+                  <a-input v-model="form.educationName"
                            allowClear
-                           :maxLength="10"
-                           placeholder="请输入赛事名称"></a-input>
+                           :maxLength="20"
+                           placeholder="请输入标题"></a-input>
                 </a-form-model-item>
               </a-col>
               <!-- 报名状态 -->
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="报名状态"
-                                   prop="applyStatus">
+                                   prop="enrollStatus">
                   <a-select style="width: 100%"
-                            v-model="form.applyStatus"
+                            v-model="form.enrollStatus"
                             allowClear
                             placeholder="请选择">
-                    <a-select-option v-for="(item,index) in applyStatusList"
+                    <a-select-option v-for="(item,index) in enrollStatusList"
                                      :key="index"
                                      :value="item.value">
                       {{item.label}}
@@ -51,7 +51,7 @@
           <!-- 查询、重置、收起 -->
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary"
-                      @click="searchTableData()">查询</a-button>
+                      @click="searchTableData">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
             <a @click="toggleAdvanced"
@@ -76,15 +76,19 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
+          <div slot="mapStatus"
+               slot-scope="{text}">
+            {{mapStatusObj[text]}}
+          </div>
+          <div slot="mapType"
+               slot-scope="{text}">
+            {{mapTypeObj[text]}}
+          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
                @click="openAlarm(1, record.id)">修改
             </a>
-            <a class="mr-12 text-orange"
-               @click="openGameTime(record.id)">赛事日程</a>
-            <a class="mr-12 text-green"
-               @click="downloadText(record.id)">秩序册</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
@@ -100,7 +104,6 @@
     <!-- 详情config -->
     <EducationConfig ref="educationConfig"
                      :configshow="configshow"
-                     :treeData="treeData"
                      @closeConfig='closeConfig'
                      @searchTableData='searchTableData'>
     </EducationConfig>
@@ -116,9 +119,8 @@ import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
 import {
   getUsersTableData,
-  rolesTreeList,
   deleteUserInfo,
-  initUserDetail
+  initUserDetail,
 } from "@/services/usersManagement";
 import EducationConfig from "./EducationConfig";
 
@@ -126,32 +128,38 @@ import EducationConfig from "./EducationConfig";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "sequenceNumber"
+    dataIndex: "id",
   },
   {
-    title: "赛事名称",
-    dataIndex: "name"
+    title: "标题",
+    dataIndex: "educationName",
+  },
+  {
+    title: "类型",
+    dataIndex: "enrollType",
+    scopedSlots: { customRender: "mapType" },
   },
   {
     title: "状态",
-    dataIndex: "account"
+    dataIndex: "enrollStatus",
+    scopedSlots: { customRender: "mapStatus" },
   },
   {
-    title: "报名球队",
-    dataIndex: "mobile"
+    title: "报名人数",
+    dataIndex: "enrollCount",
   },
   {
     title: "报名时间",
-    dataIndex: "createTime"
+    dataIndex: "enrollTimeStr",
   },
   {
-    title: "比赛时间",
-    dataIndex: "updateTime"
+    title: "培训时间",
+    dataIndex: "educationTimeStr",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 export default {
@@ -163,7 +171,6 @@ export default {
       advanced: true,
       tableLoading: false,
       configshow: false, // 新增config 显隐
-      treeData: [],
       columns: columns,
       dataSource: [],
       pagination: {
@@ -173,24 +180,33 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        name: undefined,
-        applyStatus: undefined
+        educationName: undefined,
+        enrollStatus: undefined,
       },
       // 搜索项校验规则
       rules: {
-        name: [],
-        applyStatus: []
+        educationName: [],
+        enrollStatus: [],
       },
-      applyStatusList: [
-        { label: "未开始", value: 0 },
-        { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 }
-      ]
+      enrollStatusList: [
+        { label: "未开始", value: 1 },
+        { label: "报名中", value: 2 },
+        { label: "已结束", value: 3 },
+      ],
+      mapTypeObj: {
+        1: "培训",
+        2: "考试",
+      },
+      mapStatusObj: {
+        1: "未开始",
+        2: "报名中",
+        3: "已结束",
+      },
     };
   },
   computed: {
@@ -202,24 +218,10 @@ export default {
       } else {
         return this.$t("description");
       }
-    }
-  },
-  created() {
-    this.getRolesList();
-  },
-  methods: {
-    // 获取角色tree list
-    getRolesList() {
-      rolesTreeList().then(res => {
-        const result = res.data;
-        if (result.code === 0) {
-          this.treeData = result.data.roleModels;
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
     },
-
+  },
+  created() {},
+  methods: {
     // 切换搜索框收起展开
     toggleAdvanced() {
       this.advanced = !this.advanced;
@@ -243,7 +245,7 @@ export default {
     // 查看 | 修改返显数据
     userConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then(res => {
+      initUserDetail(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -255,7 +257,7 @@ export default {
             password: result.data.password,
             remark: result.data.remark,
             roles: result.data.roles,
-            state: result.data.state.toString()
+            state: result.data.state.toString(),
           };
         } else {
           this.$message.error(result.desc);
@@ -263,16 +265,10 @@ export default {
       });
     },
 
-    // 赛事日程
-    openGameTime() {},
-
-    //秩序册
-    downloadText() {},
-
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then(res => {
+      deleteUserInfo(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -293,10 +289,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getUsersTableData(data).then(res => {
+      getUsersTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -331,7 +327,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    }
+    },
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -339,24 +335,6 @@ export default {
       this.reset();
     }
     next();
-  }
+  },
 };
 </script>
-
-<style lang="less" scoped>
-.search {
-  margin-bottom: 54px;
-}
-.fold {
-  width: calc(100% - 216px);
-  display: inline-block;
-}
-.operator {
-  margin-bottom: 18px;
-}
-@media screen and (max-width: 900px) {
-  .fold {
-    width: 100%;
-  }
-}
-</style>

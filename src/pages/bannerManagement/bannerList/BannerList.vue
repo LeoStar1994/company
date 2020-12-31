@@ -1,14 +1,13 @@
 <!--
- * @Description: 赛事管理 / 赛事列表.
+ * @Description: 焦点图管理 / 焦点图列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-31 10:21:45
+ * @LastEditTime: 2020-12-31 17:59:57
  * @LastEditors: Leo
 -->
 <template>
-  <div class="competition-page">
-    <a-card :style="`min-height: ${pageMinHeight}px`"
-            v-show="!configshow">
+  <div class="bannerList-page">
+    <a-card :style="`min-height: ${pageMinHeight}px`">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="ruleForm"
@@ -18,32 +17,15 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 赛事名称 -->
+              <!-- 名称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="赛事名称"
-                                   prop="name">
-                  <a-input v-model="form.name"
+                <a-form-model-item label="名称"
+                                   prop="focusTitle">
+                  <a-input v-model="form.focusTitle"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入赛事名称"></a-input>
-                </a-form-model-item>
-              </a-col>
-              <!-- 报名状态 -->
-              <a-col :md="8"
-                     :sm="24">
-                <a-form-model-item label="报名状态"
-                                   prop="applyStatus">
-                  <a-select style="width: 100%"
-                            v-model="form.applyStatus"
-                            allowClear
-                            placeholder="请选择">
-                    <a-select-option v-for="(item,index) in applyStatusList"
-                                     :key="index"
-                                     :value="item.value">
-                      {{item.label}}
-                    </a-select-option>
-                  </a-select>
+                           placeholder="请输入名称"></a-input>
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -67,28 +49,29 @@
         <div class="operator">
           <a-button @click="openAlarm(0)"
                     class="mr-10"
-                    type="primary">新增赛事</a-button>
+                    type="primary">新增图片</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
-                        rowKey="sequenceNumber"
+                        rowKey="id"
                         :dataSource="dataSource"
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
+          <div slot="imageUrl"
+               slot-scope="{text}">
+            <img :src="text"
+                 width="200"
+                 alt="图片">
+          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openAlarm(1, record.id)">修改
-            </a>
-            <a class="mr-12 text-orange"
-               @click="openGameTime(record.id)">赛事日程</a>
-            <a class="mr-12 text-green"
-               @click="downloadText(record.id)">秩序册</a>
+               @click="openAlarm(1, record.id)">修改</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
-                          @confirm="deleteInfo(record.sequenceNumber)"
+                          @confirm="deleteInfo(record.id)"
                           @cancel="deletecancel">
               <a href="#"
                  class="text-red">删除</a>
@@ -98,11 +81,8 @@
       </div>
     </a-card>
     <!-- 详情config -->
-    <CompetitionConfig ref="competitionConfig"
-                       :configshow="configshow"
-                       :treeData="treeData"
-                       @closeConfig='closeConfig'
-                       @searchTableData='searchTableData'></CompetitionConfig>
+    <BannerConfig ref="BannerConfig"
+                  @searchTableData="searchTableData"></BannerConfig>
     <!-- loading -->
     <transition name="el-fade-in">
       <loading ref="loading"></loading>
@@ -113,38 +93,35 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import {
-  getUsersTableData,
-  deleteUserInfo,
-  initUserDetail,
-} from "@/services/usersManagement";
-import CompetitionConfig from "./CompetitionConfig";
+import { getTableData, initBannerData, deleteBanner } from "@/services/banner";
+import BannerConfig from "./BannerConfig";
 
 // table columns data
 const columns = [
   {
-    title: "记录ID",
-    dataIndex: "sequenceNumber",
+    title: "图片ID",
+    dataIndex: "id",
   },
   {
-    title: "赛事名称",
-    dataIndex: "name",
+    title: "名称",
+    dataIndex: "focusTitle",
   },
   {
-    title: "状态",
-    dataIndex: "account",
+    title: "图片",
+    dataIndex: "imageUrl",
+    scopedSlots: { customRender: "imageUrl" },
   },
   {
-    title: "报名球队",
-    dataIndex: "mobile",
+    title: "有效期",
+    dataIndex: "periodOfValidity",
   },
   {
-    title: "报名时间",
+    title: "顺序",
+    dataIndex: "sortNum",
+  },
+  {
+    title: "创建时间",
     dataIndex: "createTime",
-  },
-  {
-    title: "比赛时间",
-    dataIndex: "updateTime",
   },
   {
     title: "操作",
@@ -153,15 +130,13 @@ const columns = [
 ];
 
 export default {
-  name: "CompetitionList",
-  components: { StandardTable, CompetitionConfig },
+  name: "BannerList",
+  components: { StandardTable, BannerConfig },
   i18n: require("./i18n"),
   data() {
     return {
       advanced: true,
       tableLoading: false,
-      configshow: false, // 新增config 显隐
-      treeData: [],
       columns: columns,
       dataSource: [],
       pagination: {
@@ -176,30 +151,19 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        name: undefined,
-        applyStatus: undefined,
+        focusTitle: undefined,
       },
       // 搜索项校验规则
       rules: {
-        name: [],
-        applyStatus: [],
+        focusTitle: [],
       },
-      applyStatusList: [
-        { label: "未开始", value: 0 },
-        { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 },
-      ],
     };
   },
   computed: {
     ...mapState("setting", ["pageMinHeight"]),
     // page header desc
     desc() {
-      if (this.configshow) {
-        return this.$t("configDesc");
-      } else {
-        return this.$t("description");
-      }
+      return this.$t("description");
     },
   },
   created() {},
@@ -211,61 +175,76 @@ export default {
 
     /**
      * @description: 打开详情页
-     * @param : status{int} 0: 新增， 1:查看， 2:修改
+     * @param : status{int} 0: 新增， 1:修改
      * @param : id{int}
      * @return {*}
      * @author: Leo
      */
     async openAlarm(status, id) {
       if (status === 1 || status === 2) {
-        await this.userConfigDetail(id);
+        await this.bannerDetails(id);
       }
-      this.configshow = true;
-      this.$refs.competitionConfig.setOpenType(status, id);
+      this.$refs.BannerConfig.setOpenType(status, id);
     },
 
-    // 查看 | 修改返显数据
-    userConfigDetail(id) {
+    // 修改返显数据
+    bannerDetails(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then((res) => {
-        this.$refs.loading.closeLoading();
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.$refs.userConfig.form = {
-            name: result.data.name,
-            account: result.data.account,
-            mobile: result.data.mobile,
-            password: result.data.password,
-            remark: result.data.remark,
-            roles: result.data.roles,
-            state: result.data.state.toString(),
-          };
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      initBannerData(id)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.$refs.BannerConfig.form = {
+              endTime: result.data.endTime,
+              focusTitle: result.data.focusTitle,
+              imagePath: result.data.imagePath,
+              linkUrl: result.data.linkUrl,
+              pageKey: result.data.pageKey,
+              sortNum: result.data.sortNum,
+              startTime: result.data.startTime,
+              id: result.data.id,
+            };
+            this.$refs.BannerConfig.dateData = {
+              endTime: result.data.endTime,
+              startTime: result.data.startTime,
+            };
+            this.$refs.BannerConfig.pictureList = [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                url: result.data.imagePath,
+              },
+            ];
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
     },
-
-    // 赛事日程
-    openGameTime() {},
-
-    //秩序册
-    downloadText() {},
 
     // 删除
     deleteInfo(id) {
+      console.log(id);
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then((res) => {
-        this.$refs.loading.closeLoading();
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.searchTableData();
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      deleteBanner(id)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.searchTableData();
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
     },
 
     deletecancel() {
@@ -280,7 +259,7 @@ export default {
         pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getUsersTableData(data).then((res) => {
+      getTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -307,14 +286,8 @@ export default {
     // 重置
     reset() {
       this.$refs.ruleForm.resetFields();
-      this.dataSource = [];
+      // this.dataSource = [];
       this.resetPagination();
-      this.configshow = false;
-    },
-
-    // 关闭详情config
-    closeConfig() {
-      this.configshow = false;
     },
   },
   // 监听页面离开事件， 清空页面数据
@@ -327,20 +300,3 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-.search {
-  margin-bottom: 54px;
-}
-.fold {
-  width: calc(100% - 216px);
-  display: inline-block;
-}
-.operator {
-  margin-bottom: 18px;
-}
-@media screen and (max-width: 900px) {
-  .fold {
-    width: 100%;
-  }
-}
-</style>

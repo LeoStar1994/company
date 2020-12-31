@@ -2,7 +2,7 @@
  * @Description: login登录页面.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-28 14:48:11
+ * @LastEditTime: 2020-12-31 14:35:21
  * @LastEditors: Leo
 -->
 
@@ -41,7 +41,8 @@
                        size="default"
                        :maxLength="20"
                        placeholder="请输入您的账号"
-                       v-decorator="['account', {rules: [{ required: true, whitespace: true, validator: handleCheckAccount}]}]">
+                       v-decorator="['account', {rules: [{ required: true, whitespace: true}]}]">
+                <!-- validator: handleCheckAccount -->
                 <a-icon slot="prefix"
                         type="user" />
               </a-input>
@@ -59,7 +60,7 @@
               </a-input>
             </a-form-item>
             <!-- 图形验证码 -->
-            <!-- <a-form-item>
+            <a-form-item>
               <div class="d-flex ai-center">
                 <a-input size="default"
                          placeholder="请输入验证码"
@@ -72,7 +73,7 @@
                      @click="fetchVerifyCode"
                      alt="图形验证码">
               </div>
-            </a-form-item> -->
+            </a-form-item>
           </a-form>
         </a-tab-pane>
         <!-- 手机号登录 -->
@@ -354,8 +355,8 @@ export default {
                   };
                 }),
               };
-            });
-            const routesConfig = [{ router: "root", children: mapRoutesArr }]; */
+            }); */
+            // const routesConfig = [{ router: "root", children: mapRoutesArr }];
             loginRes.user.name = result.data.data.account;
             this.setUser(loginRes.user); // 设置user信息
             // loadRoutes(routesConfig);

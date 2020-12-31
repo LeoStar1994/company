@@ -5,10 +5,10 @@ const BASE_URL = process.env.VUE_APP_API_BASE_URL;
 module.exports = {
   /* 登录 */
 
-  LOGIN: `${BASE_URL}/login`, // 登录
+  // LOGIN: `${BASE_URL}/login`, // 登录
   ROUTES: `${BASE_URL}/routes`, // 获取menu菜单
 
-  // LOGIN: `${BASE_URL}/login/go`, // 登录
+  LOGIN: `${BASE_URL}/login/go`, // 登录
   // ROUTES: `${BASE_URL}/home`, // 获取menu菜单
   LOGINVERIFYCODE: `${BASE_URL}/login/verifyCode/image`, // 获取图形验证码
   LOGINSMSCODE: `${BASE_URL}/login/verifyCode/sms`, // 获取手机验证码
@@ -56,4 +56,11 @@ module.exports = {
   // 新增:  /enducation/add
 
   /* 焦点图管理 */
+  BANNERTABLEDATA: `${BASE_URL}/focus/query`, // table查询
+  BANNERTYPELIST: `${BASE_URL}/focus/initAdd`, // 获取类型列表
+  BANNERUPLOAD: `${BASE_URL}/focus/upload/img`, // 上传图片
+  BANNERADD: `${BASE_URL}/focus/add`, // 新增
+  BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
+  BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
+  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
 };

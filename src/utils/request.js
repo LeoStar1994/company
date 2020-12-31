@@ -55,6 +55,7 @@ function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
       Cookie.set(xsrfHeaderName, "Bearer " + auth.token, {
         expires: auth.expireAt,
       });
+      sessionStorage.Authorization = auth.token;
       break;
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:
@@ -72,6 +73,7 @@ function removeAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
       Cookie.remove(xsrfHeaderName);
+      sessionStorage.removeItem(xsrfHeaderName);
       break;
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:

@@ -2,7 +2,7 @@
  * @Description: 赛事列表 / 详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2020-12-30 17:19:06
+ * @LastEditTime: 2020-12-31 11:26:31
  * @LastEditors: Leo
 -->
 <template>
@@ -294,16 +294,11 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    treeData: {
-      type: Array,
-      required: true,
-      default: new Array()
-    }
   },
   components: {
-    Editor
+    Editor,
   },
   data() {
     return {
@@ -316,11 +311,11 @@ export default {
         { label: "国际级", value: 1 },
         { label: "国家级", value: 2 },
         { label: "国际邀请赛", value: 3 },
-        { label: "国内联赛", value: 4 }
+        { label: "国内联赛", value: 4 },
       ],
       needPreCodeList: [
         { label: "不需要", value: 0 },
-        { label: "需要", value: 1 }
+        { label: "需要", value: 1 },
       ],
       gameGradeList: [
         { label: "U12", value: "U12" },
@@ -328,7 +323,7 @@ export default {
         { label: "U16", value: "U16" },
         { label: "U18", value: "U18" },
         { label: "成年组-男子", value: "成年组-男子" },
-        { label: "成年组-女子", value: "成年组-女子" }
+        { label: "成年组-女子", value: "成年组-女子" },
       ],
       form: {
         enrollStartTime: null, // 报名开始时间
@@ -341,7 +336,7 @@ export default {
         gamePlace: "", // 举办场地
         gameRuleName: "", // 竞赛规程文件名（可多选，逗号隔开）
         gameRulePath: "", // 竞赛规程文件路径（可多选，逗号隔开）
-        hockeyGameType: "", // 比赛类型 1国际级 2国家级 3国际邀请赛 4国内联赛
+        hockeyGameType: undefined, // 比赛类型 1国际级 2国家级 3国际邀请赛 4国内联赛
         hockeyGamesName: "", // 赛事名称
         imageUrl: "", // 宣传封面地址
         masterOrganizer: "", // 主办单位
@@ -353,7 +348,7 @@ export default {
         shareImageUrl: "", // 分享图片地址
         shareText: "", // 分享文案
         gameIntroducation: "", // 赛事介绍
-        userIdentify: "" // 系统标识
+        userIdentify: "", // 系统标识
       },
       dateData: {
         enrollStartTime: null, // 报名开始时间
@@ -361,7 +356,7 @@ export default {
         gameStartTime: null, // 比赛开始时间
         gameEndTime: null, // 比赛结束时间
         preEnrollStartTime: null, // 预报名开始时间
-        preEnrollEndTime: null // 预报名结束时间
+        preEnrollEndTime: null, // 预报名结束时间
       },
       // 搜索项校验规则
       rules: {
@@ -369,8 +364,8 @@ export default {
           {
             required: true,
             message: "请输入赛事名称",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
           // {
           //   min: 3,
           //   max: 10,
@@ -382,147 +377,147 @@ export default {
           {
             required: true,
             message: "请输入比赛类型",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         gameGrade: [
           {
             required: true,
             message: "请选择比赛组别",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         needPreCode: [
           {
             required: true,
             message: "请选择报名是否需要验证码",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         saleStatus: [
           {
             required: true,
             message: "请选择状态",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         imageUrl: [
           {
             required: true,
             message: "请上传宣传封面",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         shareImageUrl: [
           {
             required: true,
             message: "请上传分享图片",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         gameRuleName: [
           {
             required: true,
             message: "请上传竞赛规程",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         receiveEmail: [
           {
             required: true,
             message: "请输入报名表接受邮件地址",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         receiveMan: [
           {
             required: true,
             message: "请输入报名表接收人",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         shareText: [
           {
             required: true,
             message: "请输入分享文案",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         masterOrganizer: [
           {
             required: true,
             message: "请输入主办单位",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         secondaryOrganizer: [
           {
             required: true,
             message: "请输入承办单位",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         preEnrollStartTime: [
           {
             required: true,
             message: "请选择预报名开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         preEnrollEndTime: [
           {
             required: true,
             message: "请选择预报名结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         enrollStartTime: [
           {
             required: true,
             message: "请选择报名开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         enrollEndTime: [
           {
             required: true,
             message: "请选择报名结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         gameStartTime: [
           {
             required: true,
             message: "请选择比赛开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         gameEndTime: [
           {
             required: true,
             message: "请选择比赛结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         gamePlace: [
           {
             required: true,
             message: "请输入举办场地",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         mobile: [
           {
             required: true,
             message: "请输入手机号！",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             pattern: /^1\d{10}$/,
             message: "请输入正确手机号！",
-            trigger: "blur"
-          }
-        ]
+            trigger: "blur",
+          },
+        ],
       },
 
       gameRulefileList: [], // 竞赛规程file list
@@ -533,11 +528,11 @@ export default {
 
       sharePictureList: [], // 分享图片file list
       previewVisible1: false,
-      previewShareImage: ""
+      previewShareImage: "",
     };
   },
   computed: {
-    ...mapState(["pageMinHeight"])
+    ...mapState(["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -682,17 +677,17 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.competitionForm.validate(valid => {
+      this.$refs.competitionForm.validate((valid) => {
         if (valid) {
           const data = {
             ...this.form,
             ...this.dateData,
-            gameGrade: this.form.gameGrade.join()
+            gameGrade: this.form.gameGrade.join(),
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addUser(data).then(res => {
+            addUser(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -706,7 +701,7 @@ export default {
           } else if (this.openType === 2) {
             // 修改
             data.sequenceNumber = this.sequenceNumber;
-            updateUser(data).then(res => {
+            updateUser(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -730,8 +725,8 @@ export default {
       this.coverPictureList = []; // 宣传封面file list
       this.sharePictureList = []; // 分享图片file list
       this.$emit("closeConfig");
-    }
-  }
+    },
+  },
 };
 </script>
 

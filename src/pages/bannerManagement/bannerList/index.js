@@ -1,2 +1,2 @@
-import UsersManagement from "./UsersManagement.vue";
-export default UsersManagement;
+import BannerList from "./BannerList.vue";
+export default BannerList;
