@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2020-12-31 13:19:07
+ * @LastEditTime: 2021-01-02 13:56:34
  * @LastEditors: Leo
 -->
 <template>
@@ -33,8 +33,8 @@
                     placeholder="请选择类型">
             <a-select-option v-for="(item,index) in educationTypeList"
                              :key="index"
-                             :value="item.value">
-              {{item.label}}
+                             :value="item.id">
+              {{item.name}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -47,8 +47,8 @@
                     placeholder="请选择人群">
             <a-select-option v-for="(item,index) in toObjectList"
                              :key="index"
-                             :value="item.value">
-              {{item.label}}
+                             :value="item.id">
+              {{item.name}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -61,8 +61,8 @@
                     placeholder="请选择培训等级">
             <a-select-option v-for="(item,index) in educationLevelList"
                              :key="index"
-                             :value="item.value">
-              {{item.label}}
+                             :value="item.id">
+              {{item.name}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -75,8 +75,8 @@
               <a-col :span="6"
                      v-for="(item, index) in educationMethodList"
                      :key="index">
-                <a-checkbox :value="item.value">
-                  {{item.label}}
+                <a-checkbox :value="item.id">
+                  {{item.name}}
                 </a-checkbox>
               </a-col>
             </a-row>
@@ -162,8 +162,8 @@
               <a-col :span="6"
                      v-for="(item, index) in hotelIdsList"
                      :key="index">
-                <a-checkbox :value="item.value">
-                  {{item.label}}
+                <a-checkbox :value="item.id">
+                  {{item.name}}
                 </a-checkbox>
               </a-col>
             </a-row>
@@ -193,8 +193,8 @@
               <a-col :span="6"
                      v-for="(item, index) in roomTypeList"
                      :key="index">
-                <a-checkbox :value="item.value">
-                  {{item.label}}
+                <a-checkbox :value="item.id">
+                  {{item.name}}
                 </a-checkbox>
               </a-col>
             </a-row>
@@ -272,8 +272,11 @@
         <a-form-model-item label="状态"
                            prop="saleStatus">
           <a-radio-group v-model="form.saleStatus">
-            <a-radio value="0">上线</a-radio>
-            <a-radio value="1">下线</a-radio>
+            <a-radio v-for="item in saleStatusList"
+                     :key="item.id"
+                     :value="item.id">
+              {{item.name}}
+            </a-radio>
           </a-radio-group>
         </a-form-model-item>
         <!-- buttons -->
@@ -298,9 +301,13 @@
 
 <script>
 import { mapState } from "vuex";
-import { addUser, updateUser } from "@/services/usersManagement";
 import { getBase64 } from "@/utils/util.js";
 import Editor from "@/components/wangEditor/wangEditor.vue";
+import {
+  getTypeList,
+  addEducation,
+  updateEducation,
+} from "@/services/education";
 
 export default {
   name: "EducationConfig",
@@ -329,21 +336,12 @@ export default {
         { label: "需要", value: 1 },
       ],
       // 入住酒店
-      hotelIdsList: [
-        { label: "世纪金源酒店", value: "世纪金源酒店" },
-        { label: "索菲特国际酒店", value: "索菲特国际酒店" },
-        { label: "如家", value: "如家" },
-      ],
+      hotelIdsList: [],
       // 授课方式
-      educationMethodList: [
-        { label: "理论课", value: "1" },
-        { label: "实践课", value: "2" },
-      ],
+      educationMethodList: [],
       // 房间类型
-      roomTypeList: [
-        { label: "双人间", value: "1" },
-        { label: "单人间", value: "2" },
-      ],
+      roomTypeList: [],
+      saleStatusList: [],
       form: {
         enrollStartTime: null, // 报名开始时间
         enrollEndTime: null, // 报名结束时间
@@ -495,7 +493,7 @@ export default {
           {
             required: true,
             message: "请输入活动详情",
-            trigger: "change",
+            trigger: "blur",
           },
         ],
         hotelIds: [
@@ -533,7 +531,12 @@ export default {
   computed: {
     ...mapState(["pageMinHeight"]),
   },
-  created() {},
+  created() {
+    // this.getAllListData();
+  },
+  mounted() {
+    this.getAllListData();
+  },
   methods: {
     setOpenType(openType, currentID) {
       this.openType = openType;
@@ -543,6 +546,44 @@ export default {
           this.$refs.competitionForm.resetFields();
         });
       }
+    },
+
+    // 初始化list数据
+    getAllListData() {
+      // this.$refs.loading.openLoading("数据初始化中，请稍后。。");
+      getTypeList()
+        .then((res) => {
+          // this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            //       educationTypeList: [], // 类型list
+            // toObjectList: [], // 面对人群list
+            // educationLevelList: [], // 培训等级list
+            // needPreCodeList: [
+            // ],
+            // // 入住酒店
+            // hotelIdsList: [],
+            // // 授课方式
+            // educationMethodList: [],
+            // // 房间类型
+            // roomTypeList: [],
+            this.educationLevelList =
+              result.data.educationLevelEnumSelectedModel; // 培训等级
+            this.educationMethodList =
+              result.data.educationMethodEnumSelectedModel; // 授课方式
+            this.roomTypeList = result.data.educationRoomTypEnumSelectedModel; // 房间类型
+            this.saleStatusList =
+              result.data.educationSaleStateEnumSelectedModel; // 上下线状态
+            this.hotelIdsList = result.data.hotelListSelectedModel; // 酒店列表
+            this.toObjectList = result.data.toObjectEnumSelectedModel; // 面向人群
+            this.educationTypeList = result.data.typeSelectedModel; // 类型列表
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          // this.$refs.loading.closeLoading();
+        });
     },
 
     // date picker
@@ -642,8 +683,8 @@ export default {
     // 新增新的酒店名字
     saveNewHotel() {
       this.hotelIdsList.push({
-        label: this.form.hotelName,
-        value: this.form.hotelName,
+        name: this.form.hotelName,
+        id: this.form.hotelName,
       });
       this.hotelNameIsShow = false;
     },
@@ -671,7 +712,7 @@ export default {
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addUser(data).then((res) => {
+            addEducation(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -685,7 +726,7 @@ export default {
           } else if (this.openType === 2) {
             // 修改
             data.currentID = this.currentID;
-            updateUser(data).then((res) => {
+            updateEducation(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {

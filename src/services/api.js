@@ -39,21 +39,13 @@ module.exports = {
 
   /* 教学管理 */
 
-  DONGBUTABLEDATA: `${BASE_URL}/dongbuuser/query`, // table查询
-  DONGBUTREE: `${BASE_URL}/dongbuuser/initAdd`, // 新增初始化，获取角色tree
-  DONGBUADD: `${BASE_URL}/dongbuuser/add`, // 新增
-  DONGBUINITDATA: `${BASE_URL}/dongbuuser/initMod`, // 修改初始化，返显数据
-  DONGBUUPDATE: `${BASE_URL}/dongbuuser/mod`, // 修改数据
-  DONGBUCHANGESTATE: `${BASE_URL}/dongbuuser/modState`, // 启用 | 停用
-  DONGBUDELETE: `${BASE_URL}/dongbuuser/delete`, // 删除数据
-
-  // 上传图片: /enducation/upload/img
-  // 列表: /enducation/query
-  // 修改: /enducation/mod
-  // 修改返显数据: /enducation/initMod/{id}
-  // 新增初始化:  /enducation/initAdd
-  // 删除:  /enducation/delete/{id}
-  // 新增:  /enducation/add
+  ENDUCATIONTABLEDATA: `${BASE_URL}/enducation/query`, // table查询
+  ENDUCATIONTYPELIST: `${BASE_URL}/enducation/initAdd`, // 获取列表数据
+  ENDUCATIONUPLOAD: `${BASE_URL}/enducation/upload/img`, // 上传图片
+  ENDUCATIONADD: `${BASE_URL}/enducation/add`, // 新增
+  ENDUCATIONINITDATA: `${BASE_URL}/enducation/initMod`, // 修改初始化，返显数据
+  ENDUCATIONUPDATE: `${BASE_URL}/enducation/mod`, // 修改数据
+  ENDUCATIONDELETE: `${BASE_URL}/enducation/delete`, // 删除数据
 
   /* 焦点图管理 */
   BANNERTABLEDATA: `${BASE_URL}/focus/query`, // table查询

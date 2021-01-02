@@ -21,12 +21,12 @@ Vue.prototype.$isRihgtPhone = isRihgtPhone;
 
 // 注册全局的mixin混入 上传文件接口时带上token
 Vue.mixin({
-  computed: {
+  /* computed: {
     // 上传文件地址
     bannerUploadUrl() {
       return process.env.VUE_APP_API_BASE_URL + "/focus/upload/img";
     },
-  },
+  }, */
   methods: {
     getAuthHeaders() {
       return {

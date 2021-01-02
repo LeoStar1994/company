@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-31 10:33:22
+ * @LastEditTime: 2021-01-02 13:27:12
  * @LastEditors: Leo
 -->
 <template>
@@ -118,10 +118,10 @@
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
 import {
-  getUsersTableData,
-  deleteUserInfo,
-  initUserDetail,
-} from "@/services/usersManagement";
+  getTableData,
+  deleteEducation,
+  initEducationData,
+} from "@/services/education";
 import EducationConfig from "./EducationConfig";
 
 // table columns data
@@ -229,23 +229,23 @@ export default {
 
     /**
      * @description: 打开详情页
-     * @param : status{int} 0: 新增， 1:查看， 2:修改
+     * @param : status{int} 0: 新增， 1: 修改
      * @param : id{int}
      * @return {*}
      * @author: Leo
      */
     async openAlarm(status, id) {
       if (status === 1 || status === 2) {
-        await this.userConfigDetail(id);
+        await this.educationDetail(id);
       }
       this.configshow = true;
       this.$refs.educationConfig.setOpenType(status, id);
     },
 
     // 查看 | 修改返显数据
-    userConfigDetail(id) {
+    educationDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then((res) => {
+      initEducationData(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -268,7 +268,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then((res) => {
+      deleteEducation(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -292,7 +292,7 @@ export default {
         pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getUsersTableData(data).then((res) => {
+      getTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
