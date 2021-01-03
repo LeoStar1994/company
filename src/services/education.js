@@ -1,12 +1,13 @@
-/* 动捕用户 */
+/* 教学管理 */
 import {
   ENDUCATIONTABLEDATA,
   ENDUCATIONTYPELIST,
   ENDUCATIONUPLOAD,
+  ENDUCATIONADDHOTEL,
   ENDUCATIONADD,
   ENDUCATIONINITDATA,
   ENDUCATIONUPDATE,
-  ENDUCATIONDELETE,
+  ENDUCATIONDELETE
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -27,6 +28,11 @@ export async function getTypeList() {
 // 上传图片
 export async function uploadImage(data) {
   return request(ENDUCATIONUPLOAD, METHOD.POST, data);
+}
+
+// 新增酒店
+export async function addHotel(data) {
+  return request(ENDUCATIONADDHOTEL, METHOD.POST, data);
 }
 
 // 新增

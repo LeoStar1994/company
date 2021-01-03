@@ -101,32 +101,32 @@ import InfosTable from "./InfosTable";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "赛事名称",
-    dataIndex: "title",
+    dataIndex: "title"
   },
   {
     title: "状态",
-    dataIndex: "status",
+    dataIndex: "status"
   },
   {
     title: "报名球队",
-    dataIndex: "type",
+    dataIndex: "type"
   },
   {
     title: "报名时间",
-    dataIndex: "applyTime",
+    dataIndex: "applyTime"
   },
   {
     title: "比赛时间",
-    dataIndex: "trainTime",
+    dataIndex: "trainTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -146,7 +146,7 @@ export default {
           status: "报名中",
           applyTime: "2020-12-05 至 2020-12-31",
           trainTime: "2021-01-01 至 2021-01-09",
-          id: 1,
+          id: 1
         },
         {
           title: "国家教练员培训",
@@ -154,8 +154,8 @@ export default {
           status: "报名中",
           applyTime: "2020-12-05 至 2020-12-31",
           trainTime: "2021-01-01 至 2021-01-09",
-          id: 2,
-        },
+          id: 2
+        }
       ],
       infoTableData: [], // 二级table data
       // 分页
@@ -166,24 +166,24 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       applyStatusList: [
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 },
+        { label: "已结束", value: 2 }
       ],
       form: {
         gameName: undefined,
-        applyStatus: undefined,
+        applyStatus: undefined
       },
       // 搜索项校验规则
       rules: {
         gameName: [],
-        applyStatus: [],
-      },
+        applyStatus: []
+      }
     };
   },
   computed: {
@@ -197,7 +197,7 @@ export default {
       } else {
         return this.$t("configDesc");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -238,8 +238,8 @@ export default {
           num: "2",
           mobile: "18270707160",
           applyTime: "已通过",
-          id: 1,
-        },
+          id: 1
+        }
       ];
     },
 
@@ -287,7 +287,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -295,6 +295,6 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>

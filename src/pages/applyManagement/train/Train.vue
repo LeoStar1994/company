@@ -7,7 +7,8 @@
 -->
 <template>
   <div class="train-page">
-    <a-card :style="`min-height: ${pageMinHeight}px`">
+    <a-card :style="`min-height: ${pageMinHeight}px`"
+            v-show="!configshow">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="ruleForm"
@@ -89,7 +90,6 @@
     <!-- 详情config -->
     <InfosTable ref="infosTable"
                 :configshow="configshow"
-                :dataSource="infoTableData"
                 @closeConfig="closeConfig"></InfosTable>
     <!-- loading -->
     <transition name="el-fade-in">
@@ -101,45 +101,45 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import { getTrainTableData, getInfosTableData } from "@/services/train";
+import { getTrainTableData } from "@/services/train";
 import InfosTable from "./InfosTable";
 
 // table columns data
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "标题",
-    dataIndex: "educationName",
+    dataIndex: "educationName"
   },
   {
     title: "类型",
     dataIndex: "enrollType",
-    scopedSlots: { customRender: "mapEnrollType" },
+    scopedSlots: { customRender: "mapEnrollType" }
   },
   {
     title: "状态",
     dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "mapEnrollStatus" },
+    scopedSlots: { customRender: "mapEnrollStatus" }
   },
   {
     title: "报名人数",
-    dataIndex: "enrollCount",
+    dataIndex: "enrollCount"
   },
   {
     title: "报名时间",
-    dataIndex: "enrollTimeStr",
+    dataIndex: "enrollTimeStr"
   },
   {
     title: "培训时间",
-    dataIndex: "educationTimeStr",
+    dataIndex: "educationTimeStr"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -153,7 +153,7 @@ export default {
       configshow: false, // 二级table显隐
       columns: columns,
       dataSource: [],
-      infoTableData: [], // 二级table data
+      // infoTableData: [], // 二级table data
       // 分页
       pagination: {
         pageSize: 10,
@@ -162,33 +162,33 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       enrollStatusList: [
         { label: "未开始", value: 1 },
         { label: "报名中", value: 2 },
-        { label: "已结束", value: 3 },
+        { label: "已结束", value: 3 }
       ],
       form: {
         educationName: undefined,
-        enrollStatus: undefined,
+        enrollStatus: undefined
       },
       // 搜索项校验规则
       rules: {
         educationName: [],
-        enrollStatus: [],
+        enrollStatus: []
       },
       mapEnrollType: {
         1: "培训",
-        2: "考试",
+        2: "考试"
       },
       mapEnrollStatus: {
         1: "未开始",
         2: "报名者",
-        3: "已结束",
-      },
+        3: "已结束"
+      }
     };
   },
   computed: {
@@ -202,7 +202,7 @@ export default {
       } else {
         return this.$t("configDesc");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -218,37 +218,38 @@ export default {
      * @author: Leo
      */
     async openInfosTable(id) {
-      await this.infosTableDetail(id);
+      this.$refs.infosTable.setLastSerachData({ ...this.form, id });
+      await this.$refs.infosTable.searchTableData();
       this.configshow = true;
     },
 
     // 查看 | 修改返显数据
-    infosTableDetail(id) {
-      this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      getInfosTableData(id)
-        .then((res) => {
-          this.$refs.loading.closeLoading();
-          const result = res.data;
-          if (result.code === 0) {
-            this.infoTableData = [];
-          } else {
-            this.$message.error(result.desc);
-          }
-        })
-        .catch(() => {
-          this.$refs.loading.closeLoading();
-        });
-    },
+    // infosTableDetail(id) {
+    //   this.$refs.loading.openLoading("数据查询中，请稍后。。");
+    //   getInfosTableData(id)
+    //     .then(res => {
+    //       this.$refs.loading.closeLoading();
+    //       const result = res.data;
+    //       if (result.code === 0) {
+    //         this.infoTableData = [];
+    //       } else {
+    //         this.$message.error(result.desc);
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.$refs.loading.closeLoading();
+    //     });
+    // },
 
     // 列表查询
     searchTableData() {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getTrainTableData(data).then((res) => {
+      getTrainTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -284,7 +285,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -292,6 +293,6 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>

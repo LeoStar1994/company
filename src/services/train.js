@@ -4,7 +4,7 @@ import {
   TRAININFOTABLE,
   REFEREEDETAIL,
   REFEREEDELETE,
-  REFEREESEXPOTR,
+  REFEREESEXPOTR
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -22,8 +22,8 @@ export async function getTrainTableData(data) {
  * @param id {int}
  * @returns {Promise<AxiosResponse<T>>}
  */
-export async function getInfosTableData(id) {
-  return request(TRAININFOTABLE + `/${id}`, METHOD.GET);
+export async function getInfosTableData(data) {
+  return request(TRAININFOTABLE, METHOD.POST, data);
 }
 
 /**

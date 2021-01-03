@@ -67,23 +67,15 @@
         <div class="operator">
           <a-button @click="openAlarm(0)"
                     class="mr-10"
-                    type="primary">新增赛事</a-button>
+                    type="primary">新增</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
-                        rowKey="sequenceNumber"
+                        rowKey="id"
                         :dataSource="dataSource"
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <div slot="mapStatus"
-               slot-scope="{text}">
-            {{mapStatusObj[text]}}
-          </div>
-          <div slot="mapType"
-               slot-scope="{text}">
-            {{mapTypeObj[text]}}
-          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
@@ -92,7 +84,7 @@
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
-                          @confirm="deleteInfo(record.sequenceNumber)"
+                          @confirm="deleteInfo(record.id)"
                           @cancel="deletecancel">
               <a href="#"
                  class="text-red">删除</a>
@@ -120,7 +112,7 @@ import StandardTable from "@/components/table/StandardTable";
 import {
   getTableData,
   deleteEducation,
-  initEducationData,
+  initEducationData
 } from "@/services/education";
 import EducationConfig from "./EducationConfig";
 
@@ -128,38 +120,36 @@ import EducationConfig from "./EducationConfig";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "标题",
-    dataIndex: "educationName",
+    dataIndex: "educationName"
   },
   {
     title: "类型",
-    dataIndex: "enrollType",
-    scopedSlots: { customRender: "mapType" },
+    dataIndex: "enrollType"
   },
   {
     title: "状态",
-    dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "mapStatus" },
+    dataIndex: "enrollStatus"
   },
   {
     title: "报名人数",
-    dataIndex: "enrollCount",
+    dataIndex: "enrollCount"
   },
   {
     title: "报名时间",
-    dataIndex: "enrollTimeStr",
+    dataIndex: "enrollTimeStr"
   },
   {
     title: "培训时间",
-    dataIndex: "educationTimeStr",
+    dataIndex: "educationTimeStr"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -180,33 +170,24 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
         educationName: undefined,
-        enrollStatus: undefined,
+        enrollStatus: undefined
       },
       // 搜索项校验规则
       rules: {
         educationName: [],
-        enrollStatus: [],
+        enrollStatus: []
       },
       enrollStatusList: [
         { label: "未开始", value: 1 },
         { label: "报名中", value: 2 },
-        { label: "已结束", value: 3 },
-      ],
-      mapTypeObj: {
-        1: "培训",
-        2: "考试",
-      },
-      mapStatusObj: {
-        1: "未开始",
-        2: "报名中",
-        3: "已结束",
-      },
+        { label: "已结束", value: 3 }
+      ]
     };
   },
   computed: {
@@ -218,7 +199,7 @@ export default {
       } else {
         return this.$t("description");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -235,7 +216,7 @@ export default {
      * @author: Leo
      */
     async openAlarm(status, id) {
-      if (status === 1 || status === 2) {
+      if (status === 1) {
         await this.educationDetail(id);
       }
       this.configshow = true;
@@ -245,20 +226,30 @@ export default {
     // 查看 | 修改返显数据
     educationDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initEducationData(id).then((res) => {
+      initEducationData(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
           this.$message.success(result.desc);
-          this.$refs.userConfig.form = {
-            name: result.data.name,
-            account: result.data.account,
-            mobile: result.data.mobile,
-            password: result.data.password,
-            remark: result.data.remark,
-            roles: result.data.roles,
-            state: result.data.state.toString(),
+          this.$refs.educationConfig.form = {
+            ...result.data
           };
+          this.$refs.educationConfig.coverPictureList = [
+            {
+              uid: Math.random(),
+              name: "image.png",
+              status: "done",
+              url: result.data.imageUrl
+            }
+          ];
+          this.$refs.educationConfig.sharePictureList = [
+            {
+              uid: Math.random(),
+              name: "image1.png",
+              status: "done",
+              url: result.data.shareImageUrl
+            }
+          ];
         } else {
           this.$message.error(result.desc);
         }
@@ -268,7 +259,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteEducation(id).then((res) => {
+      deleteEducation(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -289,17 +280,21 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getTableData(data).then((res) => {
-        const result = res.data;
-        if (result.code === 0) {
-          this.dataSource = result.data.records;
-          this.pagination.total = result.data.total;
-        }
-        this.tableLoading = false;
-      });
+      getTableData(data)
+        .then(res => {
+          const result = res.data;
+          if (result.code === 0) {
+            this.dataSource = result.data.records;
+            this.pagination.total = result.data.total;
+          }
+          this.tableLoading = false;
+        })
+        .catch(() => {
+          this.tableLoading = false;
+        });
     },
 
     // 分页
@@ -321,13 +316,15 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.dataSource = [];
       this.resetPagination();
-      this.configshow = false;
+      if (this.configshow) {
+        this.$refs.educationConfig.resetForm();
+      }
     },
 
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -335,6 +332,6 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>

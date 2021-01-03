@@ -123,7 +123,7 @@ import {
   getRefereeDetail,
   deleteReferee,
   exportReferee,
-  getInfosTableData,
+  getInfosTableData
 } from "@/services/train";
 
 import InfoDetails from "@/components/infoDetails/InfoDetails";
@@ -133,41 +133,41 @@ const imgURL = require("@/assets/img/logo_icon.jpg");
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "姓名",
     dataIndex: "refereeName",
-    scopedSlots: { customRender: "infoName" },
+    scopedSlots: { customRender: "infoName" }
   },
   {
     title: "性别",
-    dataIndex: "sexType",
+    dataIndex: "sexType"
   },
   {
     title: "出生日期",
-    dataIndex: "bornDate",
+    dataIndex: "bornDate"
   },
   {
     title: "手机号",
-    dataIndex: "telPhone",
+    dataIndex: "telPhone"
   },
   {
     title: "现裁判等级",
-    dataIndex: "refereeLevel",
+    dataIndex: "refereeLevel"
   },
   {
     title: "工作单位",
-    dataIndex: "workCompany",
+    dataIndex: "workCompany"
   },
   {
     title: "身份证号",
-    dataIndex: "identityCard",
+    dataIndex: "identityCard"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 export default {
   name: "InfosTable",
@@ -175,19 +175,15 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
-    },
-    dataSource: {
-      type: Array,
-      required: true,
-      default: new Array(),
-    },
+      default: false
+    }
   },
   data() {
     return {
       advanced: true,
       tableLoading: false,
       columns: columns,
+      dataSource: [],
       // 分页
       pagination: {
         pageSize: 10,
@@ -196,23 +192,22 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
-      judgeLevelList: [
-        { label: "一级", value: 1 },
-        { label: "二级", value: 2 },
-        { label: "三级", value: 3 },
-      ],
+      judgeLevelList: [],
       form: {
         name: undefined,
-        judgeLevel: undefined,
+        refereeLevel: undefined,
+        educationId: null,
+        educationName: null,
+        enrollStatus: null
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        judgeLevel: [],
+        refereeLevel: []
       },
       detailShow: false,
       // 详情数据
@@ -223,79 +218,79 @@ export default {
         judgeColumns: [
           {
             title: "时间",
-            dataIndex: "time",
+            dataIndex: "time"
           },
           {
             title: "比赛名称",
-            dataIndex: "gameName",
+            dataIndex: "gameName"
           },
           {
             title: "比赛级别",
-            dataIndex: "gameLevel",
+            dataIndex: "gameLevel"
           },
           {
             title: "担任职务",
-            dataIndex: "appointment",
-          },
+            dataIndex: "appointment"
+          }
         ],
         // 基础信息
         descList: [
           {
             label: "性别",
             value: "男",
-            span: 1,
+            span: 1
           },
           {
             label: "现裁判等级",
             value: "国际A级",
-            span: 1,
+            span: 1
           },
           {
             label: "民族",
             value: "汉",
-            span: 1,
+            span: 1
           },
           {
             label: "批准日期",
             value: "2019-12-12",
-            span: 1,
+            span: 1
           },
           {
             label: "身高",
             value: "188",
-            span: 1,
+            span: 1
           },
           {
             label: "健康状况",
             value: "一般",
-            span: 1,
+            span: 1
           },
           {
             label: "出生日期",
             value: "1990-10-01",
-            span: 1,
+            span: 1
           },
           {
             label: "外语能力",
             value: "英语",
-            span: 1,
+            span: 1
           },
           {
             label: "证件照片",
             value: [imgURL, imgURL],
-            span: 2,
+            span: 2
           },
           {
             label: "外语能力",
             value: "英语",
-            span: 1,
-          },
-        ],
-      },
+            span: 1
+          }
+        ]
+      }
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -304,15 +299,21 @@ export default {
       this.advanced = !this.advanced;
     },
 
+    setLastSerachData(data) {
+      this.form.educationName = data.educationName;
+      this.form.enrollStatus = data.enrollStatus;
+      this.form.educationId = data.id;
+    },
+
     // 列表查询
     searchTableData() {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getInfosTableData(data).then((res) => {
+      getInfosTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -348,7 +349,7 @@ export default {
     // 查看某一个数据列详情
     openDetails() {
       this.detailShow = true;
-      getRefereeDetail().then((res) => {
+      getRefereeDetail().then(res => {
         console.log(res);
       });
     },
@@ -360,7 +361,7 @@ export default {
     // 删除
     deleteDetails(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteReferee(id).then((res) => {
+      deleteReferee(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -378,7 +379,7 @@ export default {
 
     // 导出
     exportData() {
-      exportReferee().then((res) => {
+      exportReferee().then(res => {
         console.log(res);
       });
     },
@@ -388,8 +389,8 @@ export default {
       // this.$refs.infosForm.resetFields();
       this.reset();
       this.$emit("closeConfig");
-    },
-  },
+    }
+  }
 };
 </script>
 

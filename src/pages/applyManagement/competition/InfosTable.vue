@@ -134,41 +134,41 @@ const imgURL = require("@/assets/img/logo_icon.jpg");
 const columns = [
   {
     title: "报名ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "球队名称",
     dataIndex: "name",
-    scopedSlots: { customRender: "infoName" },
+    scopedSlots: { customRender: "infoName" }
   },
   {
     title: "运动员人数",
-    dataIndex: "sex",
+    dataIndex: "sex"
   },
   {
     title: "官员人数",
-    dataIndex: "num",
+    dataIndex: "num"
   },
   {
     title: "领队",
-    dataIndex: "workplace",
+    dataIndex: "workplace"
   },
   {
     title: "手机号",
-    dataIndex: "mobile",
+    dataIndex: "mobile"
   },
   {
     title: "审核状态",
-    dataIndex: "applyTime",
+    dataIndex: "applyTime"
   },
   {
     title: "报名时间",
-    dataIndex: "birthday",
+    dataIndex: "birthday"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 export default {
   name: "InfosTable",
@@ -176,13 +176,13 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     dataSource: {
       type: Array,
       required: true,
-      default: new Array(),
-    },
+      default: new Array()
+    }
   },
   data() {
     return {
@@ -197,23 +197,23 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       judgeLevelList: [
         { label: "待审核", value: 1 },
         { label: "通过", value: 2 },
-        { label: "不通过", value: 3 },
+        { label: "不通过", value: 3 }
       ],
       form: {
         name: undefined,
-        judgeLevel: undefined,
+        judgeLevel: undefined
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        judgeLevel: [],
+        judgeLevel: []
       },
       detailShow: false,
       // 详情数据
@@ -224,112 +224,112 @@ export default {
         officerColumns: [
           {
             title: "ID",
-            dataIndex: "id",
+            dataIndex: "id"
           },
           {
             title: "姓名",
-            dataIndex: "name",
+            dataIndex: "name"
           },
           {
             title: "职务",
-            dataIndex: "job",
+            dataIndex: "job"
           },
           {
             title: "性别",
-            dataIndex: "sex",
+            dataIndex: "sex"
           },
           {
             title: "国籍",
-            dataIndex: "nationality",
+            dataIndex: "nationality"
           },
           {
             title: "身份证号/护照号码",
-            dataIndex: "identityCard",
+            dataIndex: "identityCard"
           },
           {
             title: "操作",
-            scopedSlots: { customRender: "action" },
-          },
+            scopedSlots: { customRender: "action" }
+          }
         ],
         // 运动员 columns
         playerColumns: [
           {
             title: "ID",
-            dataIndex: "id",
+            dataIndex: "id"
           },
           {
             title: "姓名",
             dataIndex: "name",
-            scopedSlots: { customRender: "playerName" },
+            scopedSlots: { customRender: "playerName" }
           },
           {
             title: "队服号",
-            dataIndex: "gameLevel",
+            dataIndex: "gameLevel"
           },
           {
             title: "位置",
-            dataIndex: "position",
+            dataIndex: "position"
           },
           {
             title: "身高cm",
-            dataIndex: "height",
+            dataIndex: "height"
           },
           {
             title: "体重kg",
-            dataIndex: "weight",
+            dataIndex: "weight"
           },
           {
             title: "持杆手",
-            dataIndex: "cursor",
+            dataIndex: "cursor"
           },
           {
             title: "身份证号/港澳通行证号码",
-            dataIndex: "numbers",
-          },
+            dataIndex: "numbers"
+          }
         ],
         // 基础信息
         descList: [
           {
             label: "球队全称",
             value: "冰球国家队",
-            span: 1,
+            span: 1
           },
           {
             label: "联系人",
             value: "刘队",
-            span: 1,
+            span: 1
           },
           {
             label: "主场赛服颜色",
             value: "红色",
-            span: 1,
+            span: 1
           },
           {
             label: "联系电话",
             value: "18270707678",
-            span: 1,
+            span: 1
           },
           {
             label: "客场赛服颜色",
             value: "白色",
-            span: 1,
+            span: 1
           },
           {
             label: "",
             value: "",
-            span: 1,
+            span: 1
           },
           {
             label: "集体照",
             value: [imgURL, imgURL],
-            span: 2,
-          },
-        ],
-      },
+            span: 2
+          }
+        ]
+      }
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -343,10 +343,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getInfosTableData(data).then((res) => {
+      getInfosTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -424,8 +424,8 @@ export default {
       // this.$refs.infosForm.resetFields();
       this.reset();
       this.$emit("closeConfig");
-    },
-  },
+    }
+  }
 };
 </script>
 

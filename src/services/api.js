@@ -22,12 +22,6 @@ module.exports = {
   REFEREEDELETE: `${BASE_URL}/enducationJoin/refereeDetailDel`, // 删除裁判信息
   REFEREESEXPOTR: `${BASE_URL}/enducationJoin/exportDetail`, // 导出裁判信息
 
-  USERSADD: `${BASE_URL}/BSSuser/add`, // 新增
-  USERSINITDATA: `${BASE_URL}/BSSuser/initMod`, // 修改初始化，返显数据
-  USERSUPDATE: `${BASE_URL}/BSSuser/mod`, // 修改数据
-  USERSCHANGESTATE: `${BASE_URL}/BSSuser/modState`, // 启用 | 停用
-  USERSDELETE: `${BASE_URL}/BSSuser/delete`, // 删除数据
-
   /* 赛事管理 */
   // 赛事列表
   COMPETITIONTABLEDATA: `${BASE_URL}/games/select`, // table查询
@@ -37,11 +31,19 @@ module.exports = {
   COMPETITIONDELETE: `${BASE_URL}/games/delete`, // 删除
   COMPETITIONUPLOAD: `${BASE_URL}/games/api/file/upload/oss`, // 上传url
 
+  // 邀请码
+  CODETABLEDATA: `${BASE_URL}/enducationInvitationCode/query`, // table查询
+  CODEADD: `${BASE_URL}/enducationInvitationCode/add`, // 新增
+  CODEINITDATA: `${BASE_URL}/enducationInvitationCode/initMod`, // 修改初始化，返显数据
+  CODEUPDATE: `${BASE_URL}/enducationInvitationCode/mod`, // 修改
+  CODEDELETE: `${BASE_URL}/enducationInvitationCode/delete`, // 删除
+
   /* 教学管理 */
 
   ENDUCATIONTABLEDATA: `${BASE_URL}/enducation/query`, // table查询
   ENDUCATIONTYPELIST: `${BASE_URL}/enducation/initAdd`, // 获取列表数据
   ENDUCATIONUPLOAD: `${BASE_URL}/enducation/upload/img`, // 上传图片
+  ENDUCATIONADDHOTEL: `${BASE_URL}/enducation/initAddHotel`, // 新增酒店
   ENDUCATIONADD: `${BASE_URL}/enducation/add`, // 新增
   ENDUCATIONINITDATA: `${BASE_URL}/enducation/initMod`, // 修改初始化，返显数据
   ENDUCATIONUPDATE: `${BASE_URL}/enducation/mod`, // 修改数据
@@ -54,5 +56,5 @@ module.exports = {
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
-  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
+  BANNERDELETE: `${BASE_URL}/focus/delete` // 删除数据
 };

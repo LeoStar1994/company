@@ -22,8 +22,8 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="赛事名称"
-                                   prop="name">
-                  <a-input v-model="form.name"
+                                   prop="hockeyGamesName">
+                  <a-input v-model="form.hockeyGamesName"
                            allowClear
                            :maxLength="10"
                            placeholder="请输入赛事名称"></a-input>
@@ -33,12 +33,12 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="报名状态"
-                                   prop="applyStatus">
+                                   prop="enrollStatus">
                   <a-select style="width: 100%"
-                            v-model="form.applyStatus"
+                            v-model="form.enrollStatus"
                             allowClear
                             placeholder="请选择">
-                    <a-select-option v-for="(item,index) in applyStatusList"
+                    <a-select-option v-for="(item,index) in enrollStatusList"
                                      :key="index"
                                      :value="item.value">
                       {{item.label}}
@@ -71,7 +71,7 @@
         </div>
         <!-- table -->
         <standard-table :columns="columns"
-                        rowKey="sequenceNumber"
+                        rowKey="id"
                         :dataSource="dataSource"
                         :loading="tableLoading"
                         :pagination="pagination"
@@ -113,43 +113,39 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import {
-  getUsersTableData,
-  deleteUserInfo,
-  initUserDetail,
-} from "@/services/usersManagement";
+import { getTableData, initGameData, deleteGame } from "@/services/competition";
 import CompetitionConfig from "./CompetitionConfig";
 
 // table columns data
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "sequenceNumber",
+    dataIndex: "id"
   },
   {
     title: "赛事名称",
-    dataIndex: "name",
+    dataIndex: "hockeyGamesName"
   },
   {
     title: "状态",
-    dataIndex: "account",
+    dataIndex: "enrollStatus"
   },
   {
     title: "报名球队",
-    dataIndex: "mobile",
+    dataIndex: "enrollCount"
   },
   {
     title: "报名时间",
-    dataIndex: "createTime",
+    dataIndex: "enrollStartTime"
   },
   {
     title: "比赛时间",
-    dataIndex: "updateTime",
+    dataIndex: "gameStartTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -171,24 +167,25 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        name: undefined,
-        applyStatus: undefined,
+        enrollStatus: undefined,
+        hockeyGamesName: undefined
       },
       // 搜索项校验规则
       rules: {
-        name: [],
-        applyStatus: [],
+        enrollStatus: [],
+        hockeyGamesName: []
       },
-      applyStatusList: [
+      enrollStatusList: [
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 },
-      ],
+        { label: "比赛中", value: 2 },
+        { label: "已结束", value: 3 }
+      ]
     };
   },
   computed: {
@@ -200,7 +197,7 @@ export default {
       } else {
         return this.$t("description");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -211,23 +208,23 @@ export default {
 
     /**
      * @description: 打开详情页
-     * @param : status{int} 0: 新增， 1:查看， 2:修改
+     * @param : status{int} 0: 新增， 1: 修改
      * @param : id{int}
      * @return {*}
      * @author: Leo
      */
     async openAlarm(status, id) {
-      if (status === 1 || status === 2) {
-        await this.userConfigDetail(id);
+      if (status === 1) {
+        await this.competitionConfig(id);
       }
       this.configshow = true;
       this.$refs.competitionConfig.setOpenType(status, id);
     },
 
     // 查看 | 修改返显数据
-    userConfigDetail(id) {
+    competitionConfig(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then((res) => {
+      initGameData(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -239,7 +236,7 @@ export default {
             password: result.data.password,
             remark: result.data.remark,
             roles: result.data.roles,
-            state: result.data.state.toString(),
+            state: result.data.state.toString()
           };
         } else {
           this.$message.error(result.desc);
@@ -256,7 +253,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then((res) => {
+      deleteGame(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -277,13 +274,13 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getUsersTableData(data).then((res) => {
+      getTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
-          this.dataSource = result.data.records;
+          this.dataSource = result.data.list;
           this.pagination.total = result.data.total;
         }
         this.tableLoading = false;
@@ -309,13 +306,15 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.dataSource = [];
       this.resetPagination();
-      this.configshow = false;
+      if (this.configshow) {
+        this.$refs.competitionConfig.resetForm();
+      }
     },
 
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -323,24 +322,7 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>
 
-<style lang="less" scoped>
-.search {
-  margin-bottom: 54px;
-}
-.fold {
-  width: calc(100% - 216px);
-  display: inline-block;
-}
-.operator {
-  margin-bottom: 18px;
-}
-@media screen and (max-width: 900px) {
-  .fold {
-    width: 100%;
-  }
-}
-</style>

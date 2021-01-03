@@ -61,8 +61,8 @@
             <a-form-model-item prop="preEnrollStartTime">
               <a-date-picker v-model="form.preEnrollStartTime"
                              :disabled-date="disabledStartDate"
-                             @change="startTimeChange"
                              show-time
+                             valueFormat="YYYY-MM-DD"
                              format="YYYY-MM-DD"
                              placeholder="开始时间" />
             </a-form-model-item>
@@ -70,8 +70,8 @@
             <a-form-model-item prop="preEnrollEndTime">
               <a-date-picker v-model="form.preEnrollEndTime"
                              :disabled-date="disabledEndDate"
-                             @change="endTimeChange"
                              show-time
+                             valueFormat="YYYY-MM-DD"
                              format="YYYY-MM-DD"
                              placeholder="结束时间" />
             </a-form-model-item>
@@ -84,18 +84,18 @@
             <a-form-model-item prop="enrollStartTime">
               <a-date-picker v-model="form.enrollStartTime"
                              :disabled-date="disabledStartDate1"
-                             @change="startTimeChange1"
                              show-time
                              format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
                              placeholder="开始时间" />
             </a-form-model-item>
             <span class="mx-4 h40">~</span>
             <a-form-model-item prop="enrollEndTime">
               <a-date-picker v-model="form.enrollEndTime"
                              :disabled-date="disabledEndDate1"
-                             @change="endTimeChange1"
                              show-time
                              format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
                              placeholder="结束时间" />
             </a-form-model-item>
           </div>
@@ -108,7 +108,6 @@
               <a-date-picker v-model="form.gameStartTime"
                              :disabled-date="disabledStartDate2"
                              show-time
-                             @change="startTimeChange2"
                              format="YYYY-MM-DD"
                              valueFormat="YYYY-MM-DD"
                              placeholder="开始时间" />
@@ -118,8 +117,8 @@
               <a-date-picker v-model="form.gameEndTime"
                              :disabled-date="disabledEndDate2"
                              show-time
-                             @change="endTimeChange2"
                              format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
                              placeholder="结束时间" />
             </a-form-model-item>
           </div>
@@ -135,11 +134,12 @@
         <!-- 竞赛规程 -->
         <a-form-model-item label="竞赛规程"
                            prop="gameRuleName">
-          <div class="d-flex">
+          <div class="">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                       accept=".pdf"
                       :multiple="true"
                       :file-list="gameRulefileList"
+                      :customRequest="customRequest2"
                       @change="gameRuleUploadChange">
               <a-button>
                 <a-icon type="upload" /> 上传文件
@@ -157,6 +157,7 @@
                       list-type="picture-card"
                       :file-list="coverPictureList"
                       :before-upload="beforeUpload"
+                      :customRequest="customRequest"
                       @preview="handleImgPreview"
                       @change="handleImgChange">
               <a-icon type="plus" />
@@ -183,6 +184,7 @@
                       list-type="picture-card"
                       :file-list="sharePictureList"
                       :before-upload="beforeUpload"
+                      :customRequest="customRequest1"
                       @preview="handleImgPreview1"
                       @change="handleImgChange1">
               <a-icon type="plus" />
@@ -267,7 +269,6 @@
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
                     class="mr-20"
-                    :disabled="openType === 1"
                     @click="onSubmit">保存
           </a-button>
           <a-button style="margin-left: 10px;"
@@ -285,7 +286,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { addUser, updateUser } from "@/services/usersManagement";
+import { uploadImage, addGame, updateGame } from "@/services/competition";
 import { getBase64 } from "@/utils/util.js";
 import Editor from "@/components/wangEditor/wangEditor.vue";
 
@@ -294,16 +295,16 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   components: {
-    Editor,
+    Editor
   },
   data() {
     return {
-      openType: null, // 0新增 1查看 2修改
-      sequenceNumber: null, // 修改时使用，id
+      openType: null, // 0新增 1修改
+      currentId: null, // 修改时使用，id
       labelCol: { span: 5 },
       wrapperCol: { span: 11, offset: 1 },
       editorIsClear: false, // 富文本编辑器是否clear
@@ -311,11 +312,11 @@ export default {
         { label: "国际级", value: 1 },
         { label: "国家级", value: 2 },
         { label: "国际邀请赛", value: 3 },
-        { label: "国内联赛", value: 4 },
+        { label: "国内联赛", value: 4 }
       ],
       needPreCodeList: [
         { label: "不需要", value: 0 },
-        { label: "需要", value: 1 },
+        { label: "需要", value: 1 }
       ],
       gameGradeList: [
         { label: "U12", value: "U12" },
@@ -323,7 +324,7 @@ export default {
         { label: "U16", value: "U16" },
         { label: "U18", value: "U18" },
         { label: "成年组-男子", value: "成年组-男子" },
-        { label: "成年组-女子", value: "成年组-女子" },
+        { label: "成年组-女子", value: "成年组-女子" }
       ],
       form: {
         enrollStartTime: null, // 报名开始时间
@@ -332,10 +333,10 @@ export default {
         gameEndTime: null, // 比赛结束时间
         preEnrollStartTime: null, // 预报名开始时间
         preEnrollEndTime: null, // 预报名结束时间
-        gameGrade: "", // 比赛组别
+        gameGrade: [], // 比赛组别
         gamePlace: "", // 举办场地
-        gameRuleName: "", // 竞赛规程文件名（可多选，逗号隔开）
-        gameRulePath: "", // 竞赛规程文件路径（可多选，逗号隔开）
+        gameRuleName: [], // 竞赛规程文件名（可多选，逗号隔开）
+        gameRulePath: [], // 竞赛规程文件路径（可多选，逗号隔开）
         hockeyGameType: undefined, // 比赛类型 1国际级 2国家级 3国际邀请赛 4国内联赛
         hockeyGamesName: "", // 赛事名称
         imageUrl: "", // 宣传封面地址
@@ -348,15 +349,7 @@ export default {
         shareImageUrl: "", // 分享图片地址
         shareText: "", // 分享文案
         gameIntroducation: "", // 赛事介绍
-        userIdentify: "", // 系统标识
-      },
-      dateData: {
-        enrollStartTime: null, // 报名开始时间
-        enrollEndTime: null, // 报名结束时间
-        gameStartTime: null, // 比赛开始时间
-        gameEndTime: null, // 比赛结束时间
-        preEnrollStartTime: null, // 预报名开始时间
-        preEnrollEndTime: null, // 预报名结束时间
+        userIdentify: "" // 系统标识
       },
       // 搜索项校验规则
       rules: {
@@ -364,8 +357,8 @@ export default {
           {
             required: true,
             message: "请输入赛事名称",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
           // {
           //   min: 3,
           //   max: 10,
@@ -377,147 +370,147 @@ export default {
           {
             required: true,
             message: "请输入比赛类型",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameGrade: [
           {
             required: true,
             message: "请选择比赛组别",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         needPreCode: [
           {
             required: true,
             message: "请选择报名是否需要验证码",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         saleStatus: [
           {
             required: true,
             message: "请选择状态",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         imageUrl: [
           {
             required: true,
             message: "请上传宣传封面",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         shareImageUrl: [
           {
             required: true,
             message: "请上传分享图片",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameRuleName: [
           {
             required: true,
             message: "请上传竞赛规程",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         receiveEmail: [
           {
             required: true,
             message: "请输入报名表接受邮件地址",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         receiveMan: [
           {
             required: true,
             message: "请输入报名表接收人",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         shareText: [
           {
             required: true,
             message: "请输入分享文案",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         masterOrganizer: [
           {
             required: true,
             message: "请输入主办单位",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         secondaryOrganizer: [
           {
             required: true,
             message: "请输入承办单位",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         preEnrollStartTime: [
           {
             required: true,
             message: "请选择预报名开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         preEnrollEndTime: [
           {
             required: true,
             message: "请选择预报名结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         enrollStartTime: [
           {
             required: true,
             message: "请选择报名开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         enrollEndTime: [
           {
             required: true,
             message: "请选择报名结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameStartTime: [
           {
             required: true,
             message: "请选择比赛开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameEndTime: [
           {
             required: true,
             message: "请选择比赛结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gamePlace: [
           {
             required: true,
             message: "请输入举办场地",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         mobile: [
           {
             required: true,
             message: "请输入手机号！",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: /^1\d{10}$/,
             message: "请输入正确手机号！",
-            trigger: "blur",
-          },
-        ],
+            trigger: "blur"
+          }
+        ]
       },
 
       gameRulefileList: [], // 竞赛规程file list
@@ -528,20 +521,22 @@ export default {
 
       sharePictureList: [], // 分享图片file list
       previewVisible1: false,
-      previewShareImage: "",
+      previewShareImage: ""
     };
   },
   computed: {
-    ...mapState(["pageMinHeight"]),
+    ...mapState(["pageMinHeight"])
   },
   created() {},
   methods: {
-    setOpenType(openType, sequenceNumber) {
+    setOpenType(openType, id) {
       this.openType = openType;
-      this.sequenceNumber = sequenceNumber;
+      this.currentId = id;
       if (openType === 0) {
         this.$nextTick(() => {
+          this.resetData();
           this.$refs.competitionForm.resetFields();
+          // this.form.hockeyGamesName = "";
         });
       }
     },
@@ -553,74 +548,85 @@ export default {
 
     // date picker
     // 预报名时间
-    startTimeChange(date, dateStr) {
-      this.dateData.preEnrollStartTime = dateStr;
-    },
-    endTimeChange(date, dateStr) {
-      this.dateData.preEnrollEndTime = dateStr;
-    },
     disabledStartDate(startValue) {
       const endValue = this.form.preEnrollEndTime;
       if (!startValue || !endValue) {
         return false;
       }
-      return startValue.valueOf() > endValue.valueOf();
+      return startValue.valueOf() > new Date(endValue).valueOf();
     },
     disabledEndDate(endValue) {
       const startValue = this.form.preEnrollStartTime;
       if (!endValue || !startValue) {
         return false;
       }
-      return startValue.valueOf() >= endValue.valueOf();
+      return new Date(startValue).valueOf() >= endValue.valueOf();
     },
 
     // 报名时间
-    startTimeChange1(date, dateStr) {
-      this.dateData.enrollStartTime = dateStr;
-    },
-    endTimeChange1(date, dateStr) {
-      this.dateData.enrollEndTime = dateStr;
-    },
     disabledStartDate1(startValue) {
       const endValue = this.form.enrollEndTime;
       if (!startValue || !endValue) {
         return false;
       }
-      return startValue.valueOf() > endValue.valueOf();
+      return startValue.valueOf() > new Date(endValue).valueOf();
     },
     disabledEndDate1(endValue) {
       const startValue = this.form.enrollStartTime;
       if (!endValue || !startValue) {
         return false;
       }
-      return startValue.valueOf() >= endValue.valueOf();
+      return new Date(startValue).valueOf() >= endValue.valueOf();
     },
 
     // 比赛时间
-    startTimeChange2(date, dateStr) {
-      this.dateData.gameStartTime = dateStr;
-    },
-    endTimeChange2(date, dateStr) {
-      this.dateData.gameEndTime = dateStr;
-    },
     disabledStartDate2(startValue) {
       const endValue = this.form.gameEndTime;
       if (!startValue || !endValue) {
         return false;
       }
-      return startValue.valueOf() > endValue.valueOf();
+      return startValue.valueOf() > new Date(endValue).valueOf();
     },
     disabledEndDate2(endValue) {
       const startValue = this.form.gameStartTime;
       if (!endValue || !startValue) {
         return false;
       }
-      return startValue.valueOf() >= endValue.valueOf();
+      return new Date(startValue).valueOf() >= endValue.valueOf();
     },
 
     // upload
     // 竞赛规程
-    gameRuleUploadChange() {},
+    gameRuleUploadChange({ fileList }) {
+      this.gameRulefileList = fileList;
+    },
+
+    customRequest2(options) {
+      const formData = new FormData();
+      formData.append("file", options.file);
+      let progress = { percent: 1 };
+      let speed = 100 / (options.file.size / 65000); //上传速度
+      const intervalId = setInterval(() => {
+        if (progress.percent < 100) {
+          progress.percent += speed;
+          options.onProgress(progress);
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 100);
+      uploadImage(formData).then(res => {
+        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.form.gameRuleName.push(result.data.uploadFilename);
+          this.form.gameRulePath.push(result.data.fileUrl);
+          this.$refs.competitionForm.validateField("gameRuleName");
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
 
     // 宣传封面
     handleCancel() {
@@ -634,6 +640,7 @@ export default {
       this.previewVisible = true;
     },
     handleImgChange({ fileList }) {
+      this.coverPictureList = fileList;
       if (fileList.length === 2) {
         this.coverPictureList = fileList.slice(1);
         this.$message.warning("宣传封面只能上传一张图片");
@@ -652,6 +659,32 @@ export default {
       return isJpgOrPng && isLt2M;
     },
 
+    customRequest(options) {
+      const formData = new FormData();
+      formData.append("file", options.file);
+      let progress = { percent: 1 };
+      let speed = 100 / (options.file.size / 65000); //上传速度
+      const intervalId = setInterval(() => {
+        if (progress.percent < 100) {
+          progress.percent += speed;
+          options.onProgress(progress);
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 100);
+      uploadImage(formData).then(res => {
+        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.form.imageUrl = result.data;
+          this.$refs.competitionForm.validateField("imageUrl");
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
     // 分享图片
     handleCancel1() {
       this.previewVisible1 = false;
@@ -664,10 +697,36 @@ export default {
       this.previewVisible1 = true;
     },
     handleImgChange1({ fileList }) {
+      this.sharePictureList = fileList;
       if (fileList.length === 2) {
         this.sharePictureList = fileList.slice(1);
         this.$message.warning("分享只能上传一张图片");
       }
+    },
+    customRequest1(options) {
+      const formData = new FormData();
+      formData.append("file", options.file);
+      let progress = { percent: 1 };
+      let speed = 100 / (options.file.size / 65000); //上传速度
+      const intervalId = setInterval(() => {
+        if (progress.percent < 100) {
+          progress.percent += speed;
+          options.onProgress(progress);
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 100);
+      uploadImage(formData).then(res => {
+        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.form.shareImageUrl = result.data;
+          this.$refs.competitionForm.validateField("shareImageUrl");
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
     },
 
     // 富文本编辑器
@@ -677,17 +736,18 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.competitionForm.validate((valid) => {
+      this.$refs.competitionForm.validate(valid => {
         if (valid) {
           const data = {
             ...this.form,
-            ...this.dateData,
             gameGrade: this.form.gameGrade.join(),
+            gameRuleName: this.form.gameRuleName.join(),
+            gameRulePath: this.form.gameRulePath.join()
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addUser(data).then((res) => {
+            addGame(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -698,10 +758,10 @@ export default {
                 this.$message.error(result.desc);
               }
             });
-          } else if (this.openType === 2) {
+          } else if (this.openType === 1) {
             // 修改
-            data.sequenceNumber = this.sequenceNumber;
-            updateUser(data).then((res) => {
+            data.id = this.currentId;
+            updateGame(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -718,32 +778,19 @@ export default {
         }
       });
     },
-    // 取消
-    resetForm() {
+    resetData() {
       this.$refs.competitionForm.resetFields();
       this.gameRulefileList = []; // 竞赛规程file list
       this.coverPictureList = []; // 宣传封面file list
       this.sharePictureList = []; // 分享图片file list
-      this.$emit("closeConfig");
     },
-  },
+
+    // 取消
+    resetForm() {
+      this.resetData();
+      this.$emit("closeConfig");
+    }
+  }
 };
 </script>
 
-<style lang="less" scoped>
-.usersConfig-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 100;
-  margin-top: 24px;
-}
-.treebox {
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  padding: 10px 0;
-  min-height: 180px;
-}
-</style>

@@ -57,25 +57,25 @@
             <a-form-model-item prop="startTime">
               <a-date-picker v-model="form.startTime"
                              :disabled-date="disabledStartDate"
-                             @change="startTimeChange"
                              show-time
                              format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
                              placeholder="开始时间" />
             </a-form-model-item>
             <span class="mx-4 h40">~</span>
             <a-form-model-item prop="endTime">
               <a-date-picker v-model="form.endTime"
                              :disabled-date="disabledEndDate"
-                             @change="endTimeChange"
                              show-time
                              format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
                              placeholder="结束时间" />
             </a-form-model-item>
           </div>
         </a-form-model-item>
         <!-- 图片 -->
         <a-form-model-item label="图片"
-                           required>
+                           prop="imagePath">
           <div class="clearfix">
             <a-upload :action="bannerUploadUrl"
                       :customRequest="customRequest"
@@ -126,7 +126,7 @@ import {
   getTypeList,
   addBanner,
   updateBanner,
-  uploadImage,
+  uploadImage
 } from "@/services/banner";
 export default {
   name: "BannerConfig",
@@ -146,11 +146,7 @@ export default {
         linkUrl: undefined,
         imagePath: undefined,
         focusTitle: undefined,
-        id: null,
-      },
-      dateData: {
-        endTime: null,
-        startTime: null,
+        id: null
       },
       // 搜索项校验规则
       rules: {
@@ -158,53 +154,60 @@ export default {
           {
             required: true,
             message: "请选择生效开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         endTime: [
           {
             required: true,
             message: "请选择生效结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
+        ],
+        imagePath: [
+          {
+            required: true,
+            message: "请上传图片",
+            trigger: "change"
+          }
         ],
         sortNum: [
           {
             required: true,
             message: "请输入排序值",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: /^\d+$/,
-            message: "排序只能输入数字！",
-          },
+            message: "排序只能输入数字！"
+          }
         ],
         pageKey: [
           {
             required: true,
             message: "请选择类型",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         linkUrl: [
           {
             required: true,
             message: "请输入链接URL",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         focusTitle: [
           {
             required: true,
             message: "请输入名称",
-            trigger: "blur",
-          },
-        ],
+            trigger: "blur"
+          }
+        ]
       },
       pageKeyList: [], // 类型list
       pictureList: [], // 图片file list
       previewVisible: false,
-      previewCoverImage: "",
+      previewCoverImage: ""
     };
   },
   created() {
@@ -222,7 +225,7 @@ export default {
     },
 
     fetchTypeList() {
-      getTypeList().then((res) => {
+      getTypeList().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.pageKeyList = result.data.pageKeyEnumSelectedModel;
@@ -232,25 +235,19 @@ export default {
       });
     },
 
-    startTimeChange(date, dateStr) {
-      this.dateData.startTime = dateStr;
-    },
-    endTimeChange(date, dateStr) {
-      this.dateData.endTime = dateStr;
-    },
     disabledStartDate(startValue) {
       const endValue = this.form.endTime;
       if (!startValue || !endValue) {
         return false;
       }
-      return startValue.valueOf() > endValue.valueOf();
+      return startValue.valueOf() > new Date(endValue).valueOf();
     },
     disabledEndDate(endValue) {
       const startValue = this.form.startTime;
       if (!endValue || !startValue) {
         return false;
       }
-      return startValue.valueOf() >= endValue.valueOf();
+      return new Date(startValue).valueOf() >= endValue.valueOf();
     },
 
     handleCancel() {
@@ -297,12 +294,13 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then((res) => {
+      uploadImage(formData).then(res => {
         options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
         const result = res.data;
         if (result.code === 0) {
           this.$message.success(result.desc);
           this.form.imagePath = result.data;
+          this.$refs.ruleForm.validateField("imagePath");
         } else {
           this.$message.error(result.desc);
         }
@@ -313,37 +311,21 @@ export default {
       this.onSubmit();
     },
 
-    // 验证图片是否成功上传
-    checkImageIsOk() {
-      let isOk;
-      if (this.pictureList.length === 0) {
-        this.$message.error("请先上传图片");
-        isOk = false;
-      } else if (this.$isEmpty(this.form.imagePath)) {
-        this.$message.error("上传图片失败，请重新上传");
-        isOk = false;
-      } else {
-        isOk = true;
-      }
-      return isOk;
-    },
-
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
-        const ok = this.checkImageIsOk();
-        if (valid && ok) {
-          const data = { ...this.form, ...this.dateData };
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
             addBanner(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
                   this.$message.success(result.desc);
-                  this.visible = false;
+                  this.closeModal();
                   this.$emit("searchTableData");
                 } else {
                   this.$message.error(result.desc);
@@ -355,12 +337,12 @@ export default {
           } else if (this.openType === 1) {
             // 修改
             updateBanner(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
                   this.$message.success(result.desc);
-                  this.visible = false;
+                  this.closeModal();
                   this.$emit("searchTableData");
                 } else {
                   this.$message.error(result.desc);
@@ -375,11 +357,14 @@ export default {
         }
       });
     },
-    closeModal() {
+    resetAllData() {
       this.$refs.ruleForm.resetFields();
       this.pictureList = [];
-      this.visible = false;
     },
-  },
+    closeModal() {
+      this.resetAllData();
+      this.visible = false;
+    }
+  }
 };
 </script>
