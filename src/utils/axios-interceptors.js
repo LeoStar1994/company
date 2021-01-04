@@ -98,6 +98,7 @@ const reqCommon = {
     }
     return config;
   },
+
   /**
    * 请求出错时做点什么
    * @param error 错误对象

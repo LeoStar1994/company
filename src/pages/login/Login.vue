@@ -2,7 +2,7 @@
  * @Description: login登录页面.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-31 14:35:21
+ * @LastEditTime: 2021-01-04 16:35:58
  * @LastEditors: Leo
 -->
 
@@ -344,7 +344,7 @@ export default {
         getRoutesConfig().then((result) => {
           if (result.data.code === 0) {
             // 过滤menu数组
-            /* const mapRoutesArr = result.data.data.menuTree.map((item) => {
+            const mapRoutesArr = result.data.data.menuTree.map((item) => {
               return {
                 router: item.registerName,
                 name: item.name,
@@ -355,12 +355,12 @@ export default {
                   };
                 }),
               };
-            }); */
-            // const routesConfig = [{ router: "root", children: mapRoutesArr }];
+            });
+            const routesConfig = [{ router: "root", children: mapRoutesArr }];
             loginRes.user.name = result.data.data.account;
             this.setUser(loginRes.user); // 设置user信息
-            // loadRoutes(routesConfig);
-            loadRoutes(result.data.data.menuTree);
+            loadRoutes(routesConfig);
+            // loadRoutes(result.data.data.menuTree);
             this.$router.push("/applyManagement/train"); // 成功登录页跳转
             this.$message.success(loginRes.message, 3);
           } else {

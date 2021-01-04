@@ -54,6 +54,28 @@ export function isEmpty(val) {
 }
 
 /**
+ * @description: download file.
+ * @param : data{string}
+ * @param : fileName{string}
+ * @return {null}
+ * @author: Leo
+ */
+export function downloadFile(data, fileName) {
+  if (!data) {
+    return;
+  }
+  let BLOB = new Blob([data]);
+  let url = window.URL.createObjectURL(BLOB);
+  let link = document.createElement("a");
+  link.style.display = "none";
+  link.href = url;
+  link.download = `${fileName}`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/**
  * @description: check val is right phoneNumber.
  * @param : val{string}
  * @return {boolean}

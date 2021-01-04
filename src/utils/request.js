@@ -5,7 +5,7 @@ import Cookie from "js-cookie";
 const xsrfHeaderName = "Authorization";
 
 axios.defaults.timeout = 5000;
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true; // 是否携带Cookie
 axios.defaults.xsrfHeaderName = xsrfHeaderName;
 axios.defaults.xsrfCookieName = xsrfHeaderName;
 
@@ -31,10 +31,10 @@ const METHOD = {
  * @param params 请求参数
  * @returns {Promise<AxiosResponse<T>>}
  */
-async function request(url, method, params) {
+async function request(url, method, params, responseType) {
   switch (method) {
     case METHOD.GET:
-      return axios.get(url, { params });
+      return axios.get(url, { params, responseType });
     case METHOD.POST:
       return axios.post(url, params);
     case METHOD.DELETE:
@@ -92,6 +92,9 @@ function checkAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
       if (Cookie.get(xsrfHeaderName)) {
+        return true;
+      }
+      if (sessionStorage.getItem(xsrfHeaderName)) {
         return true;
       }
       break;

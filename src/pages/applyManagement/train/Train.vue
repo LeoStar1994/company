@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-30 18:27:37
+ * @LastEditTime: 2021-01-04 10:48:48
  * @LastEditors: Leo
 -->
 <template>
@@ -108,38 +108,38 @@ import InfosTable from "./InfosTable";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id"
+    dataIndex: "id",
   },
   {
     title: "标题",
-    dataIndex: "educationName"
+    dataIndex: "educationName",
   },
   {
     title: "类型",
     dataIndex: "enrollType",
-    scopedSlots: { customRender: "mapEnrollType" }
+    scopedSlots: { customRender: "mapEnrollType" },
   },
   {
     title: "状态",
     dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "mapEnrollStatus" }
+    scopedSlots: { customRender: "mapEnrollStatus" },
   },
   {
     title: "报名人数",
-    dataIndex: "enrollCount"
+    dataIndex: "enrollCount",
   },
   {
     title: "报名时间",
-    dataIndex: "enrollTimeStr"
+    dataIndex: "enrollTimeStr",
   },
   {
     title: "培训时间",
-    dataIndex: "educationTimeStr"
+    dataIndex: "educationTimeStr",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 export default {
@@ -162,33 +162,33 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       enrollStatusList: [
         { label: "未开始", value: 1 },
         { label: "报名中", value: 2 },
-        { label: "已结束", value: 3 }
+        { label: "已结束", value: 3 },
       ],
       form: {
         educationName: undefined,
-        enrollStatus: undefined
+        enrollStatus: undefined,
       },
       // 搜索项校验规则
       rules: {
         educationName: [],
-        enrollStatus: []
+        enrollStatus: [],
       },
       mapEnrollType: {
         1: "培训",
-        2: "考试"
+        2: "考试",
       },
       mapEnrollStatus: {
         1: "未开始",
         2: "报名者",
-        3: "已结束"
-      }
+        3: "已结束",
+      },
     };
   },
   computed: {
@@ -202,7 +202,7 @@ export default {
       } else {
         return this.$t("configDesc");
       }
-    }
+    },
   },
   created() {},
   methods: {
@@ -246,10 +246,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getTrainTableData(data).then(res => {
+      getTrainTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -285,7 +285,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    }
+    },
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -293,6 +293,6 @@ export default {
       this.reset();
     }
     next();
-  }
+  },
 };
 </script>

@@ -1,15 +1,18 @@
 //跨域代理前缀
-// const API_PROXY_PREFIX='/api'
-// const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_BASE_URL : API_PROXY_PREFIX
+// const API_PROXY_PREFIX = "/api";
+// const BASE_URL =
+//   process.env.NODE_ENV === "production"
+//     ? process.env.VUE_APP_API_BASE_URL
+//     : API_PROXY_PREFIX;
 const BASE_URL = process.env.VUE_APP_API_BASE_URL;
 module.exports = {
   /* 登录 */
 
   // LOGIN: `${BASE_URL}/login`, // 登录
-  ROUTES: `${BASE_URL}/routes`, // 获取menu菜单
+  // ROUTES: `${BASE_URL}/routes`, // 获取menu菜单
 
   LOGIN: `${BASE_URL}/login/go`, // 登录
-  // ROUTES: `${BASE_URL}/home`, // 获取menu菜单
+  ROUTES: `${BASE_URL}/home`, // 获取menu菜单
   LOGINVERIFYCODE: `${BASE_URL}/login/verifyCode/image`, // 获取图形验证码
   LOGINSMSCODE: `${BASE_URL}/login/verifyCode/sms`, // 获取手机验证码
   LOGINBYPHONE: `${BASE_URL}/loginByPhone`, // 手机号登录
@@ -56,5 +59,5 @@ module.exports = {
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
-  BANNERDELETE: `${BASE_URL}/focus/delete` // 删除数据
+  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
 };

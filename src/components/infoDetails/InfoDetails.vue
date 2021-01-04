@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2020-12-29 15:57:39
+ * @LastEditTime: 2021-01-04 16:55:47
  * @LastEditors: Leo
 -->
 <template>
@@ -37,7 +37,7 @@
             <img v-for="(item1, index) in item.value"
                  :key="index"
                  :src="item1"
-                 class="cursor-pointer"
+                 class="cursor-pointer w100 mr-10"
                  @click="viewImage(item1)"
                  alt="">
           </span>
@@ -48,9 +48,9 @@
       <div v-if="infoData.judgeColumns">
         <h4 class="ant-descriptions-title mt-40">执裁经历</h4>
         <a-table :columns="infoData.judgeColumns"
-                 rowKey="id"
+                 rowKey="gameName"
                  :pagination="false"
-                 :data-source="judgeTableData"
+                 :data-source="infoData.judgeTableData"
                  bordered>
         </a-table>
       </div>
@@ -95,22 +95,6 @@
 <script>
 import { mapState } from "vuex";
 const imgURL = require("@/assets/img/logo_icon.jpg");
-const judgeTableData = [
-  {
-    id: "1",
-    time: "2019年",
-    gameName: "冬季奥运会",
-    gameLevel: "国际级",
-    appointment: "主裁判",
-  },
-  {
-    id: "2",
-    time: "2022年",
-    gameName: "冬季奥运会",
-    gameLevel: "国际级",
-    appointment: "主裁判",
-  },
-];
 
 const officerTableData = [
   {
@@ -158,7 +142,6 @@ export default {
   data() {
     return {
       detailShow1: false,
-      judgeTableData: judgeTableData,
       officerTableData: officerTableData,
       playerTableData: playerTableData,
       infoData1: {
@@ -230,8 +213,8 @@ export default {
       this.$emit("closeDetail");
     },
     // 打开图片
-    viewImage() {
-      // window.open("../../../assets/img/logo_icon.jpg");
+    viewImage(imgUrl) {
+      window.open(imgUrl);
     },
     // 官员table查看
     openInfoDetails() {

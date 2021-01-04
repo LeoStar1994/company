@@ -4,7 +4,7 @@ import {
   TRAININFOTABLE,
   REFEREEDETAIL,
   REFEREEDELETE,
-  REFEREESEXPOTR
+  REFEREESEXPOTR,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -50,5 +50,5 @@ export async function deleteReferee(id) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export async function exportReferee(id) {
-  return request(REFEREESEXPOTR + `/${id}`, METHOD.GET);
+  return request(REFEREESEXPOTR + `/${id}`, METHOD.GET, null, "blob");
 }

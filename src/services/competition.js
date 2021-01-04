@@ -5,7 +5,7 @@ import {
   COMPETITIONDETAIL,
   COMPETITIONUPDATE,
   COMPETITIONDELETE,
-  COMPETITIONUPLOAD
+  COMPETITIONUPLOAD,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -35,7 +35,7 @@ export async function updateGame(data) {
 
 // 查看 | 修改返显数据
 export async function initGameData(params) {
-  return request(COMPETITIONDETAIL + `/${params}`, METHOD.GET);
+  return request(COMPETITIONDETAIL, METHOD.GET, params);
 }
 
 // 删除

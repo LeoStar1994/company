@@ -4,7 +4,7 @@ import { initRouter } from "./router";
 import "./theme/index.less";
 import Antd from "ant-design-vue";
 import Viser from "viser-vue";
-import "@/mock";
+// import "@/mock";
 import store from "./store";
 import "animate.css/source/animate.css";
 import Plugins from "@/plugins";
@@ -25,15 +25,15 @@ Vue.mixin({
     // 上传文件地址
     bannerUploadUrl() {
       return process.env.VUE_APP_API_BASE_URL + "/focus/upload/img";
-    }
+    },
   },
   methods: {
     getAuthHeaders() {
       return {
-        Authorization: `Bearer ${sessionStorage.Authorization || ""}`
+        Authorization: `Bearer ${sessionStorage.Authorization || ""}`,
       };
-    }
-  }
+    },
+  },
 });
 
 const router = initRouter(store.state.setting.asyncRoutes);
@@ -52,5 +52,5 @@ new Vue({
   router,
   store,
   i18n,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");
