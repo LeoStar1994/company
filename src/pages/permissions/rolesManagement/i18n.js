@@ -2,13 +2,14 @@
  * @Description: 國際化
  * @Author: Leo
  * @Date: 2020-12-17 18:51:33
- * @LastEditTime: 2021-01-05 15:10:11
+ * @LastEditTime: 2020-12-25 14:18:33
  * @LastEditors: Leo
  */
 module.exports = {
   messages: {
     CN: {
-      description: "赛事邀请码相关配置",
+      description: "机构下各个用户角色分配、菜单功能分配",
+      configDesc: "角色管理详情页",
     },
     HK: {
       description: "機構下各個用戶角色分配、菜單功能分配",

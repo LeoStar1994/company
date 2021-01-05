@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 赛事
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2020-12-29 15:51:16
+ * @LastEditTime: 2021-01-05 12:37:57
  * @LastEditors: Leo
 -->
 <template>
@@ -22,8 +22,8 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="赛事名称"
-                                   prop="gameName">
-                  <a-input v-model="form.gameName"
+                                   prop="hockeyGamesName">
+                  <a-input v-model="form.hockeyGamesName"
                            allowClear
                            :maxLength="10"
                            placeholder="请输入赛事名称"></a-input>
@@ -33,12 +33,12 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="报名状态"
-                                   prop="applyStatus">
+                                   prop="enrollStatus">
                   <a-select style="width: 100%"
-                            v-model="form.applyStatus"
+                            v-model="form.enrollStatus"
                             allowClear
                             placeholder="请选择">
-                    <a-select-option v-for="(item,index) in applyStatusList"
+                    <a-select-option v-for="(item,index) in enrollStatusList"
                                      :key="index"
                                      :value="item.value">
                       {{item.label}}
@@ -70,6 +70,10 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
+          <div slot="status"
+               slot-scope="{text}">
+            {{enrollStatusMapObj[text]}}
+          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
@@ -82,7 +86,6 @@
     <!-- 详情config -->
     <InfosTable ref="infosTable"
                 :configshow="configshow"
-                :dataSource="infoTableData"
                 @closeConfig="closeConfig"></InfosTable>
     <!-- loading -->
     <transition name="el-fade-in">
@@ -94,39 +97,40 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-// import { getTrainTableData, getInfosTableData } from "@/services/train";
+import { getTableData } from "@/services/competition";
 import InfosTable from "./InfosTable";
 
 // table columns data
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id"
+    dataIndex: "id",
   },
   {
     title: "赛事名称",
-    dataIndex: "title"
+    dataIndex: "hockeyGamesName",
   },
   {
     title: "状态",
-    dataIndex: "status"
+    dataIndex: "enrollStatus",
+    scopedSlots: { customRender: "status" },
   },
   {
     title: "报名球队",
-    dataIndex: "type"
+    dataIndex: "enrollCount",
   },
   {
     title: "报名时间",
-    dataIndex: "applyTime"
+    dataIndex: "enrollStartEndTime",
   },
   {
     title: "比赛时间",
-    dataIndex: "trainTime"
+    dataIndex: "gameStartEndTime",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 export default {
@@ -139,25 +143,7 @@ export default {
       tableLoading: false,
       configshow: false, // 二级table显隐
       columns: columns,
-      dataSource: [
-        {
-          title: "国家教练员培训",
-          type: "3",
-          status: "报名中",
-          applyTime: "2020-12-05 至 2020-12-31",
-          trainTime: "2021-01-01 至 2021-01-09",
-          id: 1
-        },
-        {
-          title: "国家教练员培训",
-          type: "3",
-          status: "报名中",
-          applyTime: "2020-12-05 至 2020-12-31",
-          trainTime: "2021-01-01 至 2021-01-09",
-          id: 2
-        }
-      ],
-      infoTableData: [], // 二级table data
+      dataSource: [],
       // 分页
       pagination: {
         pageSize: 10,
@@ -166,24 +152,31 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
-      applyStatusList: [
+      enrollStatusList: [
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
-        { label: "已结束", value: 2 }
+        { label: "比赛中", value: 2 },
+        { label: "已结束", value: 3 },
       ],
+      enrollStatusMapObj: {
+        0: "未开始",
+        1: "报名中",
+        2: "比赛中",
+        3: "已结束",
+      },
       form: {
-        gameName: undefined,
-        applyStatus: undefined
+        hockeyGamesName: undefined,
+        enrollStatus: undefined,
       },
       // 搜索项校验规则
       rules: {
-        gameName: [],
-        applyStatus: []
-      }
+        hockeyGamesName: [],
+        enrollStatus: [],
+      },
     };
   },
   computed: {
@@ -197,7 +190,7 @@ export default {
       } else {
         return this.$t("configDesc");
       }
-    }
+    },
   },
   created() {},
   methods: {
@@ -207,58 +200,33 @@ export default {
     },
 
     /**
-     * @description: 打开培训详情table
+     * @description: 打开球队table
      * @param : id{int}
      * @return {*}
      * @author: Leo
      */
     async openInfosTable(id) {
-      await this.infosTableDetail(id);
+      this.$refs.infosTable.setLastSerachData(id);
+      await this.$refs.infosTable.searchTableData();
       this.configshow = true;
-    },
-
-    // 查看 | 修改返显数据
-    infosTableDetail(id) {
-      console.log(id);
-      // this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      // getInfosTableData(id).then((res) => {
-      //   this.$refs.loading.closeLoading();
-      //   const result = res.data;
-      //   if (result.code === 0) {
-      //     this.infoTableData = [];
-      //   } else {
-      //     this.$message.error(result.desc);
-      //   }
-      // });
-      this.infoTableData = [
-        {
-          name: "冰球队",
-          sex: "10",
-          birthday: "2020-12-05",
-          num: "2",
-          mobile: "18270707160",
-          applyTime: "已通过",
-          id: 1
-        }
-      ];
     },
 
     // 列表查询
     searchTableData() {
-      // const data = {
-      //   ...this.form,
-      //   pageNo: this.pagination.pageNo,
-      //   pageSize: this.pagination.pageSize,
-      // };
-      // this.tableLoading = true;
-      // getTrainTableData(data).then((res) => {
-      //   const result = res.data;
-      //   if (result.code === 0) {
-      //     this.dataSource = result.data.records;
-      //     this.pagination.total = result.data.total;
-      //   }
-      //   this.tableLoading = false;
-      // });
+      const data = {
+        ...this.form,
+        pageNo: this.pagination.pageNo,
+        pageSize: this.pagination.pageSize,
+      };
+      this.tableLoading = true;
+      getTableData(data).then((res) => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.dataSource = result.data.list;
+          this.pagination.total = result.data.total;
+        }
+        this.tableLoading = false;
+      });
     },
 
     // 分页
@@ -287,7 +255,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    }
+    },
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -295,6 +263,6 @@ export default {
       this.reset();
     }
     next();
-  }
+  },
 };
 </script>

@@ -22,7 +22,7 @@ export async function verifyCode() {
   return request(LOGINVERIFYCODE, METHOD.POST);
 }
 
-// 获取图形验证码
+// 获取短信验证码
 export async function SMSCode(data) {
   return request(LOGINSMSCODE, METHOD.POST, data);
 }

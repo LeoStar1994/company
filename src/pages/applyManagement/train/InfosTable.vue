@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-04 16:14:40
+ * @LastEditTime: 2021-01-05 13:54:05
  * @LastEditors: Leo
 -->
 <template>
@@ -467,7 +467,6 @@ export default {
         return;
       }
       exportReferee(this.form.educationId).then((res) => {
-        console.log(res);
         if (res.status === 200 && res.data) {
           let filename = "";
           const disposition = res.headers["content-disposition"];

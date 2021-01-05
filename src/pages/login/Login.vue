@@ -2,7 +2,7 @@
  * @Description: login登录页面.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-04 16:35:58
+ * @LastEditTime: 2021-01-05 17:16:36
  * @LastEditors: Leo
 -->
 
@@ -149,11 +149,15 @@
            class="text-white">忘记密码</a>
       </div>
     </div>
+
+    <!-- 忘记密码 -->
+    <ForgetPassword ref="forgetPassword"></ForgetPassword>
   </common-layout>
 </template>
 
 <script>
 import CommonLayout from "@/layouts/CommonLayout";
+import ForgetPassword from "@/pages/forgetPassword";
 import {
   verifyCode,
   login,
@@ -206,7 +210,7 @@ const timeList = [
 
 export default {
   name: "Login",
-  components: { CommonLayout },
+  components: { CommonLayout, ForgetPassword },
   data() {
     return {
       logging: false,
@@ -409,7 +413,9 @@ export default {
     },
 
     // 忘记密码
-    forgetPassword() {},
+    forgetPassword() {
+      this.$refs.forgetPassword.visible = true;
+    },
   },
 };
 </script>

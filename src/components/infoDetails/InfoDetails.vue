@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-01-04 16:55:47
+ * @LastEditTime: 2021-01-05 15:02:42
  * @LastEditors: Leo
 -->
 <template>
@@ -60,7 +60,7 @@
         <a-table :columns="infoData.officerColumns"
                  rowKey="id"
                  :pagination="false"
-                 :data-source="officerTableData"
+                 :data-source="infoData.officerTableData"
                  bordered>
           <div slot="action"
                slot-scope="data">
@@ -76,12 +76,12 @@
         <a-table :columns="infoData.playerColumns"
                  rowKey="id"
                  :pagination="false"
-                 :data-source="playerTableData"
+                 :data-source="infoData.playerTableData"
                  bordered>
-          <div slot="playerName"
+          <!-- <div slot="playerName"
                slot-scope="{text}">
             {{text}}
-          </div>
+          </div> -->
         </a-table>
       </div>
     </a-card>
@@ -94,38 +94,6 @@
 
 <script>
 import { mapState } from "vuex";
-const imgURL = require("@/assets/img/logo_icon.jpg");
-
-const officerTableData = [
-  {
-    id: "1",
-    name: "王老五",
-    job: "CEO",
-    sex: "女",
-    nationality: "中国",
-    identityCard: "307282889172817821",
-  },
-  {
-    id: "2",
-    name: "王老4",
-    job: "CFO",
-    sex: "男",
-    nationality: "中国",
-    identityCard: "307282889172821782",
-  },
-];
-const playerTableData = [
-  {
-    id: "1",
-    name: "王老4",
-    gameLevel: "1",
-    position: "守门员",
-    height: "191",
-    weight: "80",
-    cursor: "右手",
-    numbers: "12312312312311312311",
-  },
-];
 export default {
   name: "InfosDetails",
   props: {
@@ -142,64 +110,11 @@ export default {
   data() {
     return {
       detailShow1: false,
-      officerTableData: officerTableData,
-      playerTableData: playerTableData,
       infoData1: {
-        name: "林一",
-        imgURL: imgURL,
+        name: "",
+        imgURL: "",
         // 基础信息
-        descList: [
-          {
-            label: "性别",
-            value: "男",
-            span: 1,
-          },
-          {
-            label: "现裁判等级",
-            value: "国际A级",
-            span: 1,
-          },
-          {
-            label: "民族",
-            value: "汉",
-            span: 1,
-          },
-          {
-            label: "批准日期",
-            value: "2019-12-12",
-            span: 1,
-          },
-          {
-            label: "身高",
-            value: "188",
-            span: 1,
-          },
-          {
-            label: "健康状况",
-            value: "一般",
-            span: 1,
-          },
-          {
-            label: "出生日期",
-            value: "1990-10-01",
-            span: 1,
-          },
-          {
-            label: "外语能力",
-            value: "英语",
-            span: 1,
-          },
-          {
-            label: "证件照片",
-            value: [imgURL, imgURL],
-            span: 2,
-          },
-          {
-            label: "外语能力",
-            value: "英语",
-            span: 1,
-          },
-        ],
+        descList: [],
       },
     };
   },
@@ -217,9 +132,30 @@ export default {
       window.open(imgUrl);
     },
     // 官员table查看
-    openInfoDetails() {
-      // this.$emit("closeDetail");
+    openInfoDetails(data) {
+      this.infoData1.name = data.trainName;
+      this.infoData1.imgURL = data.imagePath;
+      this.infoData1.descList = this.formatDetailsData(data);
       this.detailShow1 = true;
+    },
+
+    // 数据格式化
+    formatDetailsData(data) {
+      const detailKeys = Object.keys(data);
+      const finallyData = [];
+      this.infoData.fieldsMapLabelSon.forEach((item) => {
+        detailKeys.forEach((item1) => {
+          if (item.field === item1) {
+            finallyData.push({
+              label: item.labelName,
+              value: data[item1],
+              sort: item.sort,
+              span: item.isOccupyAll ? 2 : 1,
+            });
+          }
+        });
+      });
+      return finallyData;
     },
 
     closeDetail() {

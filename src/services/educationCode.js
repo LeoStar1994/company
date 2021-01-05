@@ -1,10 +1,10 @@
-/* 赛事邀请码 */
+/* 教学邀请码 */
 import {
-  CODETABLEDATA,
-  CODEADD,
-  CODEINITDATA,
-  CODEUPDATE,
-  CODEDELETE,
+  EDUCATIONCODETABLEDATA,
+  EDUCATIONCODEADD,
+  EDUCATIONCODEINITDATA,
+  EDUCATIONCODEUPDATE,
+  EDUCATIONCODEDELETE,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -14,25 +14,25 @@ import { request, METHOD } from "@/utils/request";
  * @returns {Promise<AxiosResponse<T>>}
  */
 export async function getTableData(data) {
-  return request(CODETABLEDATA, METHOD.POST, data);
+  return request(EDUCATIONCODETABLEDATA, METHOD.POST, data);
 }
 
 // 新增
 export async function addCode(data) {
-  return request(CODEADD, METHOD.POST, data);
+  return request(EDUCATIONCODEADD, METHOD.POST, data);
 }
 
 // 修改
 export async function updateCode(data) {
-  return request(CODEUPDATE, METHOD.POST, data);
+  return request(EDUCATIONCODEUPDATE, METHOD.POST, data);
 }
 
 // 查看 | 修改返显数据
 export async function initCodeData(params) {
-  return request(CODEINITDATA + `/${params}`, METHOD.GET);
+  return request(EDUCATIONCODEINITDATA + `/${params}`, METHOD.GET);
 }
 
 // 删除
 export async function deleteCode(id) {
-  return request(CODEDELETE, METHOD.DELETE, id);
+  return request(EDUCATIONCODEDELETE, METHOD.DELETE, id);
 }

@@ -1,13 +1,14 @@
 <!--
- * @Description: 赛事管理 / 邀请码.
+ * @Description: 权限管理 / 角色管理.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 15:26:11
+ * @LastEditTime: 2021-01-05 16:02:34
  * @LastEditors: Leo
 -->
 <template>
-  <div class="invitationCode-page">
-    <a-card :style="`min-height: ${pageMinHeight}px`">
+  <div class="rolesManagement-page">
+    <a-card :style="`min-height: ${pageMinHeight}px`"
+            v-show="!configshow">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="ruleForm"
@@ -17,26 +18,15 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 邀请码 -->
+              <!-- 角色名称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="邀请码"
-                                   prop="code">
-                  <a-input v-model="form.code"
+                <a-form-model-item label="角色名称"
+                                   prop="name">
+                  <a-input v-model="form.name"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入邀请码"></a-input>
-                </a-form-model-item>
-              </a-col>
-              <!-- 球队名称 -->
-              <a-col :md="8"
-                     :sm="24">
-                <a-form-model-item label="球队名称"
-                                   prop="refereeName">
-                  <a-input v-model="form.refereeName"
-                           allowClear
-                           :maxLength="10"
-                           placeholder="请输入球队名称"></a-input>
+                           placeholder="请输入用户名"></a-input>
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -44,7 +34,7 @@
           <!-- 查询、重置、收起 -->
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary"
-                      @click="searchTableData">查询</a-button>
+                      @click="searchTableData()">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
             <a @click="toggleAdvanced"
@@ -60,27 +50,38 @@
         <div class="operator">
           <a-button @click="openAlarm(0)"
                     class="mr-10"
-                    type="primary">新增邀请码</a-button>
+                    type="primary">新增</a-button>
+          <a-button>批量操作</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
-                        rowKey="id"
+                        rowKey="sequenceNumber"
                         :dataSource="dataSource"
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <div slot="useStauts"
+          <div slot="state"
                slot-scope="{text}">
-            {{isUsedMapObj[text]}}
+            <span :class="[text === 0 ? 'text-green': '', text === 1 ? 'text-red': '']">{{statusMapText[text]}}</span>
           </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openAlarm(1, record.id)">修改</a>
+               @click="openAlarm(1, record.sequenceNumber)">详情
+            </a>
+            <a class="mr-12"
+               @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a>
+            <a @click="changeService(record.sequenceNumber, 0)"
+               v-if="record.state === 1 && isEmpty(record.saasId)"
+               class="text-green mr-12">启用</a>
+            <a @click="changeService(record.sequenceNumber, 1)"
+               v-if="record.state === 0 && isEmpty(record.saasId)"
+               class="text-orange mr-12">停用</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
-                          @confirm="deleteInfo(record.id)"
+                          v-if="isEmpty(record.saasId)"
+                          @confirm="deleteInfo(record.sequenceNumber)"
                           @cancel="deletecancel">
               <a href="#"
                  class="text-red">删除</a>
@@ -89,10 +90,12 @@
         </standard-table>
       </div>
     </a-card>
-    <!-- 新增 | 修改弹框 -->
-    <CodeConfig ref="codeConfig"
-                @searchTableData="searchTableData"></CodeConfig>
-
+    <!-- 详情config -->
+    <RoleConfig ref="roleConfig"
+                :configshow="configshow"
+                :treeData="treeData"
+                @closeConfig='closeConfig'
+                @searchTableData='searchTableData'></RoleConfig>
     <!-- loading -->
     <transition name="el-fade-in">
       <loading ref="loading"></loading>
@@ -103,43 +106,38 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import CodeConfig from "./CodeConfig";
+import { isEmpty } from "@/utils/util";
 import {
-  getTableData,
-  deleteCode,
-  initCodeData,
-} from "@/services/invitationCode";
+  getRoleTableData,
+  roleTreeList,
+  changeRoleState,
+  deleteRoleInfo,
+  initRoleDetail,
+} from "@/services/rolesManagement";
+import RoleConfig from "./RoleConfig";
 
 // table columns data
 const columns = [
   {
-    title: "邀请码ID",
-    dataIndex: "id",
+    title: "序号",
+    dataIndex: "sequenceNumber",
   },
   {
-    title: "邀请码",
-    dataIndex: "code",
+    title: "角色名称",
+    dataIndex: "name",
   },
   {
-    title: "球队名称",
-    dataIndex: "refereeName",
+    title: "创建时间",
+    dataIndex: "createTime",
   },
   {
-    title: "联系人",
-    dataIndex: "linkMan",
+    title: "更新时间",
+    dataIndex: "updateTime",
   },
   {
-    title: "使用状态",
-    dataIndex: "isUsed",
-    scopedSlots: { customRender: "useStauts" },
-  },
-  {
-    title: "昵称",
-    dataIndex: "nickName",
-  },
-  {
-    title: "关联时间",
-    dataIndex: "joinTime",
+    title: "状态",
+    dataIndex: "state",
+    scopedSlots: { customRender: "state" },
   },
   {
     title: "操作",
@@ -148,13 +146,15 @@ const columns = [
 ];
 
 export default {
-  name: "train",
-  components: { StandardTable, CodeConfig },
+  name: "RolesManageMent",
+  components: { StandardTable, RoleConfig },
   i18n: require("./i18n"),
   data() {
     return {
       advanced: true,
       tableLoading: false,
+      configshow: false, // 新增config 显隐
+      treeData: [],
       columns: columns,
       dataSource: [],
       pagination: {
@@ -169,17 +169,15 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        refereeName: undefined,
-        code: undefined,
+        name: undefined,
       },
       // 搜索项校验规则
       rules: {
-        refereeName: [],
-        code: [],
+        name: [],
       },
-      isUsedMapObj: {
-        0: "未使用",
-        1: "已使用",
+      statusMapText: {
+        0: "启用",
+        1: "停用",
       },
     };
   },
@@ -187,11 +185,45 @@ export default {
     ...mapState("setting", ["pageMinHeight"]),
     // page header desc
     desc() {
-      return this.$t("description");
+      if (this.configshow) {
+        return this.$t("configDesc");
+      } else {
+        return this.$t("description");
+      }
     },
   },
-  created() {},
+  created() {
+    this.getRolesList();
+  },
   methods: {
+    // 获取角色tree list
+    getRolesList() {
+      roleTreeList().then((res) => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.treeData = result.data.menuModels;
+          // this.treeData = this.formatRoleTreeData(result.data.menuModels);
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+    isEmpty: isEmpty,
+    // 格式化tree组件
+    formatRoleTreeData(targetArr) {
+      let mapArr;
+      if (targetArr.length > 0 && targetArr instanceof Array) {
+        mapArr = targetArr.map((item) => {
+          return {
+            key: item.id,
+            title: item.name,
+            children: item.children && this.formatRoleTreeData(item.children),
+          };
+        });
+      }
+      return mapArr;
+    },
+
     // 切换搜索框收起展开
     toggleAdvanced() {
       this.advanced = !this.advanced;
@@ -199,32 +231,53 @@ export default {
 
     /**
      * @description: 打开详情页
-     * @param : status{int} 0: 新增， 1:修改
+     * @param : status{int} 0: 新增， 1:查看， 2:修改
      * @param : id{int}
+     * @param : sassIdIsEmpty{boolean} 是否允许修改内容
      * @return {*}
      * @author: Leo
      */
-    async openAlarm(status, id) {
-      if (status === 1) {
-        await this.codeConfigDetail(id);
+    async openAlarm(status, id, sassIdIsEmpty) {
+      if (status === 1 || status === 2) {
+        await this.roleConfigDetail(id);
       }
-      this.$refs.codeConfig.setOpenType(status, id);
+      this.$refs.roleConfig.setOpenType(status, id, sassIdIsEmpty);
+      this.configshow = true;
     },
 
     // 查看 | 修改返显数据
-    codeConfigDetail(id) {
+    roleConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initCodeData(id).then((res) => {
+      initRoleDetail(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
           this.$message.success(result.desc);
-          this.$refs.codeConfig.form = {
-            refereeName: result.data.refereeName,
-            code: result.data.code,
-            linkMan: result.data.linkMan,
-            telPhone: result.data.telPhone,
+          this.$refs.roleConfig.form = {
+            name: result.data.name,
+            remark: result.data.remark,
+            selectedMenusList: result.data.selectedMenusList,
+            state: result.data.state.toString(),
           };
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
+    // 停用 | 启用
+    changeService(sequenceNumber, state) {
+      const data = {
+        sequenceNumber,
+        state,
+      };
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      changeRoleState(data).then((res) => {
+        this.$refs.loading.closeLoading();
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.searchTableData();
         } else {
           this.$message.error(result.desc);
         }
@@ -234,7 +287,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteCode(id).then((res) => {
+      deleteRoleInfo(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -258,7 +311,7 @@ export default {
         pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getTableData(data).then((res) => {
+      getRoleTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -287,6 +340,12 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.dataSource = [];
       this.resetPagination();
+      this.configshow = false;
+    },
+
+    // 关闭详情config
+    closeConfig() {
+      this.configshow = false;
     },
   },
   // 监听页面离开事件， 清空页面数据
@@ -298,3 +357,21 @@ export default {
   },
 };
 </script>
+
+<style lang="less" scoped>
+.search {
+  margin-bottom: 54px;
+}
+.fold {
+  width: calc(100% - 216px);
+  display: inline-block;
+}
+.operator {
+  margin-bottom: 18px;
+}
+@media screen and (max-width: 900px) {
+  .fold {
+    width: 100%;
+  }
+}
+</style>

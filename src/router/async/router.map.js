@@ -65,6 +65,23 @@ const routerMap = {
     component: view.tabs,
   },
 
+  // 权限管理
+  permissions: {
+    name: "权限管理",
+    icon: "setting",
+    component: view.page,
+  },
+  usersManangement: {
+    path: "/permissions/usersManangement",
+    name: "用户管理",
+    component: () => import("@/pages/permissions/usersManagement"),
+  },
+  rolesManagement: {
+    path: "/permissions/rolesManagement",
+    name: "角色管理",
+    component: () => import("@/pages/permissions/rolesManagement"),
+  },
+
   // 报名管理
   applyManagement: {
     name: "报名管理",
@@ -109,6 +126,11 @@ const routerMap = {
     path: "/educationManagement/educationList",
     name: "教学列表",
     component: () => import("@/pages/educationManagement/educationList"),
+  },
+  educationCode: {
+    path: "/educationManagement/educationCode",
+    name: "邀请码",
+    component: () => import("@/pages/educationManagement/invitationCode"),
   },
 
   // 焦点图管理

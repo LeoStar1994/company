@@ -2,7 +2,7 @@
  * @Description: 赛事列表 / 详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-04 19:13:08
+ * @LastEditTime: 2021-01-05 12:17:22
  * @LastEditors: Leo
 -->
 <template>
@@ -159,6 +159,7 @@
                       list-type="picture-card"
                       :file-list="coverPictureList"
                       :before-upload="beforeUpload"
+                      :remove="handleImgRemove"
                       :customRequest="customRequest"
                       @preview="handleImgPreview"
                       @change="handleImgChange">
@@ -186,6 +187,7 @@
                       list-type="picture-card"
                       :file-list="sharePictureList"
                       :before-upload="beforeUpload"
+                      :remove="handleImgRemove1"
                       :customRequest="customRequest1"
                       @preview="handleImgPreview1"
                       @change="handleImgChange1">
@@ -289,7 +291,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { uploadImage, addGame, updateGame } from "@/services/competition";
+import { uploadImage, addGame, updateGame } from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 import Editor from "@/components/wangEditor/wangEditor.vue";
 
@@ -695,6 +697,10 @@ export default {
       });
     },
 
+    handleImgRemove() {
+      this.form.imageUrl = "";
+    },
+
     // 分享图片
     handleCancel1() {
       this.previewVisible1 = false;
@@ -739,6 +745,10 @@ export default {
       });
     },
 
+    handleImgRemove1() {
+      this.form.shareImageUrl = "";
+    },
+
     // 富文本编辑器
     editorChange(val) {
       this.form.gameIntroducation = val;
@@ -748,13 +758,14 @@ export default {
     onSubmit() {
       this.$refs.competitionForm.validate((valid) => {
         if (valid) {
-          const data = {
+          let data = {
             ...this.form,
             gameGrade: this.form.gameGrade.join(),
             gameRuleName: this.form.gameRuleName.join(),
             gameRulePath: this.form.gameRulePath.join(),
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
+          console.log(this.openType);
           if (this.openType === 0) {
             // 新增
             addGame(data).then((res) => {
@@ -769,6 +780,7 @@ export default {
               }
             });
           } else if (this.openType === 1) {
+            console.log(111);
             // 修改
             data.id = this.currentId;
             updateGame(data).then((res) => {

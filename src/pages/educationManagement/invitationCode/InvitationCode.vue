@@ -1,14 +1,13 @@
 <!--
- * @Description: 报名管理 / 培训
+ * @Description: 教学管理 / 邀请码.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 12:37:41
+ * @LastEditTime: 2021-01-05 15:25:22
  * @LastEditors: Leo
 -->
 <template>
-  <div class="train-page">
-    <a-card :style="`min-height: ${pageMinHeight}px`"
-            v-show="!configshow">
+  <div class="invitationCode-page">
+    <a-card :style="`min-height: ${pageMinHeight}px`">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="ruleForm"
@@ -18,32 +17,26 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 标题 -->
+              <!-- 邀请码 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="标题"
-                                   prop="educationName">
-                  <a-input v-model="form.educationName"
+                <a-form-model-item label="邀请码"
+                                   prop="code">
+                  <a-input v-model="form.code"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入标题"></a-input>
+                           placeholder="请输入邀请码"></a-input>
                 </a-form-model-item>
               </a-col>
-              <!-- 报名状态 -->
+              <!-- 教练名称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="报名状态"
-                                   prop="enrollStatus">
-                  <a-select style="width: 100%"
-                            v-model="form.enrollStatus"
-                            allowClear
-                            placeholder="请选择">
-                    <a-select-option v-for="(item,index) in enrollStatusList"
-                                     :key="index"
-                                     :value="item.value">
-                      {{item.label}}
-                    </a-select-option>
-                  </a-select>
+                <a-form-model-item label="教练名称"
+                                   prop="refereeName">
+                  <a-input v-model="form.refereeName"
+                           allowClear
+                           :maxLength="10"
+                           placeholder="请输入教练名称"></a-input>
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -51,7 +44,7 @@
           <!-- 查询、重置、收起 -->
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary"
-                      @click="searchTableData()">查询</a-button>
+                      @click="searchTableData">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
             <a @click="toggleAdvanced"
@@ -63,6 +56,12 @@
         </a-form-model>
       </div>
       <div>
+        <!-- operator -->
+        <div class="operator">
+          <a-button @click="openAlarm(0)"
+                    class="mr-10"
+                    type="primary">新增邀请码</a-button>
+        </div>
         <!-- table -->
         <standard-table :columns="columns"
                         rowKey="id"
@@ -70,27 +69,30 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <div slot="mapEnrollType"
+          <div slot="useStauts"
                slot-scope="{text}">
-            {{mapEnrollType[text]}}
-          </div>
-          <div slot="mapEnrollStatus"
-               slot-scope="{text}">
-            {{mapEnrollStatus[text]}}
+            {{isUsedMapObj[text]}}
           </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openInfosTable(record.id)">查看
-            </a>
+               @click="openAlarm(1, record.id)">修改</a>
+            <a-popconfirm title="是否删除该条数据?"
+                          ok-text="确定"
+                          cancel-text="取消"
+                          @confirm="deleteInfo(record.id)"
+                          @cancel="deletecancel">
+              <a href="#"
+                 class="text-red">删除</a>
+            </a-popconfirm>
           </div>
         </standard-table>
       </div>
     </a-card>
-    <!-- 详情config -->
-    <InfosTable ref="infosTable"
-                :configshow="configshow"
-                @closeConfig="closeConfig"></InfosTable>
+    <!-- 新增 | 修改弹框 -->
+    <CodeConfig ref="codeConfig"
+                @searchTableData="searchTableData"></CodeConfig>
+
     <!-- loading -->
     <transition name="el-fade-in">
       <loading ref="loading"></loading>
@@ -101,40 +103,43 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import { getTrainTableData } from "@/services/train";
-import InfosTable from "./InfosTable";
+import CodeConfig from "./CodeConfig";
+import {
+  getTableData,
+  deleteCode,
+  initCodeData,
+} from "@/services/educationCode";
 
 // table columns data
 const columns = [
   {
-    title: "记录ID",
+    title: "邀请码ID",
     dataIndex: "id",
   },
   {
-    title: "标题",
-    dataIndex: "educationName",
+    title: "邀请码",
+    dataIndex: "code",
   },
   {
-    title: "类型",
-    dataIndex: "enrollType",
-    scopedSlots: { customRender: "mapEnrollType" },
+    title: "教练名称",
+    dataIndex: "refereeName",
   },
   {
-    title: "状态",
-    dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "mapEnrollStatus" },
+    title: "联系人",
+    dataIndex: "linkMan",
   },
   {
-    title: "报名人数",
-    dataIndex: "enrollCount",
+    title: "使用状态",
+    dataIndex: "isUsed",
+    scopedSlots: { customRender: "useStauts" },
   },
   {
-    title: "报名时间",
-    dataIndex: "enrollTimeStr",
+    title: "昵称",
+    dataIndex: "nickName",
   },
   {
-    title: "培训时间",
-    dataIndex: "educationTimeStr",
+    title: "关联时间",
+    dataIndex: "joinTime",
   },
   {
     title: "操作",
@@ -143,18 +148,15 @@ const columns = [
 ];
 
 export default {
-  name: "Train",
-  components: { StandardTable, InfosTable },
+  name: "train",
+  components: { StandardTable, CodeConfig },
   i18n: require("./i18n"),
   data() {
     return {
       advanced: true,
       tableLoading: false,
-      configshow: false, // 二级table显隐
       columns: columns,
       dataSource: [],
-      // infoTableData: [], // 二级table data
-      // 分页
       pagination: {
         pageSize: 10,
         pageNo: 1,
@@ -166,28 +168,18 @@ export default {
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
-      enrollStatusList: [
-        { label: "未开始", value: 1 },
-        { label: "报名中", value: 2 },
-        { label: "已结束", value: 3 },
-      ],
       form: {
-        educationName: undefined,
-        enrollStatus: undefined,
+        refereeName: undefined,
+        code: undefined,
       },
       // 搜索项校验规则
       rules: {
-        educationName: [],
-        enrollStatus: [],
+        refereeName: [],
+        code: [],
       },
-      mapEnrollType: {
-        1: "培训",
-        2: "考试",
-      },
-      mapEnrollStatus: {
-        1: "未开始",
-        2: "报名者",
-        3: "已结束",
+      isUsedMapObj: {
+        0: "未使用",
+        1: "已使用",
       },
     };
   },
@@ -195,13 +187,7 @@ export default {
     ...mapState("setting", ["pageMinHeight"]),
     // page header desc
     desc() {
-      if (!this.configshow) {
-        return this.$t("description");
-      } else if (this.$refs.infosTable.detailShow) {
-        return this.$t("detailDesc");
-      } else {
-        return this.$t("configDesc");
-      }
+      return this.$t("description");
     },
   },
   created() {},
@@ -212,15 +198,56 @@ export default {
     },
 
     /**
-     * @description: 打开培训详情table
+     * @description: 打开详情页
+     * @param : status{int} 0: 新增， 1:修改
      * @param : id{int}
      * @return {*}
      * @author: Leo
      */
-    async openInfosTable(id) {
-      this.$refs.infosTable.setLastSerachData({ ...this.form, id });
-      await this.$refs.infosTable.searchTableData();
-      this.configshow = true;
+    async openAlarm(status, id) {
+      if (status === 1) {
+        await this.codeConfigDetail(id);
+      }
+      this.$refs.codeConfig.setOpenType(status, id);
+    },
+
+    // 查看 | 修改返显数据
+    codeConfigDetail(id) {
+      this.$refs.loading.openLoading("数据查询中，请稍后。。");
+      initCodeData(id).then((res) => {
+        this.$refs.loading.closeLoading();
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.$refs.codeConfig.form = {
+            refereeName: result.data.refereeName,
+            code: result.data.code,
+            linkMan: result.data.linkMan,
+            telPhone: result.data.telPhone,
+          };
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
+    // 删除
+    deleteInfo(id) {
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      deleteCode(id).then((res) => {
+        this.$refs.loading.closeLoading();
+        const result = res.data;
+        if (result.code === 0) {
+          this.$message.success(result.desc);
+          this.searchTableData();
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
+    deletecancel() {
+      this.$message.warning("删除操作已取消");
     },
 
     // 列表查询
@@ -231,7 +258,7 @@ export default {
         pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getTrainTableData(data).then((res) => {
+      getTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -258,15 +285,8 @@ export default {
     // 重置
     reset() {
       this.$refs.ruleForm.resetFields();
-      // this.dataSource = [];
+      this.dataSource = [];
       this.resetPagination();
-      this.configshow = false;
-      this.$refs.infosTable.detailShow = false;
-    },
-
-    // 关闭详情config
-    closeConfig() {
-      this.configshow = false;
     },
   },
   // 监听页面离开事件， 清空页面数据

@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-04 17:41:50
+ * @LastEditTime: 2021-01-05 10:40:18
  * @LastEditors: Leo
 -->
 <template>
@@ -214,6 +214,7 @@
                       :file-list="coverPictureList"
                       :before-upload="beforeUpload"
                       :headers="getAuthHeaders()"
+                      :remove="handleImgRemove"
                       :customRequest="customRequest"
                       @preview="handleImgPreview"
                       @change="handleImgChange">
@@ -241,6 +242,7 @@
                       list-type="picture-card"
                       :file-list="sharePictureList"
                       :headers="getAuthHeaders()"
+                      :remove="handleImgRemove1"
                       :before-upload="beforeUpload"
                       :customRequest="customRequest1"
                       @preview="handleImgPreview1"
@@ -654,6 +656,10 @@ export default {
       });
     },
 
+    handleImgRemove() {
+      this.form.imageUrl = "";
+    },
+
     // 分享图片
     handleCancel1() {
       this.previewVisible1 = false;
@@ -696,6 +702,10 @@ export default {
           this.$message.error(result.desc);
         }
       });
+    },
+
+    handleImgRemove1() {
+      this.form.shareImageUrl = "";
     },
 
     // 新增新的酒店名字

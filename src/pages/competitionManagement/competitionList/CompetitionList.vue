@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-04 18:19:19
+ * @LastEditTime: 2021-01-05 12:17:03
  * @LastEditors: Leo
 -->
 <template>
@@ -92,7 +92,7 @@
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
-                          @confirm="deleteInfo(record.sequenceNumber)"
+                          @confirm="deleteInfo(record.id)"
                           @cancel="deletecancel">
               <a href="#"
                  class="text-red">删除</a>
@@ -117,7 +117,11 @@
 <script>
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
-import { getTableData, initGameData, deleteGame } from "@/services/competition";
+import {
+  getTableData,
+  initGameData,
+  deleteGame,
+} from "@/services/competitionList";
 import CompetitionConfig from "./CompetitionConfig";
 
 // table columns data
@@ -243,12 +247,12 @@ export default {
           this.$refs.competitionConfig.form = {
             ...result.data,
             gameGrade: result.data.gameGradeList,
-            gameRuleName: result.data.gameRuleVoList
-              .map((item) => item.gameRuleName)
-              .join(),
-            gameRulePath: result.data.gameRuleVoList
-              .map((item) => item.gameRulePath)
-              .join(),
+            gameRuleName: result.data.gameRuleVoList.map(
+              (item) => item.gameRuleName
+            ),
+            gameRulePath: result.data.gameRuleVoList.map(
+              (item) => item.gameRulePath
+            ),
           };
           console.log(this.$refs.competitionConfig.form);
           this.$refs.competitionConfig.gameRulefileList = result.data.gameRuleVoList.map(
