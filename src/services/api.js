@@ -16,6 +16,9 @@ module.exports = {
   LOGINVERIFYCODE: `${BASE_URL}/login/verifyCode/image`, // 获取图形验证码
   LOGINSMSCODE: `${BASE_URL}/login/verifyCode/sms`, // 获取手机验证码
   LOGINBYPHONE: `${BASE_URL}/login/goMobile`, // 手机号登录
+  FOEGETPASSWORD: `${BASE_URL}/login/forgetPassword/validMobile`, // 找回密码验证手机验证码
+  FOEGETPASSWORDCODE: `${BASE_URL}/login/forgetPassword`, // 忘记密码获取手机验证码
+  RESETPASSWORD: `${BASE_URL}/login/forgetPassword/modPassword`, // 重置修改密码
 
   /* 权限设置 */
   // 用户管理

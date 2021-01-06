@@ -2,16 +2,18 @@
  * @Description: 忘记密码弹框
  * @Author: Leo
  * @Date: 2021-01-05 17:03:57
- * @LastEditTime: 2021-01-05 17:49:32
+ * @LastEditTime: 2021-01-06 13:40:02
  * @LastEditors: Leo
 -->
 <template>
   <a-modal title="忘记密码"
            width="800px"
            :visible="visible"
+           :maskClosable="false"
            centered
            destroyOnClose
-           @cancel="handleCancel">
+           @cancel="handleClose"
+           @ok="handleClose">
     <a-card :bordered="false">
       <a-steps class="steps"
                :current="current">
@@ -21,8 +23,11 @@
       </a-steps>
       <div class="content">
         <step1 v-if="current === 0"
+               ref="step1"
                @nextStep="nextStep"></step1>
         <step2 v-if="current === 1"
+               ref="step2"
+               :mobile="mobile"
                @nextStep="nextStep"
                @prevStep="prevStep"></step2>
         <step3 v-if="current === 2"
@@ -47,13 +52,16 @@ export default {
     return {
       current: 0,
       visible: false,
-      confirmLoading: false,
+      mobile: null,
     };
   },
   methods: {
-    nextStep() {
+    nextStep(mobile) {
       if (this.current < 2) {
         this.current += 1;
+      }
+      if (this.current === 1 && mobile) {
+        this.mobile = mobile;
       }
     },
     prevStep() {
@@ -61,20 +69,13 @@ export default {
         this.current -= 1;
       }
     },
-    finish() {
-      this.current = 0;
-    },
-    handleOk() {},
-    handleCancel() {
+    handleClose() {
+      // this.$refs.step1.form.resetFields();
+      // this.$refs.step2.form2.resetFields();
+      this.mobile = null;
       this.visible = false;
     },
   },
 };
 </script>
 
-<style lang="less" scoped>
-// .steps {
-//   max-width: 950px;
-//   margin: 16px auto;
-// }
-</style>

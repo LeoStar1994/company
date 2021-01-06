@@ -2,7 +2,7 @@
  * @Description: login登录页面.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 17:16:36
+ * @LastEditTime: 2021-01-06 11:08:26
  * @LastEditors: Leo
 -->
 
@@ -408,7 +408,11 @@ export default {
       // ajax
       SMSCode({ mobile }).then((res) => {
         const result = res.data;
-        console.log(result);
+        if (result.code === 0) {
+          this.$message.success("短信验证码已发送，请注意查收");
+        } else {
+          this.$message.error(result.desc);
+        }
       });
     },
 

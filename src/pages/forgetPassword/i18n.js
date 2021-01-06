@@ -15,7 +15,7 @@ module.exports = {
       preStep: "上一步",
       submit: "提交",
       note: "确认转账后，资金将直接打入对方账户，无法退回。",
-      success: "支付完成",
+      success: "密码重置成功",
       doAgain: "再转一笔",
       bill: "查看账单",
     },
