@@ -1,4 +1,4 @@
-/* 赛事列表 */
+/* 赛事管理 | 赛事列表 */
 import {
   COMPETITIONTABLEDATA,
   COMPETITIONADD,
@@ -6,6 +6,14 @@ import {
   COMPETITIONUPDATE,
   COMPETITIONDELETE,
   COMPETITIONUPLOAD,
+  COMPETITIONEXPORT,
+  SCHEDULEGRADELIST,
+  SCHEDULETEAMSLIST,
+  SCHEDULETABLEDATA,
+  SCHEDULEADD,
+  SCHEDULEUPDATE,
+  SCHEDULEINITDATA,
+  SCHEDULEDELETE
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -41,4 +49,46 @@ export async function initGameData(params) {
 // 删除
 export async function deleteGame(id) {
   return request(COMPETITIONDELETE, METHOD.DELETE, id);
+}
+
+// 导出
+export async function exportGameWord(data) {
+  return request(COMPETITIONEXPORT, METHOD.GET, data, "blob");
+}
+
+/************************** 赛事日程  **************************/
+
+// 获取赛事日程 =>  赛事组别list
+export async function gameGradeList(data) {
+  return request(SCHEDULEGRADELIST, METHOD.GET, data);
+}
+
+// 获取赛事日程 =>  参赛队伍list
+export async function gameTeamsList(data) {
+  return request(SCHEDULETEAMSLIST, METHOD.GET, data);
+}
+
+// 赛事日程table查询
+export async function getScheduleTableData(data) {
+  return request(SCHEDULETABLEDATA, METHOD.GET, data);
+}
+
+// 赛事日程新增
+export async function addSchedule(data) {
+  return request(SCHEDULEADD, METHOD.POST, data);
+}
+
+// 赛事日程修改
+export async function updateSchedule(data) {
+  return request(SCHEDULEUPDATE, METHOD.POST, data);
+}
+
+// 赛事日程修改反显
+export async function initScheduleData(data) {
+  return request(SCHEDULEINITDATA, METHOD.GET, data);
+}
+
+// 删除
+export async function deleteSchedule(data) {
+  return request(SCHEDULEDELETE, METHOD.DELETE, data);
 }

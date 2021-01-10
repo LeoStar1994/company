@@ -62,7 +62,40 @@ module.exports = {
   COMPETITIONDETAIL: `${BASE_URL}/games/detail`, // 修改初始化，返显数据
   COMPETITIONUPDATE: `${BASE_URL}/games/update`, // 修改
   COMPETITIONDELETE: `${BASE_URL}/games/delete`, // 删除
+  COMPETITIONEXPORT: `${BASE_URL}/games/join/export/word`, // 导出秩序册
   COMPETITIONUPLOAD: `${BASE_URL}/games/api/file/upload/oss`, // 上传url
+
+  // 赛事列表 => 赛事日程
+  SCHEDULETABLEDATA: `${BASE_URL}/games/schedules/list`, // table查询
+  SCHEDULEGRADELIST: `${BASE_URL}/games/getGrade`, // 组别list
+  SCHEDULETEAMSLIST: `${BASE_URL}/games/getTeams`, // 参赛球队list
+  SCHEDULEADD: `${BASE_URL}/games/schedules/save`, // 新增
+  SCHEDULEUPDATE: `${BASE_URL}/games/schedules/update`, // 修改
+  SCHEDULEINITDATA: `${BASE_URL}/games/schedules/select`, // 修改反显
+  SCHEDULEDELETE: `${BASE_URL}/games/schedules/delete`, // 删除
+
+  // 赛事列表 => 赛事日程 => 成绩录入 => 比赛结果
+  GAMESRESULTADD: `${BASE_URL}/games/achievement/result/addOrUpdate`, // 比赛结果新增 | 修改
+  GAMESRESULT: `${BASE_URL}/games/achievement/result/select`, // 获取比赛结果
+
+  // 赛事列表 => 赛事日程 => 成绩录入 => 裁判信息
+  REFEREEADDORUPDATE: `${BASE_URL}/games/achievement/referee/addOrUpdate`, // 裁判信息新增 | 修改
+  REFEREEDATA: `${BASE_URL}/games/achievement/referee/select`, // 获取裁判信息
+
+  // 赛事列表 => 赛事日程 => 成绩录入 => 任意球
+  FREEKICKADD: `${BASE_URL}/games/achievement/freekick/add`, // 任意球新增
+  FREEKICKDATA: `${BASE_URL}/games/achievement/freekick/list`, // 获取任意球记录
+  FREEKICKUPDATE: `${BASE_URL}/games/achievement/freekick/update`, // 任意球记录修改
+
+  // 赛事列表 => 赛事日程 => 成绩录入 => 判罚记录
+  PENALTYADD: `${BASE_URL}/games/achievement/penalty/add`, // 判罚记录新增
+  PENALTYDATA: `${BASE_URL}/games/achievement/penalty/list`, // 获取判罚记录
+  PENALTYUPDATE: `${BASE_URL}/games/achievement/penalty/update`, // 判罚记录修改
+
+  // 赛事列表 => 赛事日程 => 成绩录入 => 射中记录
+  SCOREADD: `${BASE_URL}/games/achievement/score/add`, // 射中记录新增
+  SCOREDATA: `${BASE_URL}/games/achievement/score/list`, // 获取射中记录
+  SCOREUPDATE: `${BASE_URL}/games/achievement/score/update`, // 射中记录修改
 
   // 赛事邀请码
   CODETABLEDATA: `${BASE_URL}/enducationInvitationCode/query`, // table查询
@@ -96,5 +129,5 @@ module.exports = {
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
-  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
+  BANNERDELETE: `${BASE_URL}/focus/delete` // 删除数据
 };

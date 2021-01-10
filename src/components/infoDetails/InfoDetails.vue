@@ -33,7 +33,7 @@
                              :key="index"
                              :label="item.label"
                              :span="item.span">
-          <span v-if="item.value.length > 0 && item.value instanceof Array">
+          <span v-if="item.value.length > 0 && (item.value instanceof Array)">
             <img v-for="(item1, index) in item.value"
                  :key="index"
                  :src="item1"
@@ -99,13 +99,13 @@ export default {
   props: {
     detailShow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object(),
-    },
+      default: new Object()
+    }
   },
   data() {
     return {
@@ -114,12 +114,12 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: [],
-      },
+        descList: []
+      }
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -143,14 +143,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach((item) => {
-        detailKeys.forEach((item1) => {
+      this.infoData.fieldsMapLabelSon.forEach(item => {
+        detailKeys.forEach(item1 => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1,
+              span: item.isOccupyAll ? 2 : 1
             });
           }
         });
@@ -160,8 +160,8 @@ export default {
 
     closeDetail() {
       this.detailShow1 = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

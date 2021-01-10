@@ -61,6 +61,8 @@ export function isEmpty(val) {
  * @author: Leo
  */
 export function downloadFile(data, fileName) {
+  // const fileFinallyName = decodeURI(fileName);
+  // console.log(fileFinallyName);
   if (!data) {
     return;
   }
@@ -95,7 +97,7 @@ export function getBase64(file) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
+    reader.onerror = error => reject(error);
   });
 }
 
@@ -106,7 +108,7 @@ export function enquireScreen(call) {
     },
     unmatch: function() {
       call && call(false);
-    },
+    }
   };
   enquireJs.register("only screen and (max-width: 767.99px)", handler);
 }

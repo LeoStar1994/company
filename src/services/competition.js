@@ -5,7 +5,7 @@ import {
   TEAMINFODETAIL,
   TEAMDELETE,
   TEAMEXPOTR,
-  TEAMEUDIT,
+  TEAMEUDIT
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -51,7 +51,7 @@ export async function getTeamDetail(data) {
  * @returns {Promise<AxiosResponse<T>>}
  */
 export async function deleteTeam(id) {
-  return request(TEAMDELETE + `/${id}`, METHOD.DELETE);
+  return request(TEAMDELETE, METHOD.DELETE, id);
 }
 
 /**

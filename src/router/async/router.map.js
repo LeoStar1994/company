@@ -2,7 +2,7 @@
 const view = {
   tabs: () => import("@/layouts/tabs"),
   blank: () => import("@/layouts/BlankView"),
-  page: () => import("@/layouts/PageView"),
+  page: () => import("@/layouts/PageView")
 };
 
 // 路由组件注册
@@ -27,7 +27,7 @@ const routerMap = {
   login: {
     authority: "*",
     path: "/login",
-    component: () => import("@/pages/login"),
+    component: () => import("@/pages/login")
   },
 
   // 异常页
@@ -35,26 +35,26 @@ const routerMap = {
     name: "异常页",
     icon: "warning",
     invisible: true,
-    component: view.blank,
+    component: view.blank
   },
   exp403: {
     authority: "*",
     invisible: true,
     name: "exp403",
     path: "403",
-    component: () => import("@/pages/exception/403"),
+    component: () => import("@/pages/exception/403")
   },
   exp404: {
     name: "exp404",
     invisible: true,
     path: "404",
-    component: () => import("@/pages/exception/404"),
+    component: () => import("@/pages/exception/404")
   },
   exp500: {
     name: "exp500",
     invisible: true,
     path: "500",
-    component: () => import("@/pages/exception/500"),
+    component: () => import("@/pages/exception/500")
   },
 
   // root
@@ -62,87 +62,87 @@ const routerMap = {
     path: "/",
     name: "首页",
     redirect: "/login",
-    component: view.tabs,
+    component: view.tabs
   },
 
   // 权限管理
   permissions: {
     name: "权限管理",
     icon: "setting",
-    component: view.page,
+    component: view.page
   },
   usersManangement: {
     path: "/permissions/usersManangement",
     name: "用户管理",
-    component: () => import("@/pages/permissions/usersManagement"),
+    component: () => import("@/pages/permissions/usersManagement")
   },
   rolesManagement: {
     path: "/permissions/rolesManagement",
     name: "角色管理",
-    component: () => import("@/pages/permissions/rolesManagement"),
+    component: () => import("@/pages/permissions/rolesManagement")
   },
 
   // 报名管理
   applyManagement: {
     name: "报名管理",
     icon: "form",
-    component: view.page,
+    component: view.page
   },
   train: {
     path: "/applyManagement/train",
     name: "培训",
-    component: () => import("@/pages/applyManagement/train"),
+    component: () => import("@/pages/applyManagement/train")
   },
   competition: {
     path: "/applyManagement/competition",
     name: "赛事",
-    component: () => import("@/pages/applyManagement/competition"),
+    component: () => import("@/pages/applyManagement/competition")
   },
 
   // 赛事管理
   competitionManagement: {
     name: "赛事管理",
     icon: "strikethrough",
-    component: view.page,
+    component: view.page
   },
   competitionList: {
     path: "/competitionManagement/competitionList",
     name: "赛事列表",
-    component: () => import("@/pages/competitionManagement/competitionList"),
+    component: () => import("@/pages/competitionManagement/competitionList")
   },
   invitationCode: {
     path: "/competitionManagement/invitationCode",
-    name: "邀请码",
-    component: () => import("@/pages/competitionManagement/invitationCode"),
+    name: "赛事邀请码",
+    component: () => import("@/pages/competitionManagement/invitationCode")
   },
 
   // 教学管理
   educationManagement: {
     name: "教学管理",
     icon: "read",
-    component: view.page,
+    component: view.page
   },
   educationList: {
     path: "/educationManagement/educationList",
     name: "教学列表",
-    component: () => import("@/pages/educationManagement/educationList"),
+    component: () => import("@/pages/educationManagement/educationList")
   },
   educationCode: {
     path: "/educationManagement/educationCode",
-    name: "邀请码",
-    component: () => import("@/pages/educationManagement/invitationCode"),
+    name: "教学邀请码",
+    component: () => import("@/pages/educationManagement/invitationCode")
   },
 
   // 焦点图管理
   bannerManagement: {
     name: "焦点图管理",
     icon: "picture",
-    component: view.page,
+    component: view.page
   },
   bannerList: {
     path: "/bannerManagement/bannerList",
     name: "焦点图列表",
-    component: () => import("@/pages/bannerManagement/bannerList"),
-  },
+    component: () => import("@/pages/bannerManagement/bannerList")
+  }
 };
 export default routerMap;
