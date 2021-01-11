@@ -1,11 +1,5 @@
 /* 赛事邀请码 */
-import {
-  CODETABLEDATA,
-  CODEADD,
-  CODEINITDATA,
-  CODEUPDATE,
-  CODEDELETE,
-} from "@/services/api";
+import { CODETABLEDATA, CODEADD, CODEUPDATE, CODEDELETE } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
 /**
@@ -14,7 +8,7 @@ import { request, METHOD } from "@/utils/request";
  * @returns {Promise<AxiosResponse<T>>}
  */
 export async function getTableData(data) {
-  return request(CODETABLEDATA, METHOD.POST, data);
+  return request(CODETABLEDATA, METHOD.GET, data);
 }
 
 // 新增
@@ -25,11 +19,6 @@ export async function addCode(data) {
 // 修改
 export async function updateCode(data) {
   return request(CODEUPDATE, METHOD.POST, data);
-}
-
-// 查看 | 修改返显数据
-export async function initCodeData(params) {
-  return request(CODEINITDATA + `/${params}`, METHOD.GET);
 }
 
 // 删除

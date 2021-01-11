@@ -32,8 +32,8 @@
               <a-col :md="8"
                      :sm="24">
                 <a-form-model-item label="球队名称"
-                                   prop="refereeName">
-                  <a-input v-model="form.refereeName"
+                                   prop="teamName">
+                  <a-input v-model="form.teamName"
                            allowClear
                            :maxLength="10"
                            placeholder="请输入球队名称"></a-input>
@@ -69,14 +69,10 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <div slot="useStauts"
-               slot-scope="{text}">
-            {{isUsedMapObj[text]}}
-          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
-               @click="openAlarm(1, record.id)">修改</a>
+               @click="openAlarm(1, record)">修改</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
@@ -104,51 +100,46 @@
 import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
 import CodeConfig from "./CodeConfig";
-import {
-  getTableData,
-  deleteCode,
-  initCodeData,
-} from "@/services/invitationCode";
+import { getTableData, deleteCode } from "@/services/invitationCode";
 
 // table columns data
 const columns = [
   {
     title: "邀请码ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "邀请码",
-    dataIndex: "code",
+    dataIndex: "code"
   },
   {
     title: "球队名称",
-    dataIndex: "refereeName",
+    dataIndex: "teamName"
   },
   {
     title: "联系人",
-    dataIndex: "linkMan",
+    dataIndex: "linkMan"
   },
   {
     title: "使用状态",
-    dataIndex: "isUsed",
-    scopedSlots: { customRender: "useStauts" },
+    dataIndex: "isUsed"
   },
   {
     title: "昵称",
-    dataIndex: "nickName",
+    dataIndex: "nickName"
   },
   {
     title: "关联时间",
-    dataIndex: "joinTime",
+    dataIndex: "joinTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
-  name: "train",
+  name: "InvitationCodePage",
   components: { StandardTable, CodeConfig },
   i18n: require("./i18n"),
   data() {
@@ -164,23 +155,19 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        refereeName: undefined,
-        code: undefined,
+        teamName: undefined,
+        code: undefined
       },
       // 搜索项校验规则
       rules: {
-        refereeName: [],
-        code: [],
-      },
-      isUsedMapObj: {
-        0: "未使用",
-        1: "已使用",
-      },
+        teamName: [],
+        code: []
+      }
     };
   },
   computed: {
@@ -188,7 +175,7 @@ export default {
     // page header desc
     desc() {
       return this.$t("description");
-    },
+    }
   },
   created() {},
   methods: {
@@ -200,41 +187,29 @@ export default {
     /**
      * @description: 打开详情页
      * @param : status{int} 0: 新增， 1:修改
-     * @param : id{int}
+     * @param : data{Object}
      * @return {*}
      * @author: Leo
      */
-    async openAlarm(status, id) {
+    async openAlarm(status, data) {
       if (status === 1) {
-        await this.codeConfigDetail(id);
+        await this.codeConfigDetail(data);
+        this.$refs.codeConfig.setOpenType(status, data.id);
       }
-      this.$refs.codeConfig.setOpenType(status, id);
+      this.$refs.codeConfig.setOpenType(status);
     },
 
     // 查看 | 修改返显数据
-    codeConfigDetail(id) {
-      this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initCodeData(id).then((res) => {
-        this.$refs.loading.closeLoading();
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.$refs.codeConfig.form = {
-            refereeName: result.data.refereeName,
-            code: result.data.code,
-            linkMan: result.data.linkMan,
-            telPhone: result.data.telPhone,
-          };
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+    codeConfigDetail(data) {
+      this.$refs.codeConfig.form = {
+        ...data
+      };
     },
 
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteCode(id).then((res) => {
+      deleteCode(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -255,13 +230,13 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getTableData(data).then((res) => {
+      getTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
-          this.dataSource = result.data.records;
+          this.dataSource = result.data.list;
           this.pagination.total = result.data.total;
         }
         this.tableLoading = false;
@@ -287,7 +262,7 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.dataSource = [];
       this.resetPagination();
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -295,6 +270,6 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>

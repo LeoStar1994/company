@@ -28,8 +28,8 @@
                    :maxLength="20" />
         </a-form-model-item>
         <a-form-model-item label="球队名称"
-                           prop="refereeName">
-          <a-input v-model="form.refereeName"
+                           prop="teamName">
+          <a-input v-model="form.teamName"
                    placeholder="请输入球队名称"
                    allowClear
                    :maxLength="20" />
@@ -71,14 +71,15 @@ export default {
       openType: 0,
       confirmLoading: false,
       form: {
-        refereeName: undefined,
+        teamName: undefined,
         code: undefined,
         linkMan: undefined,
-        telPhone: undefined
+        telPhone: undefined,
+        hockeyGamesId: null
       },
       // 搜索项校验规则
       rules: {
-        refereeName: [
+        teamName: [
           {
             required: true,
             message: "请输入球队名称",
@@ -100,17 +101,17 @@ export default {
           }
         ],
         telPhone: []
-      },
-      currentId: null
+      }
     };
   },
   created() {},
   methods: {
     setOpenType(type, id) {
       this.openType = type;
-      this.currentId = id;
+      this.form.hockeyGamesId = id;
       if (type === 0) {
         this.pageTitle = "新增邀请码";
+        this.reset();
       } else {
         this.pageTitle = "修改邀请码";
       }
@@ -142,7 +143,6 @@ export default {
             });
           } else if (this.openType === 1) {
             // 修改
-            data.id = this.currentId;
             updateCode(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
@@ -159,6 +159,15 @@ export default {
           return false;
         }
       });
+    },
+    reset() {
+      this.form = {
+        teamName: undefined,
+        code: undefined,
+        linkMan: undefined,
+        telPhone: undefined,
+        hockeyGamesId: null
+      };
     },
     handleCancel() {
       this.$refs.ruleForm.resetFields();

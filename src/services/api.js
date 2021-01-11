@@ -99,11 +99,10 @@ module.exports = {
   SCOREUPDATE: `${BASE_URL}/games/achievement/score/update`, // 射中记录修改
 
   // 赛事邀请码
-  CODETABLEDATA: `${BASE_URL}/enducationInvitationCode/query`, // table查询
-  CODEADD: `${BASE_URL}/enducationInvitationCode/add`, // 新增
-  CODEINITDATA: `${BASE_URL}/enducationInvitationCode/initMod`, // 修改初始化，返显数据
-  CODEUPDATE: `${BASE_URL}/enducationInvitationCode/mod`, // 修改
-  CODEDELETE: `${BASE_URL}/enducationInvitationCode/delete`, // 删除
+  CODETABLEDATA: `${BASE_URL}/games/code/select`, // table查询
+  CODEADD: `${BASE_URL}/games/code/add`, // 新增
+  CODEUPDATE: `${BASE_URL}/games/code/update`, // 修改
+  CODEDELETE: `${BASE_URL}/games/code/delete`, // 删除
 
   /* 教学管理 */
   // 教学列表
@@ -130,5 +129,5 @@ module.exports = {
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
-  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
+  BANNERDELETE: `${BASE_URL}/focus/delete` // 删除数据
 };
