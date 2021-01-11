@@ -13,7 +13,8 @@ import {
   SCHEDULEADD,
   SCHEDULEUPDATE,
   SCHEDULEINITDATA,
-  SCHEDULEDELETE
+  SCHEDULEDELETE,
+  SCHEDULEVIDEO,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -91,4 +92,9 @@ export async function initScheduleData(data) {
 // 删除
 export async function deleteSchedule(data) {
   return request(SCHEDULEDELETE, METHOD.DELETE, data);
+}
+
+// 视频保存
+export async function videoSave(data) {
+  return request(SCHEDULEVIDEO, METHOD.POST, data);
 }

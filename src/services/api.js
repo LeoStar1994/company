@@ -73,6 +73,7 @@ module.exports = {
   SCHEDULEUPDATE: `${BASE_URL}/games/schedules/update`, // 修改
   SCHEDULEINITDATA: `${BASE_URL}/games/schedules/select`, // 修改反显
   SCHEDULEDELETE: `${BASE_URL}/games/schedules/delete`, // 删除
+  SCHEDULEVIDEO: `${BASE_URL}/games/schedules/video/add`, // 删除
 
   // 赛事列表 => 赛事日程 => 成绩录入 => 比赛结果
   GAMESRESULTADD: `${BASE_URL}/games/achievement/result/addOrUpdate`, // 比赛结果新增 | 修改
@@ -129,5 +130,5 @@ module.exports = {
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
-  BANNERDELETE: `${BASE_URL}/focus/delete` // 删除数据
+  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
 };
