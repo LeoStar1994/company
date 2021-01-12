@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 邀请码.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 15:25:22
+ * @LastEditTime: 2021-01-12 10:25:08
  * @LastEditors: Leo
 -->
 <template>
@@ -218,7 +218,6 @@ export default {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
-          this.$message.success(result.desc);
           this.$refs.codeConfig.form = {
             refereeName: result.data.refereeName,
             code: result.data.code,

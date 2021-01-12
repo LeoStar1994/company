@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 12:37:41
+ * @LastEditTime: 2021-01-12 10:23:12
  * @LastEditors: Leo
 -->
 <template>
@@ -70,14 +70,6 @@
                         :loading="tableLoading"
                         :pagination="pagination"
                         @change="handleTableChange">
-          <div slot="mapEnrollType"
-               slot-scope="{text}">
-            {{mapEnrollType[text]}}
-          </div>
-          <div slot="mapEnrollStatus"
-               slot-scope="{text}">
-            {{mapEnrollStatus[text]}}
-          </div>
           <div slot="action"
                slot-scope="{record}">
             <a class="mr-12"
@@ -117,12 +109,10 @@ const columns = [
   {
     title: "类型",
     dataIndex: "enrollType",
-    scopedSlots: { customRender: "mapEnrollType" },
   },
   {
     title: "状态",
     dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "mapEnrollStatus" },
   },
   {
     title: "报名人数",
@@ -153,7 +143,6 @@ export default {
       configshow: false, // 二级table显隐
       columns: columns,
       dataSource: [],
-      // infoTableData: [], // 二级table data
       // 分页
       pagination: {
         pageSize: 10,
@@ -179,15 +168,6 @@ export default {
       rules: {
         educationName: [],
         enrollStatus: [],
-      },
-      mapEnrollType: {
-        1: "培训",
-        2: "考试",
-      },
-      mapEnrollStatus: {
-        1: "未开始",
-        2: "报名者",
-        3: "已结束",
       },
     };
   },

@@ -2,15 +2,15 @@
  * @Description: 欢迎页面.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 16:02:34
+ * @LastEditTime: 2021-01-12 10:31:10
  * @LastEditors: Leo
 -->
 <template>
   <div class="rolesManagement-page">
     <a-card :style="`min-height: ${pageMinHeight}px`">
-      <h1>欢迎使用本系统</h1>
-      <img src="../../assets/img/welcome.jpg"
-           width="90%"
+      <!-- <h1>欢迎使用本系统</h1> -->
+      <img src="../../assets/img/welcome.png"
+           width="100%"
            alt="欢迎背景图">
     </a-card>
   </div>
@@ -33,10 +33,10 @@ export default {
       } else {
         return this.$t("description");
       }
-    }
+    },
   },
   created() {},
-  methods: {}
+  methods: {},
 };
 </script>
 
