@@ -129,5 +129,9 @@ module.exports = {
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据
-  BANNERDELETE: `${BASE_URL}/focus/delete` // 删除数据
+  BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
+
+  /* 小程序管理 */
+  APPLETTABLEDATA: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/query`, // table查询
+  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
 };
