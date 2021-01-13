@@ -11,6 +11,7 @@
              width="600px"
              :visible="visible"
              :confirm-loading="confirmLoading"
+             :maskClosable="false"
              centered
              destroyOnClose
              @ok="handleOk"
@@ -69,24 +70,24 @@ export default {
   props: {
     homeTeamName: {
       type: String,
-      required: true,
+      required: true
     },
     guestTeamName: {
       type: String,
-      required: true,
+      required: true
     },
     awayTeamId: {
       type: Number,
-      required: true,
+      required: true
     },
     homeTeamId: {
       type: Number,
-      required: true,
+      required: true
     },
     schedulesId: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
@@ -99,14 +100,14 @@ export default {
       confirmLoading: false,
       scoreResultList: [
         { name: "是", id: 0 },
-        { name: "否", id: 1 },
+        { name: "否", id: 1 }
       ],
       form: {
         teamId: null, // 队伍id
         schedulesId: null, // 日程id
         keeperNum: undefined,
         scoreNum: undefined,
-        scoreResult: 0,
+        scoreResult: 0
       },
       // 搜索项校验规则
       rules: {
@@ -114,17 +115,17 @@ export default {
           {
             required: true,
             message: "请输入球员号码",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         keeperNum: [
           {
             required: true,
             message: "请输入对方守门员号码",
-            trigger: "blur",
-          },
-        ],
-      },
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   created() {},
@@ -160,13 +161,13 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = { ...this.form, schedulesId: this.schedulesId };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             freekickAdd(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -186,7 +187,7 @@ export default {
               });
           } else if (this.openType === 1) {
             freekickUpdate(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -216,13 +217,13 @@ export default {
         schedulesId: null, // 日程id
         keeperNum: undefined,
         scoreNum: undefined,
-        scoreResult: 0,
+        scoreResult: 0
       };
     },
     handleCancel() {
       this.resetFormFields();
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>

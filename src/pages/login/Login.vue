@@ -163,7 +163,8 @@ import {
   login,
   SMSCode,
   loginByPhone,
-  getRoutesConfig
+  getRoutesConfig,
+  getUserInfo
 } from "@/services/user";
 import { setAuthorization } from "@/utils/request";
 import { loadRoutes } from "@/utils/routerUtil";
@@ -171,6 +172,7 @@ import { mapMutations } from "vuex";
 
 const userInfo = {
   name: "lucky",
+  userIdentify: null,
   avatar: "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png",
   address: "@CITY",
   position: {
@@ -343,6 +345,15 @@ export default {
         setAuthorization({
           token: loginRes.data,
           expireAt: new Date(loginRes.expireAt)
+        });
+        // 获取userInfo
+        getUserInfo({ loginToken: loginRes.data }).then(res => {
+          const result = res.data;
+          if (result.code === 0) {
+            loginRes.user.userIdentify = result.data.userIdentify;
+          } else {
+            this.$message.error(result.desc);
+          }
         });
         // 获取路由配置
         getRoutesConfig().then(result => {

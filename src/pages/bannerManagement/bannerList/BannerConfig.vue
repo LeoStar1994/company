@@ -11,6 +11,7 @@
              width="700px"
              :visible="visible"
              :confirm-loading="confirmLoading"
+             :maskClosable="false"
              centered
              destroyOnClose
              @ok="handleOk"

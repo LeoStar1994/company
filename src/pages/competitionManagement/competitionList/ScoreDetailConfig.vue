@@ -271,7 +271,7 @@ import {
   getScoreData,
   getPenaltyData,
   getFreekickData,
-  getRefereeInfo,
+  getRefereeInfo
 } from "@/services/scoreModals";
 
 const refereeInfoList = [
@@ -279,56 +279,56 @@ const refereeInfoList = [
     label: "主裁判",
     field: "referee",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "边裁",
     field: "sideReferee",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "计时",
     field: "timeMan",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "宣告",
     field: "declareMan",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "记罚",
     field: "penaltyMan",
     value: `leo`,
-    span: 1,
+    span: 1
   },
   {
     label: "记录",
     field: "recordMan",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "裁判监督",
     field: "refereeSupervision",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "比赛监督",
     field: "matchSupervise",
     value: ``,
-    span: 1,
+    span: 1
   },
   {
     label: "助理",
     field: "assistant",
     value: ``,
-    span: 1,
-  },
+    span: 1
+  }
 ];
 
 export default {
@@ -339,18 +339,18 @@ export default {
     PenaltyRecordModal,
     FreeKickModal,
     RefereeInfoModal,
-    StandardTable,
+    StandardTable
   },
   props: {
     scoreShow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object(),
-    },
+      default: new Object()
+    }
   },
   data() {
     return {
@@ -359,11 +359,11 @@ export default {
       awayTeamId: null, // 客队id
       homeTeamId: null, // 主队id
       schedulesId: null, // 日程id
-      gameResultForm: {},
+      gameResultForm: {}
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   mounted() {},
   methods: {
@@ -396,7 +396,7 @@ export default {
     },
 
     getGamesResultData() {
-      getGamesResult(this.schedulesId).then((res) => {
+      getGamesResult(this.schedulesId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.$refs.gameResultModal.form = { ...result.data };
@@ -414,7 +414,7 @@ export default {
     },
 
     getRefereeInfoData() {
-      getRefereeInfo(this.schedulesId).then((res) => {
+      getRefereeInfo(this.schedulesId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           console.log(result);
@@ -434,11 +434,11 @@ export default {
             penaltyMan1: result.data.penaltyMan[0], // 记罚
             penaltyMan2: result.data.penaltyMan[1],
             assistant1: result.data.assistant[0], // 助理
-            assistant2: result.data.assistant[1],
+            assistant2: result.data.assistant[1]
           };
           this.$refs.refereeInfoModal.form.schedulesId =
             result.data.schedulesId;
-          this.infoData.refereeInfoList = refereeInfoList.map((item) => {
+          this.infoData.refereeInfoList = refereeInfoList.map(item => {
             item.value = result.data[item.field].join();
             return item;
           });
@@ -464,7 +464,7 @@ export default {
     },
 
     searchShootRecordTableData(teamId, teamType) {
-      getScoreData(this.schedulesId, teamId).then((res) => {
+      getScoreData(this.schedulesId, teamId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           if (teamType === 0) {
@@ -488,7 +488,7 @@ export default {
     },
 
     searchPenaltyRecordTableData(teamId, teamType) {
-      getPenaltyData(this.schedulesId, teamId).then((res) => {
+      getPenaltyData(this.schedulesId, teamId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           if (teamType === 0) {
@@ -511,7 +511,7 @@ export default {
     },
 
     searchFreeKickRecordTableData(teamId, teamType) {
-      getFreekickData(this.schedulesId, teamId).then((res) => {
+      getFreekickData(this.schedulesId, teamId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           if (teamType === 0) {
@@ -523,19 +523,19 @@ export default {
           this.$message.error(result.desc);
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
 .scoreDetails-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // right: 0;
+  // bottom: 0;
+  // z-index: 999;
   .game-result {
     ul {
       border: 1px solid #f0f0f0;

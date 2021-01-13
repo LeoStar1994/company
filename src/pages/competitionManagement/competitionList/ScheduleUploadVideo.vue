@@ -8,11 +8,12 @@
 <template>
   <div class="uploadVideo-modal">
     <a-modal :title="pageTitle"
-             width="600px"
+             width="500px"
              :visible="visible"
              :confirm-loading="confirmLoading"
              centered
              destroyOnClose
+             :maskClosable="false"
              @ok="handleOk"
              okText="保存"
              @cancel="handleCancel">
@@ -48,7 +49,7 @@ export default {
   data() {
     return {
       visible: false,
-      labelCol: { span: 5 },
+      labelCol: { span: 4 },
       wrapperCol: { span: 16, offset: 1 },
       pageTitle: "上传视频",
       confirmLoading: false,
@@ -56,7 +57,7 @@ export default {
       form: {
         videoNames: [], // 视频名称
         videoUrls: [], // 视频连接
-        schedulesId: null,
+        schedulesId: null
       },
       // 搜索项校验规则
       rules: {
@@ -64,10 +65,10 @@ export default {
           {
             required: true,
             message: "请输入球员号码",
-            trigger: "change",
-          },
-        ],
-      },
+            trigger: "change"
+          }
+        ]
+      }
     };
   },
   created() {},
@@ -90,17 +91,19 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then((res) => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.videoNames.push(result.data.uploadFilename);
-          this.form.videoUrls.push(result.data.fileUrl);
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.videoNames.push(result.data.uploadFilename);
+            this.form.videoUrls.push(result.data.fileUrl);
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {});
     },
 
     videoUploadChange({ fileList }) {
@@ -129,14 +132,14 @@ export default {
     },
 
     saveVideoInfo() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = {
             videoNames: this.form.videoNames.join(),
             videoUrls: this.form.videoNames.join(),
-            schedulesId: this.form.schedulesId,
+            schedulesId: this.form.schedulesId
           };
-          videoSave(data).then((res) => {
+          videoSave(data).then(res => {
             const result = res.data;
             if (result.code === 0) {
               this.$message.success(result.desc);
@@ -154,7 +157,7 @@ export default {
     handleCancel() {
       this.videoList = [];
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>

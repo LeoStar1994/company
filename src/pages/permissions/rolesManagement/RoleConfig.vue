@@ -16,18 +16,17 @@
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item required
-                           label="角色名称"
+        <a-form-model-item label="角色名称"
                            prop="name">
           <a-input v-model="form.name"
-                   :disabled="openType === 1 || !sassIdIsEmpty"
+                   :disabled="openType === 1 && !sassIdIsEmpty"
                    allowClear
                    :maxLength="20" />
         </a-form-model-item>
         <a-form-model-item label="状态"
                            prop="state">
           <a-radio-group v-model="form.state"
-                         :disabled="openType === 1 || !sassIdIsEmpty">
+                         :disabled="openType === 1 && !sassIdIsEmpty">
             <a-radio value="0">启用</a-radio>
             <a-radio value="1">停用</a-radio>
           </a-radio-group>
@@ -36,7 +35,7 @@
                            prop="remark">
           <a-input v-model="form.remark"
                    :maxLength="500"
-                   :disabled="openType === 1 || !sassIdIsEmpty"
+                   :disabled="openType === 1 && !sassIdIsEmpty"
                    allowClear
                    :auto-size="{ minRows: 3, maxRows: 5 }"
                    type="textarea" />
@@ -47,7 +46,7 @@
             <a-tree v-model="form.selectedMenusList"
                     checkable
                     :replaceFields='treeDefaultObject'
-                    :disabled="openType === 1 || !sassIdIsEmpty"
+                    :disabled="openType === 1 && !sassIdIsEmpty"
                     :tree-data="treeData" />
             <a-empty v-if="treeData.length === 0" />
           </div>
@@ -55,7 +54,7 @@
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
                     class="mr-20"
-                    :disabled="openType === 1 || !sassIdIsEmpty"
+                    :disabled="openType === 1 && !sassIdIsEmpty"
                     @click="onSubmit">保存
           </a-button>
           <a-button style="margin-left: 10px;"
@@ -80,13 +79,13 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     treeData: {
       type: Array,
       required: true,
-      default: new Array(),
-    },
+      default: new Array()
+    }
   },
   data() {
     return {
@@ -98,13 +97,13 @@ export default {
       treeDefaultObject: {
         children: "children",
         title: "name",
-        key: "id",
+        key: "id"
       },
       form: {
         name: "",
         remark: "",
         selectedMenusList: [],
-        state: "0",
+        state: "0"
       },
       // 搜索项校验规则
       rules: {
@@ -112,14 +111,14 @@ export default {
           {
             required: true,
             message: "请输入角色名称",
-            trigger: "blur",
-          },
-        ],
-      },
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   computed: {
-    ...mapState(["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -135,13 +134,13 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addRole(data).then((res) => {
+            addRole(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -155,7 +154,7 @@ export default {
           } else if (this.openType === 2) {
             // 修改
             data.sequenceNumber = this.sequenceNumber;
-            updateRole(data).then((res) => {
+            updateRole(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -176,8 +175,8 @@ export default {
     resetForm() {
       this.$refs.ruleForm.resetFields();
       this.$emit("closeConfig");
-    },
-  },
+    }
+  }
 };
 </script>
 

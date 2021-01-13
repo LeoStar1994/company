@@ -10,6 +10,7 @@
     <a-modal :title="pageTitle"
              width="600px"
              :visible="visible"
+             :maskClosable="false"
              :confirm-loading="confirmLoading"
              centered
              destroyOnClose
@@ -214,10 +215,10 @@ export default {
         penaltyMan1: undefined, // 记罚
         penaltyMan2: undefined,
         assistant1: undefined, // 助理
-        assistant2: undefined,
+        assistant2: undefined
       },
       // 搜索项校验规则
-      rules: {},
+      rules: {}
     };
   },
   created() {},
@@ -232,7 +233,7 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const {
             schedulesId,
@@ -250,7 +251,7 @@ export default {
             penaltyMan1,
             penaltyMan2,
             assistant1,
-            assistant2,
+            assistant2
           } = this.form;
           const data = {
             schedulesId,
@@ -262,10 +263,10 @@ export default {
             refereeSupervision: `${refereeSupervision1},${refereeSupervision2}`,
             matchSupervise: `${matchSupervise1},${matchSupervise2}`,
             penaltyMan: `${penaltyMan1},${penaltyMan2}`,
-            assistant: `${assistant1},${assistant2}`,
+            assistant: `${assistant1},${assistant2}`
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          refereeInfoSave(data).then((res) => {
+          refereeInfoSave(data).then(res => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {
@@ -284,7 +285,7 @@ export default {
     handleCancel() {
       this.$refs.ruleForm.resetFields();
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>

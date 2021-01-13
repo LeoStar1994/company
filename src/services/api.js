@@ -12,6 +12,7 @@ module.exports = {
   // ROUTES: `${BASE_URL}/routes`, // 获取menu菜单
 
   LOGIN: `${BASE_URL}/login/go`, // 登录
+  GETUSERINFO: `${BASE_URL}/home/getUserInfo`, // 登录
   ROUTES: `${BASE_URL}/home`, // 获取menu菜单
   LOGINVERIFYCODE: `${BASE_URL}/login/verifyCode/image`, // 获取图形验证码
   LOGINSMSCODE: `${BASE_URL}/login/verifyCode/sms`, // 获取手机验证码
@@ -133,5 +134,5 @@ module.exports = {
 
   /* 小程序管理 */
   APPLETTABLEDATA: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/query`, // table查询
-  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
+  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade` // 获取类型列表
 };

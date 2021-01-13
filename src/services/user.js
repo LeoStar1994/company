@@ -3,10 +3,11 @@ import {
   LOGINVERIFYCODE,
   LOGINSMSCODE,
   LOGINBYPHONE,
+  GETUSERINFO,
   ROUTES,
   FOEGETPASSWORD,
   FOEGETPASSWORDCODE,
-  RESETPASSWORD,
+  RESETPASSWORD
 } from "@/services/api";
 import { request, METHOD, removeAuthorization } from "@/utils/request";
 
@@ -18,6 +19,11 @@ import { request, METHOD, removeAuthorization } from "@/utils/request";
  */
 export async function login(data) {
   return request(LOGIN, METHOD.POST, data);
+}
+
+// 获取用户信息
+export async function getUserInfo(data) {
+  return request(GETUSERINFO, METHOD.GET, data);
 }
 
 // 获取图形验证码
@@ -75,5 +81,5 @@ export default {
   login,
   logout,
   loginByPhone,
-  getRoutesConfig,
+  getRoutesConfig
 };

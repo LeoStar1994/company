@@ -74,7 +74,6 @@
           <a-button @click="openAlarm(0)"
                     class="mr-10"
                     type="primary">新增</a-button>
-          <a-button>批量操作</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
@@ -133,7 +132,7 @@ import {
   rolesTreeList,
   changeUserState,
   deleteUserInfo,
-  initUserDetail,
+  initUserDetail
 } from "@/services/usersManagement";
 import UsersConfig from "./UsersConfig";
 import { isEmpty } from "@/utils/util";
@@ -142,41 +141,41 @@ import { isEmpty } from "@/utils/util";
 const columns = [
   {
     title: "序号",
-    dataIndex: "sequenceNumber",
+    dataIndex: "sequenceNumber"
   },
   {
     title: "用户",
-    dataIndex: "name",
+    dataIndex: "name"
   },
   {
     title: "账号",
-    dataIndex: "account",
+    dataIndex: "account"
   },
   {
     title: "手机号",
-    dataIndex: "mobile",
+    dataIndex: "mobile"
   },
   {
     title: "创建时间",
-    dataIndex: "createTime",
+    dataIndex: "createTime"
   },
   {
     title: "更新时间",
-    dataIndex: "updateTime",
+    dataIndex: "updateTime"
   },
   {
     title: "角色名称",
-    dataIndex: "rolesName",
+    dataIndex: "rolesName"
   },
   {
     title: "状态",
     dataIndex: "state",
-    scopedSlots: { customRender: "state" },
+    scopedSlots: { customRender: "state" }
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -198,25 +197,25 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
         name: undefined,
         account: undefined,
-        mobile: undefined,
+        mobile: undefined
       },
       // 搜索项校验规则
       rules: {
         name: [],
         account: [],
-        mobile: [],
+        mobile: []
       },
       statusMapText: {
         0: "启用",
-        1: "停用",
-      },
+        1: "停用"
+      }
     };
   },
   computed: {
@@ -228,7 +227,7 @@ export default {
       } else {
         return this.$t("description");
       }
-    },
+    }
   },
   created() {
     this.getRolesList();
@@ -237,7 +236,7 @@ export default {
     isEmpty: isEmpty,
     // 获取角色tree list
     getRolesList() {
-      rolesTreeList().then((res) => {
+      rolesTreeList().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.treeData = result.data.roleModels;
@@ -264,14 +263,14 @@ export default {
       if (status === 1 || status === 2) {
         await this.userConfigDetail(id);
       }
-      this.$refs.userConfig.setOpenType(status, id, sassIdIsEmpty);
       this.configshow = true;
+      this.$refs.userConfig.setOpenType(status, id, sassIdIsEmpty);
     },
 
     // 查看 | 修改返显数据
     userConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then((res) => {
+      initUserDetail(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -283,7 +282,7 @@ export default {
             password: result.data.password,
             remark: result.data.remark,
             roles: result.data.roles,
-            state: result.data.state.toString(),
+            state: result.data.state.toString()
           };
         } else {
           this.$message.error(result.desc);
@@ -295,10 +294,10 @@ export default {
     changeService(sequenceNumber, state) {
       const data = {
         sequenceNumber,
-        state,
+        state
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      changeUserState(data).then((res) => {
+      changeUserState(data).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -313,7 +312,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then((res) => {
+      deleteUserInfo(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -334,10 +333,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getUsersTableData(data).then((res) => {
+      getUsersTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -372,7 +371,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -380,7 +379,7 @@ export default {
       this.reset();
     }
     next();
-  },
+  }
 };
 </script>
 

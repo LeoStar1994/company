@@ -120,6 +120,7 @@
     <!-- 球队审核不通过弹框 -->
     <a-modal title="审核反馈"
              :visible="modalVisible"
+             :maskClosable="false"
              @ok="handleOk"
              @cancel="handleCancel">
       <a-form-model ref="ruleForm"

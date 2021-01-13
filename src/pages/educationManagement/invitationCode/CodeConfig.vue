@@ -11,6 +11,7 @@
              width="400px"
              :visible="visible"
              :confirm-loading="confirmLoading"
+             :maskClosable="false"
              centered
              destroyOnClose
              @ok="handleOk"
@@ -74,7 +75,7 @@ export default {
         refereeName: undefined,
         code: undefined,
         linkMan: undefined,
-        telPhone: undefined,
+        telPhone: undefined
       },
       // 搜索项校验规则
       rules: {
@@ -82,26 +83,26 @@ export default {
           {
             required: true,
             message: "请输入教练名称",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         code: [
           {
             required: true,
             message: "请输入邀请码",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         linkMan: [
           {
             required: true,
             message: "请输入联系人",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
-        telPhone: [],
+        telPhone: []
       },
-      currentId: null,
+      currentId: null
     };
   },
   created() {},
@@ -123,13 +124,13 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addCode(data).then((res) => {
+            addCode(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -143,7 +144,7 @@ export default {
           } else if (this.openType === 1) {
             // 修改
             data.id = this.currentId;
-            updateCode(data).then((res) => {
+            updateCode(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -163,7 +164,7 @@ export default {
     handleCancel() {
       this.$refs.ruleForm.resetFields();
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>

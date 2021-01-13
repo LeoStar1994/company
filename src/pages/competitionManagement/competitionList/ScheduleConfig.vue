@@ -130,12 +130,12 @@ export default {
   props: {
     gameGradeList: {
       type: Array,
-      default: new Array(),
+      default: new Array()
     },
     teamsList: {
       type: Array,
-      default: new Array(),
-    },
+      default: new Array()
+    }
   },
   data() {
     return {
@@ -156,7 +156,7 @@ export default {
         sessionsStartTime: null, // 比赛开始时间
         hockeyGamesId: undefined, // 赛事id
         gameGrade: undefined, // 赛事组别
-        gameSessions: undefined, // 场次
+        gameSessions: undefined // 场次
       },
       // 搜索项校验规则
       scheduleConfigRules: {
@@ -164,57 +164,57 @@ export default {
           {
             required: true,
             message: "请选择竞赛组别",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         homeTeamId: [
           {
             required: true,
             message: "请选择主队",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         awayTeamId: [
           {
             required: true,
             trigger: "change",
-            validator: this.handleCheckTeams,
-          },
+            validator: this.handleCheckTeams
+          }
         ],
         gameSessions: [
           {
             required: true,
             message: "请输入场次",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: /^\d+$/,
-            message: "场次只能输入数字！",
-          },
+            message: "场次只能输入数字！"
+          }
         ],
         sessionsStartTime: [
           {
             required: true,
             message: "请选择比赛开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         sessionsEndTime: [
           {
             required: true,
             message: "请选择比赛结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         place: [
           {
             required: true,
             trigger: "blur",
-            validator: this.handleCheckPlace,
-          },
-        ],
+            validator: this.handleCheckPlace
+          }
+        ]
       },
-      currentId: null,
+      currentId: null
     };
   },
   created() {},
@@ -252,7 +252,7 @@ export default {
 
     // 校验比赛场地
     handleCheckPlace(rule, value, callback) {
-      const finallyPlace = this.placeList.map((item) => item.place).join();
+      const finallyPlace = this.placeList.map(item => item.place).join();
       if (this.$isEmpty(finallyPlace)) {
         callback("请输入比赛场地");
       }
@@ -264,12 +264,12 @@ export default {
       if (type === 0) {
         // 主队
         this.scheduleConfigForm.homeTeamName = this.teamsList.find(
-          (item) => item.gameTeamId === teamId
+          item => item.gameTeamId === teamId
         ).gameTeamName;
       } else {
         // 客队
         this.scheduleConfigForm.awayTeamName = this.teamsList.find(
-          (item) => item.gameTeamId === teamId
+          item => item.gameTeamId === teamId
         ).gameTeamName;
       }
     },
@@ -305,15 +305,15 @@ export default {
     // 保存
     onSubmit() {
       this.scheduleConfigForm.place = this.placeList
-        .map((item) => item.place)
+        .map(item => item.place)
         .join();
-      this.$refs.scheduleConfigForm.validate((valid) => {
+      this.$refs.scheduleConfigForm.validate(valid => {
         if (valid) {
           const data = { ...this.scheduleConfigForm };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addSchedule(data).then((res) => {
+            addSchedule(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -327,7 +327,7 @@ export default {
           } else if (this.openType === 1) {
             // 修改
             data.id = this.currentId;
-            updateSchedule(data).then((res) => {
+            updateSchedule(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -348,8 +348,8 @@ export default {
     handleCancel() {
       this.$refs.scheduleConfigForm.resetFields();
       this.scheduleConfigVisible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="less">

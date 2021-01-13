@@ -10,6 +10,7 @@
     <a-modal :title="pageTitle"
              width="600px"
              :visible="visible"
+             :maskClosable="false"
              :confirm-loading="confirmLoading"
              centered
              destroyOnClose
@@ -94,24 +95,24 @@ export default {
   props: {
     homeTeamName: {
       type: String,
-      required: true,
+      required: true
     },
     guestTeamName: {
       type: String,
-      required: true,
+      required: true
     },
     awayTeamId: {
       type: Number,
-      required: true,
+      required: true
     },
     homeTeamId: {
       type: Number,
-      required: true,
+      required: true
     },
     schedulesId: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
@@ -130,7 +131,7 @@ export default {
         num: undefined,
         penaltyTime: undefined,
         reason: undefined,
-        startTime: undefined,
+        startTime: undefined
       },
       // 搜索项校验规则
       rules: {
@@ -138,53 +139,53 @@ export default {
           {
             required: true,
             message: "请输入事件时间",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: timeRegExp,
-            message: "请输入mm:ss时间格式！",
-          },
+            message: "请输入mm:ss时间格式！"
+          }
         ],
         endTime: [
           {
             required: true,
             trigger: "blur",
-            validator: this.checkEndTime,
-          },
+            validator: this.checkEndTime
+          }
         ],
         startTime: [
           {
             required: true,
             trigger: "blur",
-            validator: this.checkStartTime,
-          },
+            validator: this.checkStartTime
+          }
         ],
         penaltyTime: [
           {
             required: true,
             message: "请输入判罚时间",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: timeRegExp,
-            message: "请输入mm:ss时间格式！",
-          },
+            message: "请输入mm:ss时间格式！"
+          }
         ],
         reason: [
           {
             required: true,
             message: "请输入判罚原因",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         num: [
           {
             required: true,
             message: "请输入球员号码",
-            trigger: "blur",
-          },
-        ],
-      },
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   created() {},
@@ -253,13 +254,13 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = { ...this.form, schedulesId: this.schedulesId };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             penaltyAdd(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -279,7 +280,7 @@ export default {
               });
           } else if (this.openType === 1) {
             penaltyUpdate(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -312,13 +313,13 @@ export default {
         num: undefined,
         penaltyTime: undefined,
         reason: undefined,
-        startTime: undefined,
+        startTime: undefined
       };
     },
     handleCancel() {
       this.resetFormFields();
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>

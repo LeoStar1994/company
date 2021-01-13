@@ -12,6 +12,7 @@
              :visible="visible"
              :confirm-loading="confirmLoading"
              centered
+             :maskClosable="false"
              destroyOnClose
              @ok="handleOk"
              @cancel="handleCancel">
@@ -95,24 +96,24 @@ export default {
   props: {
     homeTeamName: {
       type: String,
-      required: true,
+      required: true
     },
     guestTeamName: {
       type: String,
-      required: true,
+      required: true
     },
     awayTeamId: {
       type: Number,
-      required: true,
+      required: true
     },
     homeTeamId: {
       type: Number,
-      required: true,
+      required: true
     },
     schedulesId: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
@@ -126,12 +127,12 @@ export default {
       againstList: [
         {
           label: "EQ",
-          value: "EQ",
+          value: "EQ"
         },
         {
           label: "+1",
-          value: "+1",
-        },
+          value: "+1"
+        }
       ],
       form: {
         teamId: null, // 队伍id
@@ -143,7 +144,7 @@ export default {
         firstAssistsNum: undefined,
         secondAssistsNum: undefined,
         id: undefined,
-        order: undefined,
+        order: undefined
       },
       // 搜索项校验规则
       rules: {
@@ -151,47 +152,47 @@ export default {
           {
             required: true,
             message: "请选择对阵",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         goalkeeperNum: [
           {
             required: true,
             message: "请输入守门员号码",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         scoreNum: [
           {
             required: true,
             message: "请输入射门球员号码",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         scoreTime: [
           {
             required: true,
             message: "请输入进球时间",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: /^([0-5]{1}\d):([0-5]\d)$/,
-            message: "请输入mm:ss时间格式！",
-          },
+            message: "请输入mm:ss时间格式！"
+          }
         ],
         firstAssistsNum: [
           {
             trigger: "blur",
-            validator: this.checkFirstAssists,
-          },
+            validator: this.checkFirstAssists
+          }
         ],
         secondAssistsNum: [
           {
             trigger: "blur",
-            validator: this.checkSecondAssistsNum,
-          },
-        ],
-      },
+            validator: this.checkSecondAssistsNum
+          }
+        ]
+      }
     };
   },
   created() {},
@@ -249,13 +250,13 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = { ...this.form, schedulesId: this.schedulesId };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             scoreAdd(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -275,7 +276,7 @@ export default {
               });
           } else if (this.openType === 1) {
             scoreUpdate(data)
-              .then((res) => {
+              .then(res => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -310,13 +311,13 @@ export default {
         firstAssistsNum: undefined,
         secondAssistsNum: undefined,
         id: undefined,
-        order: undefined,
+        order: undefined
       };
     },
     handleCancel() {
       this.resetFormFields();
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>
