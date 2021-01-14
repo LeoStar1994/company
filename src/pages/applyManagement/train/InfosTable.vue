@@ -2,13 +2,14 @@
  * @Description: 报名管理 / 培训 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-05 13:54:05
+ * @LastEditTime: 2021-01-14 10:55:05
  * @LastEditors: Leo
 -->
 <template>
   <div class="infosTable-page"
        v-if="configshow">
-    <a-card :style="`min-height: ${pageMinHeight}px`">
+    <a-card :style="`min-height: ${pageMinHeight}px`"
+            v-show="!detailShow">
       <!-- search -->
       <div :class="advanced ? 'search' : null">
         <a-form-model ref="infosForm"

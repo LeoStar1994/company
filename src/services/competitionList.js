@@ -14,7 +14,9 @@ import {
   SCHEDULEUPDATE,
   SCHEDULEINITDATA,
   SCHEDULEDELETE,
-  SCHEDULEVIDEO,
+  SCHEDULEVIDEOADD,
+  SCHEDULEVIDEODELETE,
+  SCHEDULEVIDEOTABLEDATA,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -94,7 +96,17 @@ export async function deleteSchedule(data) {
   return request(SCHEDULEDELETE, METHOD.DELETE, data);
 }
 
+// 视频table
+export async function getVideoTableData(data) {
+  return request(SCHEDULEVIDEOTABLEDATA + `/${data}`, METHOD.GET);
+}
+
 // 视频保存
 export async function videoSave(data) {
-  return request(SCHEDULEVIDEO, METHOD.POST, data);
+  return request(SCHEDULEVIDEOADD, METHOD.POST, data);
+}
+
+// 视频删除
+export async function videodelete(data) {
+  return request(SCHEDULEVIDEODELETE, METHOD.DELETE, data);
 }

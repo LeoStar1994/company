@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表 / 赛事日程table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-11 18:16:39
+ * @LastEditTime: 2021-01-14 11:25:58
  * @LastEditors: Leo
 -->
 <template>
@@ -124,7 +124,7 @@
                        @closeDetail="closeDetail"></ScoreDetailConfig>
 
     <!-- 上传视频 -->
-    <ScheduleUploadVideo ref="scheduleUploadVideo"></ScheduleUploadVideo>
+    <UploadVideoTableModal ref="uploadVideoTableModal"></UploadVideoTableModal>
 
     <!-- loading -->
     <transition name="el-fade-in">
@@ -138,145 +138,145 @@ import { mapState } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
 import ScheduleConfig from "./ScheduleConfig";
 import ScoreDetailConfig from "./ScoreDetailConfig";
-import ScheduleUploadVideo from "./ScheduleUploadVideo";
+import UploadVideoTableModal from "./UploadVideoTableModal";
 import {
   getScheduleTableData,
   initScheduleData,
-  deleteSchedule
+  deleteSchedule,
 } from "@/services/competitionList";
 
 // table columns data
 const columns = [
   {
     title: "序号",
-    dataIndex: "num"
+    dataIndex: "num",
   },
   {
     title: "主队",
-    dataIndex: "homeTeamName"
+    dataIndex: "homeTeamName",
   },
   {
     title: "客队",
-    dataIndex: "awayTeamName"
+    dataIndex: "awayTeamName",
   },
   {
     title: "场次",
-    dataIndex: "gameSessions"
+    dataIndex: "gameSessions",
   },
   {
     title: "竞赛组别",
-    dataIndex: "gameGrade"
+    dataIndex: "gameGrade",
     // scopedSlots: { customRender: "checkStatus" }
   },
   {
     title: "比分",
-    dataIndex: "socre"
+    dataIndex: "socre",
   },
   {
     title: "比赛时间",
-    dataIndex: "gameTime"
+    dataIndex: "gameTime",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 // scoreDetail table columns
 const shootRecordColumns = [
   {
     title: "序号",
-    dataIndex: "order"
+    dataIndex: "order",
   },
   {
     title: "时间",
-    dataIndex: "scoreTime"
+    dataIndex: "scoreTime",
   },
   {
     title: "射中",
-    dataIndex: "scoreNum"
+    dataIndex: "scoreNum",
   },
   {
     title: "一助",
-    dataIndex: "firstAssistsNum"
+    dataIndex: "firstAssistsNum",
   },
   {
     title: "二助",
-    dataIndex: "secondAssistsNum"
+    dataIndex: "secondAssistsNum",
   },
   {
     title: "守门员",
-    dataIndex: "goalkeeperNum"
+    dataIndex: "goalkeeperNum",
   },
   {
     title: "对阵",
-    dataIndex: "against"
+    dataIndex: "against",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 const penaltyRecordColumns = [
   {
     title: "序号",
-    dataIndex: "order"
+    dataIndex: "order",
   },
   {
     title: "号码",
-    dataIndex: "num"
+    dataIndex: "num",
   },
   {
     title: "分钟",
-    dataIndex: "min"
+    dataIndex: "min",
   },
   {
     title: "事件时间",
-    dataIndex: "actionTime"
+    dataIndex: "actionTime",
   },
   {
     title: "判罚原因",
-    dataIndex: "reason"
+    dataIndex: "reason",
   },
   {
     title: "判罚时间",
-    dataIndex: "penaltyTime"
+    dataIndex: "penaltyTime",
   },
   {
     title: "开始时间",
-    dataIndex: "startTime"
+    dataIndex: "startTime",
   },
   {
     title: "结束结束",
-    dataIndex: "endTime"
+    dataIndex: "endTime",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 const freeKickColumns = [
   {
     title: "序号",
-    dataIndex: "order"
+    dataIndex: "order",
   },
   {
     title: "号码",
-    dataIndex: "scoreNum"
+    dataIndex: "scoreNum",
   },
   {
     title: "对方守门员",
-    dataIndex: "keeperNum"
+    dataIndex: "keeperNum",
   },
   {
     title: "是否射中",
     dataIndex: "scoreResult",
-    scopedSlots: { customRender: "scoreResultMap" }
+    scopedSlots: { customRender: "scoreResultMap" },
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 export default {
@@ -285,21 +285,21 @@ export default {
     StandardTable,
     ScheduleConfig,
     ScoreDetailConfig,
-    ScheduleUploadVideo
+    UploadVideoTableModal,
   },
   props: {
     scheduleShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     gameGradeList: {
       type: Array,
-      default: new Array()
+      default: new Array(),
     },
     teamsList: {
       type: Array,
-      default: new Array()
-    }
+      default: new Array(),
+    },
   },
   data() {
     return {
@@ -317,7 +317,7 @@ export default {
           penaltyRecordTableData: [],
           // 任意球
           freeKickColumns: freeKickColumns,
-          freeKickTableData: []
+          freeKickTableData: [],
         },
         guestTeamData: {
           // 射中记录
@@ -328,8 +328,8 @@ export default {
           penaltyRecordTableData: [],
           // 任意球
           freeKickColumns: freeKickColumns,
-          freeKickTableData: []
-        }
+          freeKickTableData: [],
+        },
       },
       advanced: true,
       tableLoading: false,
@@ -343,7 +343,7 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
@@ -351,18 +351,18 @@ export default {
       form: {
         gameGrade: undefined,
         teamName: undefined,
-        hockeyGamesId: null
+        hockeyGamesId: null,
       },
       // 搜索项校验规则
       rules: {
         gameGrade: [],
-        teamName: []
+        teamName: [],
       },
-      scoreShow: false
+      scoreShow: false,
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -380,11 +380,11 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
       getScheduleTableData(data)
-        .then(res => {
+        .then((res) => {
           const result = res.data;
           if (result.code === 0) {
             this.dataSource = result.data.list;
@@ -427,20 +427,20 @@ export default {
       }
       this.$refs.scheduleConfig.setOpenType(type, id, this.form.hockeyGamesId);
       this.$refs.scheduleConfig.placeList = [
-        { label: "比赛场地", prop: "place", place: "" }
+        { label: "比赛场地", prop: "place", place: "" },
       ];
     },
 
     // 修改竞赛日程反显数据
     getScheduleData(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initScheduleData({ id }).then(res => {
+      initScheduleData({ id }).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
           this.$refs.scheduleConfig.scheduleConfigForm = {
             ...result.data,
-            place: result.data.place.join()
+            place: result.data.place.join(),
           };
           this.$refs.scheduleConfig.placeList = result.data.place.map(
             (item, index) => {
@@ -459,7 +459,7 @@ export default {
 
     // 上传视频
     uploadVideo(id) {
-      this.$refs.scheduleUploadVideo.setOpenType(id);
+      this.$refs.uploadVideoTableModal.setOpenType(id);
     },
 
     // 成绩录入
@@ -468,33 +468,33 @@ export default {
         {
           label: "场次",
           value: `第${data.num}场`,
-          span: 1
+          span: 1,
         },
         {
           label: "地点",
           value: data.gameSessions,
-          span: 1
+          span: 1,
         },
         {
           label: "比赛日期",
           value: data.gameTime,
-          span: 1
+          span: 1,
         },
         {
           label: "竞赛组别",
           value: data.gameGrade,
-          span: 1
+          span: 1,
         },
         {
           label: "主队",
           value: data.homeTeamName,
-          span: 2
+          span: 2,
         },
         {
           label: "客队",
           value: data.awayTeamName,
-          span: 2
-        }
+          span: 2,
+        },
       ];
       this.scoreShow = true;
       this.$refs.scoreDetailConfig.setLastPageData(data);
@@ -509,7 +509,7 @@ export default {
     deleteDetails(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deleteSchedule(id)
-        .then(res => {
+        .then((res) => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -532,7 +532,7 @@ export default {
     goBackTrain() {
       this.reset();
       this.$emit("closeSchedule");
-    }
-  }
+    },
+  },
 };
 </script>

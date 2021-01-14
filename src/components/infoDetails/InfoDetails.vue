@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-01-05 15:02:42
+ * @LastEditTime: 2021-01-14 17:35:48
  * @LastEditors: Leo
 -->
 <template>
@@ -37,9 +37,15 @@
             <img v-for="(item1, index) in item.value"
                  :key="index"
                  :src="item1"
+                 title="点击下载图片"
                  class="cursor-pointer w100 mr-10"
                  @click="viewImage(item1)"
                  alt="">
+          </span>
+          <span v-else-if="item.label === '操作'">
+            <a class="mr-12"
+               @click="openBaseInfoModal">修改球队基本信息
+            </a>
           </span>
           <span v-else>{{item.value}}</span>
         </a-descriptions-item>
@@ -67,6 +73,9 @@
             <a class="mr-12"
                @click="openInfoDetails(data)">查看
             </a>
+            <a class="mr-12"
+               @click="openOfficerModal(data)">修改
+            </a>
           </div>
         </a-table>
       </div>
@@ -78,10 +87,12 @@
                  :pagination="false"
                  :data-source="infoData.playerTableData"
                  bordered>
-          <!-- <div slot="playerName"
-               slot-scope="{text}">
-            {{text}}
-          </div> -->
+          <div slot="action"
+               slot-scope="data">
+            <a class="mr-12"
+               @click="openPlayerModal(data)">修改
+            </a>
+          </div>
         </a-table>
       </div>
     </a-card>
@@ -89,23 +100,29 @@
                   style="z-index:10000；overflow: hidden;"
                   :detailShow="detailShow1"
                   @closeDetail="closeDetail"></InfosDetails>
+
+    <OfficerModal ref="officerModal"></OfficerModal>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import OfficerModal from "../../pages/applyManagement/competition/OfficerModal";
 export default {
   name: "InfosDetails",
+  components: {
+    OfficerModal,
+  },
   props: {
     detailShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object()
-    }
+      default: new Object(),
+    },
   },
   data() {
     return {
@@ -114,12 +131,12 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: []
-      }
+        descList: [],
+      },
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -143,14 +160,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach(item => {
-        detailKeys.forEach(item1 => {
+      this.infoData.fieldsMapLabelSon.forEach((item) => {
+        detailKeys.forEach((item1) => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1
+              span: item.isOccupyAll ? 2 : 1,
             });
           }
         });
@@ -158,10 +175,21 @@ export default {
       return finallyData;
     },
 
+    // 修改基础信息
+    openBaseInfoModal(data) {},
+
+    // 修改官员信息
+    openOfficerModal(data) {
+      this.$refs.officerModal.setOpenType(data);
+    },
+
+    // 修改运动员信息
+    openPlayerModal(data) {},
+
     closeDetail() {
       this.detailShow1 = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

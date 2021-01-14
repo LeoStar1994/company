@@ -55,6 +55,9 @@ module.exports = {
   TEAMDELETE: `${BASE_URL}/games/join/team/delete`, // 删除
   TEAMEXPOTR: `${BASE_URL}/games/join/export/excel`, // 导出球队报名表
   TEAMEUDIT: `${BASE_URL}/games/join/team/operation`, // 报名球队审核
+  BASEINFOUPDATE: `${BASE_URL}/games/join/team/operation`, // 基础信息修改
+  OFFICERUPDATE: `${BASE_URL}/games/join/team/operation`, // 官员信息修改
+  PLAYERUPDATE: `${BASE_URL}/games/join/team/operation`, // 队员信息修改
 
   /* 赛事管理 */
   // 赛事列表
@@ -74,7 +77,9 @@ module.exports = {
   SCHEDULEUPDATE: `${BASE_URL}/games/schedules/update`, // 修改
   SCHEDULEINITDATA: `${BASE_URL}/games/schedules/select`, // 修改反显
   SCHEDULEDELETE: `${BASE_URL}/games/schedules/delete`, // 删除
-  SCHEDULEVIDEO: `${BASE_URL}/games/schedules/video/add`, // 删除
+  SCHEDULEVIDEOADD: `${BASE_URL}/games/schedules/video/add`, // 视频新增
+  SCHEDULEVIDEODELETE: `${BASE_URL}/games/schedules/video/delete`, // 视频删除
+  SCHEDULEVIDEOTABLEDATA: `${BASE_URL}/games/schedules/video/list`, // 查询视频table
 
   // 赛事列表 => 赛事日程 => 成绩录入 => 比赛结果
   GAMESRESULTADD: `${BASE_URL}/games/achievement/result/addOrUpdate`, // 比赛结果新增 | 修改
@@ -134,5 +139,5 @@ module.exports = {
 
   /* 小程序管理 */
   APPLETTABLEDATA: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/query`, // table查询
-  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade` // 获取类型列表
+  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
 };

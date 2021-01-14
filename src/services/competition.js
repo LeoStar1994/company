@@ -5,7 +5,10 @@ import {
   TEAMINFODETAIL,
   TEAMDELETE,
   TEAMEXPOTR,
-  TEAMEUDIT
+  TEAMEUDIT,
+  BASEINFOUPDATE,
+  OFFICERUPDATE,
+  PLAYERUPDATE,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -61,4 +64,19 @@ export async function deleteTeam(id) {
  */
 export async function exportTeam(data) {
   return request(TEAMEXPOTR, METHOD.GET, data, "blob");
+}
+
+// 基础信息修改
+export async function baseInfoUpdate(data) {
+  return request(BASEINFOUPDATE, METHOD.POST, data);
+}
+
+// 官员信息修改
+export async function officerUpdate(data) {
+  return request(OFFICERUPDATE, METHOD.POST, data);
+}
+
+// 运动员信息修改
+export async function playerUpdate(data) {
+  return request(PLAYERUPDATE, METHOD.POST, data);
 }
