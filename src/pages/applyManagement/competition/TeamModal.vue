@@ -1,12 +1,12 @@
 <!--
- * @Description: 官员信息修改modal
+ * @Description: 球队信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-15 17:02:57
+ * @LastEditTime: 2021-01-15 17:31:47
  * @LastEditors: Leo
 -->
 <template>
-  <div class="officer-modal">
+  <div class="team-modal">
     <a-modal :title="pageTitle"
              width="600px"
              :visible="visible"
@@ -21,62 +21,41 @@
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <!-- 姓名 -->
-        <a-form-model-item label="姓名"
-                           prop="trainName">
-          <a-input v-model="form.trainName"
-                   placeholder="请输入姓名"
+        <!-- 球队区域 -->
+        <a-form-model-item label="球队区域"
+                           prop="teamArea">
+          <a-input v-model="form.teamArea"
+                   placeholder="请输入球队区域"
+                   allowClear
+                   :maxLength="50" />
+        </a-form-model-item>
+        <!-- 球队学校 -->
+        <a-form-model-item label="球队学校"
+                           prop="teamSchool">
+          <a-input v-model="form.teamSchool"
+                   placeholder="请输入球队学校"
                    allowClear
                    :maxLength="20" />
         </a-form-model-item>
-        <!-- 性别 -->
-        <a-form-model-item label="性别"
-                           prop="trainSex">
-          <a-radio-group v-model="form.trainSex">
-            <a-radio :value="item.value"
-                     v-for="(item,index) in trainSexList"
-                     :key="index">
-              {{item.label}}
-            </a-radio>
-          </a-radio-group>
-        </a-form-model-item>
-        <!-- 生日 -->
-        <a-form-model-item prop="born"
-                           label="生日">
-          <a-date-picker v-model="form.born"
-                         :disabled-date="disabledBornDate"
-                         show-time
-                         style="width:100%"
-                         format="YYYY-MM-DD"
-                         valueFormat="YYYY-MM-DD"
-                         placeholder="生日" />
-        </a-form-model-item>
-        <!-- 国籍 -->
-        <a-form-model-item label="国籍"
-                           prop="country">
-          <a-input v-model="form.country"
-                   placeholder="请输入国籍"
+        <!-- 球队名称 -->
+        <a-form-model-item prop="teamName"
+                           label="球队名称">
+          <a-input v-model="form.teamName"
+                   placeholder="请输入球队名称"
                    allowClear
                    :maxLength="20" />
         </a-form-model-item>
-        <!-- 职务 -->
-        <a-form-model-item label="职务"
-                           prop="positionId">
-          <a-select style="width: 100%"
-                    v-model="form.positionId"
-                    allowClear
-                    placeholder="请选择">
-            <a-select-option v-for="(item,index) in positionNameList"
-                             @change="positionIdChange(form.positionId)"
-                             :key="index"
-                             :value="item.value">
-              {{item.label}}
-            </a-select-option>
-          </a-select>
+        <!-- 球队简称 -->
+        <a-form-model-item label="球队简称"
+                           prop="teamShortName">
+          <a-input v-model="form.teamShortName"
+                   placeholder="请输入球队简称"
+                   allowClear
+                   :maxLength="20" />
         </a-form-model-item>
-        <!-- 头像 -->
-        <a-form-model-item label="头像"
-                           prop="imagePath">
+        <!-- 球队logo -->
+        <a-form-model-item label="球队logo"
+                           prop="teamLogoPath">
           <a-upload name="avatar"
                     list-type="picture-card"
                     class="avatar-uploader"
@@ -85,38 +64,59 @@
                     :before-upload="beforeUpload"
                     :customRequest="avatarCustomRequest"
                     @change="avatarHandleChange">
-            <img v-if="form.imagePath"
-                 :src="form.imagePath"
+            <img v-if="form.teamLogoPath"
+                 :src="form.teamLogoPath"
                  width="86px"
                  alt="avatar" />
             <div v-else>
               <a-icon :type="loading ? 'loading' : 'plus'" />
-              <div class="ant-upload-text">上传头像</div>
+              <div class="ant-upload-text">上传球队logo</div>
             </div>
           </a-upload>
         </a-form-model-item>
-        <!-- 证件类型 -->
-        <a-form-model-item label="证件类型"
-                           prop="cardType">
-          <a-radio-group v-model="form.cardType">
-            <a-radio :value="item.value"
-                     v-for="(item,index) in cardTypeList"
-                     :key="index">
-              {{item.label}}
-            </a-radio>
-          </a-radio-group>
-        </a-form-model-item>
-        <!-- 证件号 -->
-        <a-form-model-item label="身份证/护照号码"
-                           prop="identityCard">
-          <a-input v-model="form.identityCard"
-                   placeholder="请输入身份证/护照号码"
+        <!-- 主场颜色 -->
+        <a-form-model-item label="主场颜色"
+                           prop="mainColor">
+          <a-input v-model="form.mainColor"
+                   placeholder="请输入主场颜色"
                    allowClear
-                   :maxLength="50" />
+                   :maxLength="20" />
         </a-form-model-item>
-        <!-- 证件照 -->
-        <a-form-model-item label="证件照"
-                           prop="identityImagePath">
+        <!-- 客场颜色 -->
+        <a-form-model-item label="客场颜色"
+                           prop="secondColor">
+          <a-input v-model="form.secondColor"
+                   placeholder="请输入客场颜色"
+                   allowClear
+                   :maxLength="20" />
+        </a-form-model-item>
+        <!-- 年龄组 -->
+        <a-form-model-item label="年龄组"
+                           prop="yearType">
+          <a-input v-model="form.yearType"
+                   placeholder="请输入年龄组"
+                   allowClear
+                   :maxLength="20" />
+        </a-form-model-item>
+        <!-- 联系人 -->
+        <a-form-model-item label="联系人"
+                           prop="linkMan">
+          <a-input v-model="form.linkMan"
+                   placeholder="请输入联系人"
+                   allowClear
+                   :maxLength="20" />
+        </a-form-model-item>
+        <!-- 联系电话 -->
+        <a-form-model-item label="联系电话"
+                           prop="telPhone">
+          <a-input v-model="form.telPhone"
+                   placeholder="请输入联系电话"
+                   allowClear
+                   :maxLength="20" />
+        </a-form-model-item>
+        <!-- 集体照 -->
+        <a-form-model-item label="集体照"
+                           prop="teamImage">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                       accept=".png, .jpg"
@@ -150,110 +150,38 @@
 </template>
 
 <script>
-import { getOfficerData, officerUpdate } from "@/services/competition";
+import { getBaseData, baseInfoUpdate } from "@/services/competition";
 import { uploadImage } from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
-  name: "OfficerModal",
+  name: "TeamModal",
   data() {
     return {
       visible: false,
       labelCol: { span: 5 },
       wrapperCol: { span: 16, offset: 1 },
-      pageTitle: "修改官员信息",
+      pageTitle: "修改球队信息",
       confirmLoading: false,
-      trainSexList: [
-        { label: "男", value: "男" },
-        { label: "女", value: "女" },
-      ],
-      cardTypeList: [
-        { label: "身份证", value: 0 },
-        { label: "护照", value: 1 },
-      ],
-      positionNameList: [
-        { label: "教练", value: 3 },
-        { label: "教练1", value: 4 },
+      yearTypeList: [
+        { label: "青年组", value: 0 },
+        { label: "老年组", value: 1 },
       ],
       form: {
-        trainName: undefined, // 姓名
-        trainSex: undefined, // 性别
-        born: undefined, // 生日
-        country: undefined, // 国家
-        positionName: undefined, // 职务
-        positionId: undefined, // 职务id
-        imagePath: undefined, // 头像
-        cardType: undefined, // 证件类型
-        identityCard: undefined, // 证件号
-        identityImagePath: [], // 证件照片
-        trainId: null,
-        teamId: null,
+        teamArea: undefined, // 球队区域
+        teamSchool: undefined, // 球队学校
+        teamName: undefined, // 球队名称
+        teamShortName: undefined, // 球队简称
+        teamLogoPath: undefined, // 球队logo
+        mainColor: undefined, // 主场颜色
+        secondColor: undefined, // 客场颜色
+        yearType: undefined, // 年龄组
+        linkMan: undefined, // 联系人
+        telPhone: undefined, // 联系电话
+        teamImage: [], // 集体照
+        id: null, // 球队id
       },
       // 搜索项校验规则
-      rules: {
-        trainName: [
-          {
-            required: true,
-            message: "请输入姓名",
-            trigger: "blur",
-          },
-        ],
-        trainSex: [
-          {
-            required: true,
-            message: "请选择性别",
-            trigger: "change",
-          },
-        ],
-        born: [
-          {
-            required: true,
-            message: "请选择生日",
-            trigger: "change",
-          },
-        ],
-        country: [
-          {
-            required: true,
-            message: "请输入国家",
-            trigger: "blur",
-          },
-        ],
-        positionId: [
-          {
-            required: true,
-            message: "请选择职务",
-            trigger: "change",
-          },
-        ],
-        imagePath: [
-          {
-            required: true,
-            message: "请上传头像",
-            trigger: "change",
-          },
-        ],
-        cardType: [
-          {
-            required: true,
-            message: "请选择证件类型",
-            trigger: "change",
-          },
-        ],
-        identityCard: [
-          {
-            required: true,
-            message: "请输入身份证/护照",
-            trigger: "blur",
-          },
-        ],
-        identityImagePath: [
-          {
-            required: true,
-            message: "请上传证件照",
-            trigger: "change",
-          },
-        ],
-      },
+      rules: {},
 
       // 头像
       loading: false,
@@ -265,44 +193,26 @@ export default {
   },
   created() {},
   methods: {
-    setOpenType(data) {
-      getOfficerData(data.teamId, data.id).then((res) => {
+    setOpenType(teamId) {
+      getBaseData(teamId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.form = {
             ...result.data,
-            cardType: result.data.cardType === "身份证" ? 0 : 1,
           };
-          this.pictureList = result.data.identityImagePath.map(
-            (item, index) => {
-              return {
-                uid: Math.random(),
-                status: "done",
-                url: item,
-                name: `身份证照${index}`,
-              };
-            }
-          );
+          this.pictureList = result.data.teamImage.map((item, index) => {
+            return {
+              uid: Math.random(),
+              status: "done",
+              url: item,
+              name: `集体照${index}`,
+            };
+          });
         } else {
           this.$message.error(result.desc);
         }
       });
       this.visible = true;
-    },
-
-    // 通过职务id获取职务name
-    positionIdChange(id) {
-      this.form.positionName = this.positionNameList.find(
-        (item) => item.id === id
-      ).name;
-    },
-
-    // 生日不能大于当前日期
-    disabledBornDate(timeValue) {
-      if (!timeValue) {
-        return false;
-      }
-      return timeValue.valueOf() > new Date().valueOf();
     },
 
     beforeUpload(file) {
@@ -318,7 +228,7 @@ export default {
       return isJpgOrPng && isLt2M;
     },
 
-    // 头像
+    // logo
     avatarHandleChange(info) {
       if (info.file.status === "uploading") {
         this.loading = true;
@@ -329,7 +239,7 @@ export default {
       }
     },
 
-    // 头像自定义上传
+    // logo自定义上传
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
@@ -346,7 +256,7 @@ export default {
       });
     },
 
-    // 证件照
+    // 集体照
     async handleImgPreview(file) {
       if (!file.url && !file.preview) {
         file.preview = await getBase64(file.originFileObj);
@@ -375,8 +285,8 @@ export default {
         const result = res.data;
         if (result.code === 0) {
           this.$message.success(result.desc);
-          this.form.identityImagePath.push(result.data.fileUrl);
-          this.$refs.ruleForm.validateField("identityImagePath");
+          this.form.teamImage.push(result.data.fileUrl);
+          this.$refs.ruleForm.validateField("teamImage");
         } else {
           this.$message.error(result.desc);
         }
@@ -384,9 +294,9 @@ export default {
     },
 
     handleImgRemove(file) {
-      this.form.identityImagePath.forEach((item, index) => {
+      this.form.teamImage.forEach((item, index) => {
         if (item === file.url) {
-          this.form.identityImagePath.splice(index, 1);
+          this.form.teamImage.splice(index, 1);
         }
       });
     },
@@ -407,11 +317,10 @@ export default {
         if (valid) {
           const data = {
             ...this.form,
-            identityImagePath: this.form.identityImagePath.join(),
+            teamImage: this.form.teamImage.join(),
           };
-          console.log(data);
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          officerUpdate(data).then((res) => {
+          baseInfoUpdate(data).then((res) => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {

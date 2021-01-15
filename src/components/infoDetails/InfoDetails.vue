@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-01-14 17:35:48
+ * @LastEditTime: 2021-01-15 17:24:40
  * @LastEditors: Leo
 -->
 <template>
@@ -101,6 +101,10 @@
                   :detailShow="detailShow1"
                   @closeDetail="closeDetail"></InfosDetails>
 
+    <!-- 球队修改 -->
+    <TeamModal ref="teamModal"></TeamModal>
+
+    <!-- 官员修改 -->
     <OfficerModal ref="officerModal"></OfficerModal>
   </div>
 </template>
@@ -108,10 +112,12 @@
 <script>
 import { mapState } from "vuex";
 import OfficerModal from "../../pages/applyManagement/competition/OfficerModal";
+import TeamModal from "../../pages/applyManagement/competition/TeamModal";
 export default {
   name: "InfosDetails",
   components: {
     OfficerModal,
+    TeamModal,
   },
   props: {
     detailShow: {
@@ -176,7 +182,9 @@ export default {
     },
 
     // 修改基础信息
-    openBaseInfoModal(data) {},
+    openBaseInfoModal() {
+      this.$refs.teamModal.setOpenType(this.infoData.teamId);
+    },
 
     // 修改官员信息
     openOfficerModal(data) {

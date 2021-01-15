@@ -55,9 +55,12 @@ module.exports = {
   TEAMDELETE: `${BASE_URL}/games/join/team/delete`, // 删除
   TEAMEXPOTR: `${BASE_URL}/games/join/export/excel`, // 导出球队报名表
   TEAMEUDIT: `${BASE_URL}/games/join/team/operation`, // 报名球队审核
-  BASEINFOUPDATE: `${BASE_URL}/games/join/team/operation`, // 基础信息修改
-  OFFICERUPDATE: `${BASE_URL}/games/join/team/operation`, // 官员信息修改
-  PLAYERUPDATE: `${BASE_URL}/games/join/team/operation`, // 队员信息修改
+  BASEINFOINIT: `${BASE_URL}/games/join/team/allInfo`, // 获取球队基础信息
+  BASEINFOUPDATE: `${BASE_URL}/games/join/team/update`, // 球队基础信息修改
+  OFFICERINIT: `${BASE_URL}/games/join/train/allInfo`, // 获取官员信息
+  OFFICERUPDATE: `${BASE_URL}/games/join/train/update`, // 官员信息修改
+  PLAYERINIT: `${BASE_URL}/games/join/detail/allInfo`, // 获取队员信息
+  PLAYERUPDATE: `${BASE_URL}/games/join/detail/update`, // 队员信息修改
 
   /* 赛事管理 */
   // 赛事列表
