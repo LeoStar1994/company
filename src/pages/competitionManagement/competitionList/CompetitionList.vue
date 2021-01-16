@@ -88,7 +88,7 @@
             <a class="mr-12 text-orange"
                @click="openSchedule(record.id)">赛事日程</a>
             <a class="mr-12 text-green"
-               @click="downloadText(record.id)">秩序册</a>
+               @click="downloadText(record.id, record)">秩序册</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
@@ -131,7 +131,7 @@ import {
   deleteGame,
   exportGameWord,
   gameGradeList,
-  gameTeamsList,
+  gameTeamsList
 } from "@/services/competitionList";
 import CompetitionConfig from "./CompetitionConfig";
 import CompetitionSchedule from "./CompetitionSchedule";
@@ -141,33 +141,33 @@ import { downloadFile } from "@/utils/util";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "赛事名称",
-    dataIndex: "hockeyGamesName",
+    dataIndex: "hockeyGamesName"
   },
   {
     title: "状态",
     dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "status" },
+    scopedSlots: { customRender: "status" }
   },
   {
     title: "报名球队",
-    dataIndex: "enrollCount",
+    dataIndex: "enrollCount"
   },
   {
     title: "报名时间",
-    dataIndex: "enrollStartEndTime",
+    dataIndex: "enrollStartEndTime"
   },
   {
     title: "比赛时间",
-    dataIndex: "gameStartEndTime",
+    dataIndex: "gameStartEndTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -190,33 +190,33 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
         enrollStatus: undefined,
-        hockeyGamesName: undefined,
+        hockeyGamesName: undefined
       },
       // 搜索项校验规则
       rules: {
         enrollStatus: [],
-        hockeyGamesName: [],
+        hockeyGamesName: []
       },
       enrollStatusList: [
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
         { label: "比赛中", value: 2 },
-        { label: "已结束", value: 3 },
+        { label: "已结束", value: 3 }
       ],
       enrollStatusMapObj: {
         0: "未开始",
         1: "报名中",
         2: "比赛中",
-        3: "已结束",
+        3: "已结束"
       },
       gameGradeList: [],
-      teamsList: [],
+      teamsList: []
     };
   },
   computed: {
@@ -230,7 +230,7 @@ export default {
       } else {
         return this.$t("description");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -257,7 +257,7 @@ export default {
     // 查看 | 修改返显数据
     competitionConfig(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initGameData({ id }).then((res) => {
+      initGameData({ id }).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -265,18 +265,18 @@ export default {
             ...result.data,
             gameGrade: result.data.gameGradeList,
             gameRuleName: result.data.gameRuleVoList.map(
-              (item) => item.gameRuleName
+              item => item.gameRuleName
             ),
             gameRulePath: result.data.gameRuleVoList.map(
-              (item) => item.gameRulePath
-            ),
+              item => item.gameRulePath
+            )
           };
           this.$refs.competitionConfig.gameRulefileList = result.data.gameRuleVoList.map(
-            (item) => {
+            item => {
               return {
                 uid: Math.random(),
                 status: "done",
-                name: item.gameRuleName,
+                name: item.gameRuleName
               };
             }
           ); // 竞赛规程file list
@@ -285,16 +285,16 @@ export default {
               uid: Math.random(),
               name: "image.png",
               status: "done",
-              url: result.data.imageUrl,
-            },
+              url: result.data.imageUrl
+            }
           ];
           this.$refs.competitionConfig.sharePictureList = [
             {
               uid: Math.random(),
               name: "image1.png",
               status: "done",
-              url: result.data.shareImageUrl,
-            },
+              url: result.data.shareImageUrl
+            }
           ];
         } else {
           this.$message.error(result.desc);
@@ -313,7 +313,7 @@ export default {
 
     // 获取赛事日程 => 赛事组别list
     getGameGradeList(hockeyGamesId) {
-      gameGradeList({ hockeyGamesId }).then((res) => {
+      gameGradeList({ hockeyGamesId }).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.gameGradeList = result.data;
@@ -325,7 +325,7 @@ export default {
 
     // 获取赛事日程 => 参赛队伍list
     getTeamsList(hockeyGamesId) {
-      gameTeamsList({ hockeyGamesId }).then((res) => {
+      gameTeamsList({ hockeyGamesId }).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.teamsList = result.data;
@@ -336,29 +336,38 @@ export default {
     },
 
     //秩序册
-    downloadText(hockeyGameId) {
+    downloadText(hockeyGameId, rowData) {
+      if (rowData.enrollCount < 1) {
+        this.$message.warning("审核通过的球队数量为0，不可导出");
+        return;
+      }
       const data = { hockeyGameId };
-      exportGameWord(data).then((res) => {
-        if (res.status === 200 && res.data) {
-          let filename = "";
-          const disposition = res.headers["content-disposition"];
-          if (disposition) {
-            const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-            const matches = filenameRegex.exec(disposition);
-            if (matches != null && matches[1]) {
-              filename = matches[1].replace(/['"]/g, "");
-              console.log();
+      this.$refs.loading.openLoading("正在导出数据，请稍后。。");
+      exportGameWord(data)
+        .then(async res => {
+          if (res.status === 200 && res.data) {
+            let filename = "";
+            const disposition = res.headers["content-disposition"];
+            if (disposition) {
+              const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+              const matches = filenameRegex.exec(disposition);
+              if (matches != null && matches[1]) {
+                filename = matches[1].replace(/['"]/g, "");
+              }
             }
+            await downloadFile(res.data, filename);
+            this.$refs.loading.closeLoading();
           }
-          downloadFile(res.data, filename);
-        }
-      });
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
     },
 
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteGame(id).then((res) => {
+      deleteGame(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -379,10 +388,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getTableData(data).then((res) => {
+      getTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.list;
@@ -426,7 +435,7 @@ export default {
     // 关闭赛事 page
     closeSchedule() {
       this.scheduleShow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -435,6 +444,11 @@ export default {
     }
     next();
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.searchTableData();
+    });
+  }
 };
 </script>
 

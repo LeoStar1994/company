@@ -12,6 +12,8 @@ import {
   BASEINFOINIT,
   OFFICERINIT,
   PLAYERINIT,
+  GETYEARTYPELIST,
+  GETDICINITDATA
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -69,11 +71,20 @@ export async function exportTeam(data) {
   return request(TEAMEXPOTR, METHOD.GET, data, "blob");
 }
 
-// 获取基础信息
+// 获取字典表所有下拉list data
+export async function getAllDicData(data) {
+  return request(GETDICINITDATA, METHOD.GET, data);
+}
+// 通过赛事id获取球队基础信息年龄组下拉list
+export async function getYearTypeList(hockeyGamesId) {
+  return request(GETYEARTYPELIST + `/${hockeyGamesId}`, METHOD.GET);
+}
+
+// 获取球队基础信息
 export async function getBaseData(teamId) {
   return request(BASEINFOINIT + `/${teamId}`, METHOD.GET);
 }
-// 基础信息修改
+// 球队基础信息修改
 export async function baseInfoUpdate(data) {
   return request(BASEINFOUPDATE, METHOD.POST, data);
 }

@@ -270,6 +270,11 @@ export default {
       this.reset();
     }
     next();
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.searchTableData();
+    });
   }
 };
 </script>

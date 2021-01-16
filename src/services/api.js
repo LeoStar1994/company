@@ -61,6 +61,8 @@ module.exports = {
   OFFICERUPDATE: `${BASE_URL}/games/join/train/update`, // 官员信息修改
   PLAYERINIT: `${BASE_URL}/games/join/detail/allInfo`, // 获取队员信息
   PLAYERUPDATE: `${BASE_URL}/games/join/detail/update`, // 队员信息修改
+  GETYEARTYPELIST: `${BASE_URL}/games/join/dictionary/gameGrade`, // 获取球队基础年龄组下拉list
+  GETDICINITDATA: `${BASE_URL}/games/join/dictionary`, // 获取字典表所有下拉list
 
   /* 赛事管理 */
   // 赛事列表
@@ -142,5 +144,5 @@ module.exports = {
 
   /* 小程序管理 */
   APPLETTABLEDATA: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/query`, // table查询
-  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
+  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade` // 获取类型列表
 };

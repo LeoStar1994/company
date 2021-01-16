@@ -19,8 +19,8 @@
       <!-- avatar | name -->
       <div class="text-center">
         <img :src="infoData.imgURL"
-             width="100"
-             alt="">
+             width="100px"
+             alt="teamLogo">
         <h2 class="fz-40 mt-20">{{infoData.name}}</h2>
       </div>
 
@@ -38,6 +38,7 @@
                  :key="index"
                  :src="item1"
                  title="点击下载图片"
+                 width="86px"
                  class="cursor-pointer w100 mr-10"
                  @click="viewImage(item1)"
                  alt="">
@@ -102,10 +103,21 @@
                   @closeDetail="closeDetail"></InfosDetails>
 
     <!-- 球队修改 -->
-    <TeamModal ref="teamModal"></TeamModal>
+    <TeamModal ref="teamModal"
+               @refreshAllInfoData="refreshAllInfoData"
+               :yearTypeList="yearTypeList"></TeamModal>
+    <!-- 球队区域、年龄组 -->
 
     <!-- 官员修改 -->
-    <OfficerModal ref="officerModal"></OfficerModal>
+    <OfficerModal ref="officerModal"
+                  @refreshAllInfoData="refreshAllInfoData"></OfficerModal>
+    <!-- 性别、职务、证件类型 -->
+
+    <!-- 运动员修改 -->
+    <PlayerModal ref="playerModal"
+                 @refreshAllInfoData="refreshAllInfoData"></PlayerModal>
+    <!-- 性别、持杆手、位置、证件类型 -->
+
   </div>
 </template>
 
@@ -113,22 +125,28 @@
 import { mapState } from "vuex";
 import OfficerModal from "../../pages/applyManagement/competition/OfficerModal";
 import TeamModal from "../../pages/applyManagement/competition/TeamModal";
+import PlayerModal from "../../pages/applyManagement/competition/PlayerModal";
+import { getAllDicData, getYearTypeList } from "@/services/competition";
 export default {
   name: "InfosDetails",
   components: {
     OfficerModal,
     TeamModal,
+    PlayerModal
   },
   props: {
     detailShow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object(),
-    },
+      default: new Object()
+    }
+  },
+  mounted() {
+    this.getAllDicData();
   },
   data() {
     return {
@@ -137,23 +155,26 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: [],
+        descList: []
       },
+      yearTypeList: [], //年龄组list
+      dicData: {} // 字典表下拉list
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
-  created() {},
   methods: {
     // 返回上一级页面
     goBackInfosTable() {
       this.$emit("closeDetail");
     },
+
     // 打开图片
     viewImage(imgUrl) {
       window.open(imgUrl);
     },
+
     // 官员table查看
     openInfoDetails(data) {
       this.infoData1.name = data.trainName;
@@ -166,14 +187,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach((item) => {
-        detailKeys.forEach((item1) => {
+      this.infoData.fieldsMapLabelSon.forEach(item => {
+        detailKeys.forEach(item1 => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1,
+              span: item.isOccupyAll ? 2 : 1
             });
           }
         });
@@ -181,9 +202,34 @@ export default {
       return finallyData;
     },
 
-    // 修改基础信息
+    // 修改球队基础信息
     openBaseInfoModal() {
+      this.getYearTypeList();
       this.$refs.teamModal.setOpenType(this.infoData.teamId);
+    },
+
+    // 获取所有字典表下拉list
+    getAllDicData() {
+      getAllDicData().then(res => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.dicData = result.data;
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
+    // 通过赛事id获取球队基础信息年龄组下拉list
+    getYearTypeList() {
+      getYearTypeList(this.infoData.hockeyGamesId).then(res => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.yearTypeList = result.data;
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
     },
 
     // 修改官员信息
@@ -192,12 +238,18 @@ export default {
     },
 
     // 修改运动员信息
-    openPlayerModal(data) {},
+    openPlayerModal(data) {
+      this.$refs.playerModal.setOpenType(data);
+    },
+
+    refreshAllInfoData(teamId) {
+      this.$emit("refreshAllInfoData", teamId);
+    },
 
     closeDetail() {
       this.detailShow1 = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

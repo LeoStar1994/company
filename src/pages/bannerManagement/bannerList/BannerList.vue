@@ -100,33 +100,33 @@ import BannerConfig from "./BannerConfig";
 const columns = [
   {
     title: "图片ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "名称",
-    dataIndex: "focusTitle",
+    dataIndex: "focusTitle"
   },
   {
     title: "图片",
     dataIndex: "imageUrl",
-    scopedSlots: { customRender: "imageUrl" },
+    scopedSlots: { customRender: "imageUrl" }
   },
   {
     title: "有效期",
-    dataIndex: "periodOfValidity",
+    dataIndex: "periodOfValidity"
   },
   {
     title: "顺序",
-    dataIndex: "sortNum",
+    dataIndex: "sortNum"
   },
   {
     title: "创建时间",
-    dataIndex: "createTime",
+    dataIndex: "createTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -146,17 +146,17 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        focusTitle: undefined,
+        focusTitle: undefined
       },
       // 搜索项校验规则
       rules: {
-        focusTitle: [],
-      },
+        focusTitle: []
+      }
     };
   },
   computed: {
@@ -164,7 +164,7 @@ export default {
     // page header desc
     desc() {
       return this.$t("description");
-    },
+    }
   },
   created() {},
   methods: {
@@ -191,7 +191,7 @@ export default {
     bannerDetails(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
       initBannerData(id)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -204,15 +204,15 @@ export default {
               sortNum: result.data.sortNum,
               startTime: result.data.startTime,
               endTime: result.data.endTime,
-              id: result.data.id,
+              id: result.data.id
             };
             this.$refs.BannerConfig.pictureList = [
               {
                 uid: Math.random(),
                 name: "image.png",
                 status: "done",
-                url: result.data.imagePath,
-              },
+                url: result.data.imagePath
+              }
             ];
           } else {
             this.$message.error(result.desc);
@@ -228,7 +228,7 @@ export default {
       console.log(id);
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deleteBanner(id)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -252,11 +252,11 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
       getTableData(data)
-        .then((res) => {
+        .then(res => {
           const result = res.data;
           if (result.code === 0) {
             this.dataSource = result.data.records;
@@ -288,7 +288,7 @@ export default {
       this.$refs.ruleForm.resetFields();
       // this.dataSource = [];
       this.resetPagination();
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -297,6 +297,11 @@ export default {
     }
     next();
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.searchTableData();
+    });
+  }
 };
 </script>
 

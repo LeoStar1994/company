@@ -107,44 +107,44 @@ import CodeConfig from "./CodeConfig";
 import {
   getTableData,
   deleteCode,
-  initCodeData,
+  initCodeData
 } from "@/services/educationCode";
 
 // table columns data
 const columns = [
   {
     title: "邀请码ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "邀请码",
-    dataIndex: "code",
+    dataIndex: "code"
   },
   {
     title: "教练名称",
-    dataIndex: "refereeName",
+    dataIndex: "refereeName"
   },
   {
     title: "联系人",
-    dataIndex: "linkMan",
+    dataIndex: "linkMan"
   },
   {
     title: "使用状态",
     dataIndex: "isUsed",
-    scopedSlots: { customRender: "useStauts" },
+    scopedSlots: { customRender: "useStauts" }
   },
   {
     title: "昵称",
-    dataIndex: "nickName",
+    dataIndex: "nickName"
   },
   {
     title: "关联时间",
-    dataIndex: "joinTime",
+    dataIndex: "joinTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -164,23 +164,23 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
         refereeName: undefined,
-        code: undefined,
+        code: undefined
       },
       // 搜索项校验规则
       rules: {
         refereeName: [],
-        code: [],
+        code: []
       },
       isUsedMapObj: {
         0: "未使用",
-        1: "已使用",
-      },
+        1: "已使用"
+      }
     };
   },
   computed: {
@@ -188,7 +188,7 @@ export default {
     // page header desc
     desc() {
       return this.$t("description");
-    },
+    }
   },
   created() {},
   methods: {
@@ -214,7 +214,7 @@ export default {
     // 查看 | 修改返显数据
     codeConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initCodeData(id).then((res) => {
+      initCodeData(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -222,7 +222,7 @@ export default {
             refereeName: result.data.refereeName,
             code: result.data.code,
             linkMan: result.data.linkMan,
-            telPhone: result.data.telPhone,
+            telPhone: result.data.telPhone
           };
         } else {
           this.$message.error(result.desc);
@@ -233,7 +233,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteCode(id).then((res) => {
+      deleteCode(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -254,10 +254,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getTableData(data).then((res) => {
+      getTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -286,7 +286,7 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.dataSource = [];
       this.resetPagination();
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -295,5 +295,10 @@ export default {
     }
     next();
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.searchTableData();
+    });
+  }
 };
 </script>

@@ -8,7 +8,7 @@
 <template>
   <div class="team-modal">
     <a-modal :title="pageTitle"
-             width="600px"
+             width="620px"
              :visible="visible"
              :confirm-loading="confirmLoading"
              :maskClosable="false"
@@ -93,10 +93,18 @@
         <!-- 年龄组 -->
         <a-form-model-item label="年龄组"
                            prop="yearType">
-          <a-input v-model="form.yearType"
-                   placeholder="请输入年龄组"
-                   allowClear
-                   :maxLength="20" />
+          <a-checkbox-group v-model="form.yearType"
+                            style="width: 100%; vertical-align: middle;">
+            <a-row>
+              <a-col :span="8"
+                     v-for="(item, index) in yearTypeList"
+                     :key="index">
+                <a-checkbox :value="item">
+                  {{item}}
+                </a-checkbox>
+              </a-col>
+            </a-row>
+          </a-checkbox-group>
         </a-form-model-item>
         <!-- 联系人 -->
         <a-form-model-item label="联系人"
@@ -155,6 +163,12 @@ import { uploadImage } from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
   name: "TeamModal",
+  props: {
+    yearTypeList: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       visible: false,
@@ -162,10 +176,6 @@ export default {
       wrapperCol: { span: 16, offset: 1 },
       pageTitle: "修改球队信息",
       confirmLoading: false,
-      yearTypeList: [
-        { label: "青年组", value: 0 },
-        { label: "老年组", value: 1 },
-      ],
       form: {
         teamArea: undefined, // 球队区域
         teamSchool: undefined, // 球队学校
@@ -174,38 +184,116 @@ export default {
         teamLogoPath: undefined, // 球队logo
         mainColor: undefined, // 主场颜色
         secondColor: undefined, // 客场颜色
-        yearType: undefined, // 年龄组
+        yearType: [], // 年龄组
         linkMan: undefined, // 联系人
         telPhone: undefined, // 联系电话
         teamImage: [], // 集体照
-        id: null, // 球队id
+        id: null // 球队id
       },
       // 搜索项校验规则
-      rules: {},
+      rules: {
+        teamArea: [
+          {
+            required: true,
+            message: "请输入球队区域",
+            trigger: "blur"
+          }
+        ],
+        teamSchool: [
+          {
+            required: true,
+            message: "请输入球队学校",
+            trigger: "blur"
+          }
+        ],
+        teamName: [
+          {
+            required: true,
+            message: "请输入球队名称",
+            trigger: "blur"
+          }
+        ],
+        teamShortName: [
+          {
+            required: true,
+            message: "请输入球队简称",
+            trigger: "blur"
+          }
+        ],
+        teamLogoPath: [
+          {
+            required: true,
+            message: "请上传球队logo",
+            trigger: "change"
+          }
+        ],
+        mainColor: [
+          {
+            required: true,
+            message: "请输入主场颜色",
+            trigger: "blur"
+          }
+        ],
+        secondColor: [
+          {
+            required: true,
+            message: "请输入客场颜色",
+            trigger: "blur"
+          }
+        ],
+        yearType: [
+          {
+            required: true,
+            message: "请选择年龄组",
+            trigger: "change"
+          }
+        ],
+        linkMan: [
+          {
+            required: true,
+            message: "请输入联系人",
+            trigger: "blur"
+          }
+        ],
+        telPhone: [
+          {
+            required: true,
+            message: "请输入联系电话",
+            trigger: "blur"
+          }
+        ],
+        teamImage: [
+          {
+            required: true,
+            message: "请上传集体照",
+            trigger: "change"
+          }
+        ]
+      },
 
       // 头像
       loading: false,
       // 证件照
       pictureList: [],
       previewVisible: false,
-      previewImage: "",
+      previewImage: ""
     };
   },
-  created() {},
   methods: {
     setOpenType(teamId) {
-      getBaseData(teamId).then((res) => {
+      getBaseData(teamId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.form = {
             ...result.data,
+            yearType: result.data.yearType.split(",")
           };
           this.pictureList = result.data.teamImage.map((item, index) => {
             return {
               uid: Math.random(),
               status: "done",
               url: item,
-              name: `集体照${index}`,
+              name: `集体照${index}`
             };
           });
         } else {
@@ -243,13 +331,13 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData).then((res) => {
+      uploadImage(formData).then(res => {
         options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
         const result = res.data;
         if (result.code === 0) {
           this.$message.success(result.desc);
-          this.form.imagePath = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("imagePath");
+          this.form.teamLogoPath = result.data.fileUrl;
+          this.$refs.ruleForm.validateField("teamLogoPath");
         } else {
           this.$message.error(result.desc);
         }
@@ -280,7 +368,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then((res) => {
+      uploadImage(formData).then(res => {
         options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
         const result = res.data;
         if (result.code === 0) {
@@ -313,20 +401,21 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = {
             ...this.form,
             teamImage: this.form.teamImage.join(),
+            yearType: this.form.yearType.join()
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          baseInfoUpdate(data).then((res) => {
+          baseInfoUpdate(data).then(res => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {
               this.$message.success(result.desc);
               this.handleCancel();
-              this.$emit("searchTableData");
+              this.$emit("refreshAllInfoData", data.id);
             } else {
               this.$message.error(result.desc);
             }
@@ -340,8 +429,8 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.pictureList = [];
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

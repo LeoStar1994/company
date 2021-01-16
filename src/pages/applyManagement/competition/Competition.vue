@@ -104,33 +104,33 @@ import InfosTable from "./InfosTable";
 const columns = [
   {
     title: "记录ID",
-    dataIndex: "id",
+    dataIndex: "id"
   },
   {
     title: "赛事名称",
-    dataIndex: "hockeyGamesName",
+    dataIndex: "hockeyGamesName"
   },
   {
     title: "状态",
     dataIndex: "enrollStatus",
-    scopedSlots: { customRender: "status" },
+    scopedSlots: { customRender: "status" }
   },
   {
     title: "报名球队",
-    dataIndex: "enrollCount",
+    dataIndex: "enrollCount"
   },
   {
     title: "报名时间",
-    dataIndex: "enrollStartEndTime",
+    dataIndex: "enrollStartEndTime"
   },
   {
     title: "比赛时间",
-    dataIndex: "gameStartEndTime",
+    dataIndex: "gameStartEndTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 export default {
@@ -152,7 +152,7 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
@@ -160,23 +160,23 @@ export default {
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
         { label: "比赛中", value: 2 },
-        { label: "已结束", value: 3 },
+        { label: "已结束", value: 3 }
       ],
       enrollStatusMapObj: {
         0: "未开始",
         1: "报名中",
         2: "比赛中",
-        3: "已结束",
+        3: "已结束"
       },
       form: {
         hockeyGamesName: undefined,
-        enrollStatus: undefined,
+        enrollStatus: undefined
       },
       // 搜索项校验规则
       rules: {
         hockeyGamesName: [],
-        enrollStatus: [],
-      },
+        enrollStatus: []
+      }
     };
   },
   computed: {
@@ -190,7 +190,7 @@ export default {
       } else {
         return this.$t("configDesc");
       }
-    },
+    }
   },
   created() {},
   methods: {
@@ -216,10 +216,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getTableData(data).then((res) => {
+      getTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.list;
@@ -255,7 +255,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    },
+    }
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -264,5 +264,10 @@ export default {
     }
     next();
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.searchTableData();
+    });
+  }
 };
 </script>

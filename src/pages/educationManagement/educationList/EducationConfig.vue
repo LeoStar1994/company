@@ -70,7 +70,7 @@
         <a-form-model-item label="授课方式"
                            prop="educationMethod">
           <a-checkbox-group v-model="form.educationMethod"
-                            style="width: 100%">
+                            style="width: 100%;vertical-align: middle;">
             <a-row>
               <a-col :span="6"
                      v-for="(item, index) in educationMethodList"
@@ -168,7 +168,7 @@
                            prop="hotelIds">
           <a-checkbox-group v-model="form.hotelIds"
                             v-if="hotelIdsList.length > 0"
-                            style="width: 100%">
+                            style="width: 100%;vertical-align: middle;">
             <a-row>
               <a-col :span="6"
                      v-for="(item, index) in hotelIdsList"
@@ -199,7 +199,7 @@
         <a-form-model-item label="房间类型"
                            prop="roomType">
           <a-checkbox-group v-model="form.roomType"
-                            style="width: 100%">
+                            style="width: 100%;vertical-align: middle;">
             <a-row>
               <a-col :span="6"
                      v-for="(item, index) in roomTypeList"
