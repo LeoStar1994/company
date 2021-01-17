@@ -31,7 +31,7 @@
         <h4 class="ant-descriptions-title mt-40 d-inlineblock w66">比赛结果</h4>
         <a-button type="primary"
                   class="mb-20 ml-20"
-                  @click="openGameResultModal">添加记录</a-button>
+                  @click="openGameResultModal">添加/修改</a-button>
         <ul class="d-flex ai-center jc-center text-center">
           <li class="pt-30">
             <p>总比分</p>
@@ -64,7 +64,7 @@
             <p>{{gameResultForm.firstSectionAway}}</p>
             <p>{{gameResultForm.secondSectionAway}}</p>
             <p>{{gameResultForm.thirdSectionAway}}</p>
-            <p>{{gameResultForm.extraTimeHome}}</p>
+            <p>{{gameResultForm.extraTimeAway}}</p>
             <p>{{gameResultForm.shootMatchAway}}</p>
           </li>
 
@@ -75,7 +75,7 @@
         <h4 class="ant-descriptions-title mt-40 d-inlineblock w66">裁判信息</h4>
         <a-button type="primary"
                   class="mb-20 ml-20"
-                  @click="openRefereeModal">添加记录</a-button>
+                  @click="openRefereeModal">添加/修改</a-button>
         <a-descriptions :column="3"
                         bordered>
           <a-descriptions-item v-for="(item, index) in infoData.refereeInfoList"
@@ -409,10 +409,10 @@ export default {
 
     // 裁判信息modal
     async openRefereeModal() {
-      await this.getGamesResultData();
+      await this.getRefereeInfoData();
       this.$refs.refereeInfoModal.setOpenType();
     },
-
+    // 获取裁判信息
     getRefereeInfoData() {
       getRefereeInfo(this.schedulesId).then(res => {
         const result = res.data;
@@ -423,18 +423,36 @@ export default {
             timeMan: result.data.timeMan.join(), // 计时
             recordMan: result.data.recordMan.join(), // 记录
             declareMan: result.data.declareMan.join(), // 宣告
-            referee1: result.data.referee[0], // 主裁
-            referee2: result.data.referee[1],
-            sideReferee1: result.data.sideReferee[0], // 边裁
-            sideReferee2: result.data.sideReferee[1],
-            refereeSupervision1: result.data.refereeSupervision[0], // 裁判监督
-            refereeSupervision2: result.data.refereeSupervision[1],
-            matchSupervise1: result.data.matchSupervise[0], // 比赛监督
-            matchSupervise2: result.data.matchSupervise[1],
-            penaltyMan1: result.data.penaltyMan[0], // 记罚
-            penaltyMan2: result.data.penaltyMan[1],
-            assistant1: result.data.assistant[0], // 助理
-            assistant2: result.data.assistant[1]
+            referee1: result.data.referee[0] ? result.data.referee[0] : "", // 主裁
+            referee2: result.data.referee[1] ? result.data.referee[1] : "",
+            sideReferee1: result.data.sideReferee[0]
+              ? result.data.sideReferee[0]
+              : "", // 边裁
+            sideReferee2: result.data.sideReferee[1]
+              ? result.data.sideReferee[1]
+              : "",
+            refereeSupervision1: result.data.refereeSupervision[0]
+              ? result.data.refereeSupervision[0]
+              : "", // 裁判监督
+            refereeSupervision2: result.data.refereeSupervision[1]
+              ? result.data.refereeSupervision[1]
+              : "",
+            matchSupervise1: result.data.matchSupervise[0]
+              ? result.data.matchSupervise[0]
+              : "", // 比赛监督
+            matchSupervise2: result.data.matchSupervise[1]
+              ? result.data.matchSupervise[1]
+              : "",
+            penaltyMan1: result.data.penaltyMan[0]
+              ? result.data.penaltyMan[0]
+              : "", // 记罚
+            penaltyMan2: result.data.penaltyMan[1]
+              ? result.data.penaltyMan[1]
+              : "",
+            assistant1: result.data.assistant[0]
+              ? result.data.assistant[0]
+              : "", // 助理
+            assistant2: result.data.assistant[1] ? result.data.assistant[1] : ""
           };
           this.$refs.refereeInfoModal.form.schedulesId =
             result.data.schedulesId;
@@ -480,7 +498,6 @@ export default {
 
     // 判罚记录modal
     openPenaltyRecordModal(status, type, data) {
-      console.log(data);
       if (status === 1) {
         this.$refs.penaltyRecordModal.form = { ...data };
       }

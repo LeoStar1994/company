@@ -24,10 +24,16 @@
         <!-- 球队区域 -->
         <a-form-model-item label="球队区域"
                            prop="teamArea">
-          <a-input v-model="form.teamArea"
-                   placeholder="请输入球队区域"
-                   allowClear
-                   :maxLength="50" />
+          <a-select style="width: 100%"
+                    v-model="form.teamArea"
+                    allowClear
+                    placeholder="请选择">
+            <a-select-option v-for="item in teamAreaList"
+                             :key="item.id"
+                             :value="item.keyAlias">
+              {{item.valueAlias}}
+            </a-select-option>
+          </a-select>
         </a-form-model-item>
         <!-- 球队学校 -->
         <a-form-model-item label="球队学校"
@@ -35,7 +41,7 @@
           <a-input v-model="form.teamSchool"
                    placeholder="请输入球队学校"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 球队名称 -->
         <a-form-model-item prop="teamName"
@@ -43,7 +49,7 @@
           <a-input v-model="form.teamName"
                    placeholder="请输入球队名称"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 球队简称 -->
         <a-form-model-item label="球队简称"
@@ -51,7 +57,7 @@
           <a-input v-model="form.teamShortName"
                    placeholder="请输入球队简称"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 球队logo -->
         <a-form-model-item label="球队logo"
@@ -80,7 +86,7 @@
           <a-input v-model="form.mainColor"
                    placeholder="请输入主场颜色"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 客场颜色 -->
         <a-form-model-item label="客场颜色"
@@ -88,7 +94,7 @@
           <a-input v-model="form.secondColor"
                    placeholder="请输入客场颜色"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 年龄组 -->
         <a-form-model-item label="年龄组"
@@ -112,7 +118,7 @@
           <a-input v-model="form.linkMan"
                    placeholder="请输入联系人"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 联系电话 -->
         <a-form-model-item label="联系电话"
@@ -120,7 +126,7 @@
           <a-input v-model="form.telPhone"
                    placeholder="请输入联系电话"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 集体照 -->
         <a-form-model-item label="集体照"
@@ -165,6 +171,10 @@ export default {
   name: "TeamModal",
   props: {
     yearTypeList: {
+      type: Array,
+      required: true
+    },
+    teamAreaList: {
       type: Array,
       required: true
     }
@@ -331,17 +341,21 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.teamLogoPath = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("teamLogoPath");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.teamLogoPath = result.data.fileUrl;
+            this.$refs.ruleForm.validateField("teamLogoPath");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     // 集体照
@@ -368,17 +382,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.teamImage.push(result.data.fileUrl);
-          this.$refs.ruleForm.validateField("teamImage");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.teamImage.push(result.data.fileUrl);
+            this.$refs.ruleForm.validateField("teamImage");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove(file) {

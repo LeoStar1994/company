@@ -14,9 +14,9 @@
         <a-icon type="user" />
         <span>个人中心</span>
       </a-menu-item> -->
-      <a-menu-item @click="to404Page">
+      <a-menu-item @click="auditPassword">
         <a-icon type="setting" />
-        <span>设置</span>
+        <span>修改密码</span>
       </a-menu-item>
       <a-menu-divider />
       <a-menu-item @click="logout">
@@ -25,6 +25,7 @@
         <span>退出登录</span>
       </a-menu-item>
     </a-menu>
+
   </a-dropdown>
 </template>
 
@@ -44,6 +45,9 @@ export default {
     },
     to404Page() {
       this.$router.push("/404");
+    },
+    auditPassword() {
+      this.$router.push("/auditPassword");
     }
   }
 };

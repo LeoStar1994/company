@@ -28,11 +28,11 @@ Vue.mixin({
     }
   },
   methods: {
-    getAuthHeaders() {
-      return {
-        Authorization: `Bearer ${sessionStorage.Authorization || ""}`
-      };
-    }
+    // getAuthHeaders() {
+    //   return {
+    //     Authorization: `Bearer ${sessionStorage.Authorization || ""}`
+    //   };
+    // }
   }
 });
 

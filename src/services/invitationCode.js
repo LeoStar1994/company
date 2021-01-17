@@ -1,5 +1,11 @@
 /* 赛事邀请码 */
-import { CODETABLEDATA, CODEADD, CODEUPDATE, CODEDELETE } from "@/services/api";
+import {
+  CODETABLEDATA,
+  CODEADD,
+  CODEUPDATE,
+  CODEDELETE,
+  CODEINITDATA
+} from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
 /**
@@ -9,6 +15,11 @@ import { request, METHOD } from "@/utils/request";
  */
 export async function getTableData(data) {
   return request(CODETABLEDATA, METHOD.GET, data);
+}
+
+// 生成邀请码
+export async function getCode(data) {
+  return request(CODEINITDATA, METHOD.GET, data);
 }
 
 // 新增

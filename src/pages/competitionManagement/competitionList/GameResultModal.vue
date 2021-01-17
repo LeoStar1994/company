@@ -34,7 +34,7 @@
               <a-input v-model="form.firstSectionHome"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
             <span class="mx-4 h40">：</span>
             <a-form-model-item prop="code"
@@ -42,7 +42,7 @@
               <a-input v-model="form.firstSectionAway"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
           </div>
         </a-form-model-item>
@@ -54,7 +54,7 @@
               <a-input v-model="form.secondSectionHome"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
             <span class="mx-4 h40">：</span>
             <a-form-model-item prop="code"
@@ -62,7 +62,7 @@
               <a-input v-model="form.secondSectionAway"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
           </div>
         </a-form-model-item>
@@ -74,7 +74,7 @@
               <a-input v-model="form.thirdSectionHome"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
             <span class="mx-4 h40">：</span>
             <a-form-model-item prop="code"
@@ -82,7 +82,7 @@
               <a-input v-model="form.thirdSectionAway"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
           </div>
         </a-form-model-item>
@@ -94,7 +94,7 @@
               <a-input v-model="form.extraTimeHome"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
             <span class="mx-4 h40">：</span>
             <a-form-model-item prop="code"
@@ -102,7 +102,7 @@
               <a-input v-model="form.extraTimeAway"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
           </div>
         </a-form-model-item>
@@ -114,7 +114,7 @@
               <a-input v-model="form.shootMatchHome"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
             <span class="mx-4 h40">：</span>
             <a-form-model-item prop="code"
@@ -122,7 +122,7 @@
               <a-input v-model="form.shootMatchAway"
                        placeholder="请输入"
                        allowClear
-                       :maxLength="20" />
+                       :maxLength="30" />
             </a-form-model-item>
           </div>
         </a-form-model-item>
@@ -155,7 +155,7 @@ export default {
       visible: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 16, offset: 1 },
-      pageTitle: "添加比赛结果",
+      pageTitle: "添加/修改比赛结果",
       openType: 0,
       confirmLoading: false,
       form: {

@@ -25,7 +25,7 @@
                                    prop="hockeyGamesName">
                   <a-input v-model="form.hockeyGamesName"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入赛事名称"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -54,11 +54,11 @@
                       @click="searchTableData()">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -139,10 +139,10 @@ import { downloadFile } from "@/utils/util";
 
 // table columns data
 const columns = [
-  {
-    title: "记录ID",
-    dataIndex: "id"
-  },
+  // {
+  //   title: "记录ID",
+  //   dataIndex: "id"
+  // },
   {
     title: "赛事名称",
     dataIndex: "hockeyGamesName"
@@ -425,6 +425,7 @@ export default {
       if (this.configshow) {
         this.$refs.competitionConfig.resetForm();
       }
+      this.$refs.competitionSchedule.scoreShow = false;
     },
 
     // 关闭详情config

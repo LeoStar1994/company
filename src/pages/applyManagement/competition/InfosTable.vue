@@ -43,7 +43,7 @@
                                    prop="teamName">
                   <a-input v-model="form.teamName"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入球队名称"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -55,11 +55,11 @@
                       @click="searchTableData()">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -72,7 +72,7 @@
         </div>
         <!-- table -->
         <standard-table :columns="columns"
-                        rowKey="id"
+                        rowKey="hockeyGamesJoinId"
                         :dataSource="dataSource"
                         :loading="tableLoading"
                         :pagination="pagination"
@@ -91,11 +91,11 @@
             </a>
             <a class="mr-12 text-green"
                v-if="record.checkStatus === '待审核'"
-               @click="openChangeAlarm(record.id, 1)">审核通过
+               @click="openChangeAlarm(record.hockeyGamesJoinId, 1)">审核通过
             </a>
             <a class="mr-12 text-orange"
                v-if="record.checkStatus === '待审核'"
-               @click="openChangeAlarm(record.id, 2)">不通过
+               @click="openChangeAlarm(record.hockeyGamesJoinId, 2)">不通过
             </a>
             <a class="mr-12 text-green"
                @click="exportInfo(record.id, record.checkStatus)">导出
@@ -129,7 +129,7 @@
                       placeholder="请填写不通过原因"
                       allowClear
                       class="w100p"
-                      :maxLength="300"
+                      :maxLength="100"
                       :auto-size="{ minRows: 4, maxRows: 6 }" />
         </a-form-model-item>
       </a-form-model>
@@ -164,10 +164,10 @@ import { downloadFile } from "@/utils/util";
 
 // table columns data
 const columns = [
-  {
-    title: "报名ID",
-    dataIndex: "id"
-  },
+  // {
+  //   title: "报名ID",
+  //   dataIndex: "id"
+  // },
   {
     title: "球队名称",
     dataIndex: "teamName"

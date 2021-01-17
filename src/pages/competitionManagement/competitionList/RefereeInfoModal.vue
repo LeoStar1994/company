@@ -196,29 +196,93 @@ export default {
       visible: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 16, offset: 1 },
-      pageTitle: "添加裁判信息",
+      pageTitle: "添加/修改裁判信息",
       openType: 0,
       confirmLoading: false,
       form: {
         schedulesId: null,
         timeMan: undefined, // 计时
-        recordMan: undefined, // 记录
-        declareMan: undefined, // 宣告
-        referee1: undefined, // 主裁
-        referee2: undefined,
-        sideReferee1: undefined, // 边裁
-        sideReferee2: undefined,
-        refereeSupervision1: undefined, // 裁判监督
-        refereeSupervision2: undefined,
-        matchSupervise1: undefined, // 比赛监督
-        matchSupervise2: undefined,
-        penaltyMan1: undefined, // 记罚
-        penaltyMan2: undefined,
-        assistant1: undefined, // 助理
-        assistant2: undefined
+        recordMan: "", // 记录
+        declareMan: "", // 宣告
+        referee1: "", // 主裁
+        referee2: "",
+        sideReferee1: "", // 边裁
+        sideReferee2: "",
+        refereeSupervision1: "", // 裁判监督
+        refereeSupervision2: "",
+        matchSupervise1: "", // 比赛监督
+        matchSupervise2: "",
+        penaltyMan1: "", // 记罚
+        penaltyMan2: "",
+        assistant1: "", // 助理
+        assistant2: ""
       },
       // 搜索项校验规则
-      rules: {}
+      rules: {
+        timeMan: [
+          {
+            required: true,
+            message: "请输入计时",
+            trigger: "blur"
+          }
+        ],
+        recordMan: [
+          {
+            required: true,
+            message: "请输入记录",
+            trigger: "blur"
+          }
+        ],
+        declareMan: [
+          {
+            required: true,
+            message: "请输入宣告",
+            trigger: "blur"
+          }
+        ],
+        referee1: [
+          {
+            required: true,
+            message: "请输入主裁",
+            trigger: "blur"
+          }
+        ],
+        sideReferee1: [
+          {
+            required: true,
+            message: "请输入边裁",
+            trigger: "blur"
+          }
+        ],
+        refereeSupervision1: [
+          {
+            required: true,
+            message: "请输入裁判监督",
+            trigger: "blur"
+          }
+        ],
+        matchSupervise1: [
+          {
+            required: true,
+            message: "请输入比赛监督",
+            trigger: "blur"
+          }
+        ],
+        penaltyMan1: [
+          {
+            required: true,
+            message: "请输入记罚",
+            trigger: "blur"
+          }
+        ],
+        assistant1: [
+          {
+            required: true,
+            message: "请输入助理",
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   created() {},
@@ -258,12 +322,20 @@ export default {
             timeMan,
             recordMan,
             declareMan,
-            referee: `${referee1},${referee2}`,
-            sideReferee: `${sideReferee1},${sideReferee2}`,
-            refereeSupervision: `${refereeSupervision1},${refereeSupervision2}`,
-            matchSupervise: `${matchSupervise1},${matchSupervise2}`,
-            penaltyMan: `${penaltyMan1},${penaltyMan2}`,
-            assistant: `${assistant1},${assistant2}`
+            referee: referee2 ? `${referee1},${referee2}` : referee1,
+            sideReferee: sideReferee2
+              ? `${sideReferee1},${sideReferee2}`
+              : sideReferee1,
+            refereeSupervision: refereeSupervision2
+              ? `${refereeSupervision1},${refereeSupervision2}`
+              : refereeSupervision1,
+            matchSupervise: matchSupervise2
+              ? `${matchSupervise1},${matchSupervise2}`
+              : matchSupervise1,
+            penaltyMan: penaltyMan2
+              ? `${penaltyMan1},${penaltyMan2}`
+              : penaltyMan1,
+            assistant: assistant2 ? `${assistant1},${assistant2}` : assistant1
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           refereeInfoSave(data).then(res => {

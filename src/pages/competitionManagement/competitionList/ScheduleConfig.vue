@@ -71,7 +71,7 @@
           <a-input v-model="scheduleConfigForm.gameSessions"
                    placeholder="请输入场次"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 比赛时间 -->
         <a-form-model-item label="比赛时间"
@@ -109,7 +109,7 @@
                    placeholder="请输入比赛场地"
                    :style="{'margin-left': index >= 1 ? '31.2%' : ''}"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <a @click="addPlace"
            style="margin-left:153px">+添加场地</a>
@@ -233,10 +233,26 @@ export default {
       this.scheduleConfigForm.hockeyGamesId = hockeyGamesId;
       if (type === 0) {
         this.scheduleConfigTitle = "新增赛事日程";
+        this.resetAllFields();
       } else {
         this.scheduleConfigTitle = "修改赛事日程";
       }
       this.scheduleConfigVisible = true;
+    },
+
+    resetAllFields() {
+      this.scheduleConfigForm = {
+        awayTeamId: undefined, // 客队id
+        awayTeamName: undefined, // 客队名称
+        homeTeamId: undefined, // 主队id
+        homeTeamName: undefined, // 主队名称
+        place: undefined, // 比赛场地，多个地点用逗号隔开
+        sessionsEndTime: null, //比赛结束时间
+        sessionsStartTime: null, // 比赛开始时间
+        hockeyGamesId: undefined, // 赛事id
+        gameGrade: undefined, // 赛事组别
+        gameSessions: undefined // 场次
+      };
     },
 
     // 主客队不能为同一个队伍

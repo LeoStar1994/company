@@ -31,7 +31,7 @@
           <a-input v-model="form.scoreNum"
                    placeholder="请输入球员号码"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 对方守门员 -->
         <a-form-model-item label="对方守门员"
@@ -39,7 +39,7 @@
           <a-input v-model="form.keeperNum"
                    placeholder="请输入对方守门员"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 是否射中 -->
         <a-form-model-item label="是否射中"

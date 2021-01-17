@@ -31,7 +31,7 @@
           <a-input v-model="form.scoreTime"
                    placeholder="请输入进球时间(格式为mm:ss)"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 球员号码 -->
         <a-form-model-item label="球员号码"
@@ -39,7 +39,7 @@
           <a-input v-model="form.scoreNum"
                    placeholder="请输入球员号码"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 第一助攻 -->
         <a-form-model-item label="第一助攻"
@@ -47,7 +47,7 @@
           <a-input v-model="form.firstAssistsNum"
                    placeholder="请输入第一助攻球员号"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 第二助攻 -->
         <a-form-model-item label="第二助攻"
@@ -55,7 +55,7 @@
           <a-input v-model="form.secondAssistsNum"
                    placeholder="请输入第二助攻球员号"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 守门员 -->
         <a-form-model-item label="守门员"
@@ -63,7 +63,7 @@
           <a-input v-model="form.goalkeeperNum"
                    placeholder="请输入守门员"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 对阵 -->
         <a-form-model-item label="对阵"

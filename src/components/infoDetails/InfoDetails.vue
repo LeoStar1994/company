@@ -105,17 +105,25 @@
     <!-- 球队修改 -->
     <TeamModal ref="teamModal"
                @refreshAllInfoData="refreshAllInfoData"
-               :yearTypeList="yearTypeList"></TeamModal>
+               :yearTypeList="yearTypeList"
+               :teamAreaList="dicData.hokeyGamesTeamArea"></TeamModal>
     <!-- 球队区域、年龄组 -->
 
     <!-- 官员修改 -->
     <OfficerModal ref="officerModal"
-                  @refreshAllInfoData="refreshAllInfoData"></OfficerModal>
+                  @refreshAllInfoData="refreshAllInfoData"
+                  :trainSexList="dicData.hokeyGamesSexType"
+                  :positionNameList="dicData.hokeyGamesTrainPosition"
+                  :cardTypeList="dicData.hokeyGamesCardType"></OfficerModal>
     <!-- 性别、职务、证件类型 -->
 
     <!-- 运动员修改 -->
     <PlayerModal ref="playerModal"
-                 @refreshAllInfoData="refreshAllInfoData"></PlayerModal>
+                 @refreshAllInfoData="refreshAllInfoData"
+                 :sexList="dicData.hokeyGamesSexType"
+                 :holdingRodList="dicData.hokeyGamesTeamDetailHoldingRod"
+                 :positionList="dicData.hokeyGamesTeamDetailPosition"
+                 :cardTypeList="dicData.hokeyGamesCardType"></PlayerModal>
     <!-- 性别、持杆手、位置、证件类型 -->
 
   </div>

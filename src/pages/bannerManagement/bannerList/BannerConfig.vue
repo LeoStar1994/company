@@ -27,7 +27,7 @@
           <a-input v-model="form.focusTitle"
                    placeholder="请输入名称"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 类型 -->
         <a-form-model-item label="类型"
@@ -49,7 +49,7 @@
           <a-input v-model="form.linkUrl"
                    placeholder="请输入链接URL"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 生效日期 -->
         <a-form-model-item label="生效日期"
@@ -82,7 +82,6 @@
                       :customRequest="customRequest"
                       accept=".png, .jpg"
                       list-type="picture-card"
-                      :headers="getAuthHeaders()"
                       :file-list="pictureList"
                       :before-upload="beforeUpload"
                       @preview="handleImgPreview"
@@ -109,7 +108,7 @@
           <a-input v-model="form.sortNum"
                    placeholder="请输入排序值"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -219,10 +218,24 @@ export default {
       this.openType = type;
       if (type === 0) {
         this.pageTitle = "新增焦点图";
+        this.resetAllFields();
       } else {
         this.pageTitle = "修改焦点图";
       }
       this.visible = true;
+    },
+
+    resetAllFields() {
+      this.form = {
+        endTime: null,
+        startTime: null,
+        sortNum: undefined,
+        pageKey: undefined,
+        linkUrl: undefined,
+        imagePath: undefined,
+        focusTitle: undefined,
+        id: null
+      };
     },
 
     fetchTypeList() {
@@ -295,17 +308,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.imagePath = result.data;
-          this.$refs.ruleForm.validateField("imagePath");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.imagePath = result.data;
+            this.$refs.ruleForm.validateField("imagePath");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleOk() {

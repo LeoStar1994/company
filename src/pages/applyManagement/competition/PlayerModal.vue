@@ -27,16 +27,16 @@
           <a-input v-model="form.memberName"
                    placeholder="请输入姓名"
                    allowClear
-                   :maxLength="10" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 性别 -->
         <a-form-model-item label="性别"
                            prop="sex">
           <a-radio-group v-model="form.sex">
-            <a-radio :value="item.value"
+            <a-radio :value="item.keyAlias"
                      v-for="(item,index) in sexList"
                      :key="index">
-              {{item.label}}
+              {{item.valueAlias}}
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
@@ -57,7 +57,7 @@
           <a-input v-model="form.country"
                    placeholder="请输入国家"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 身高 -->
         <a-form-model-item label="身高"
@@ -65,7 +65,7 @@
           <a-input v-model="form.height"
                    placeholder="请输入身高"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 体重 -->
         <a-form-model-item label="体重"
@@ -73,7 +73,7 @@
           <a-input v-model="form.weight"
                    placeholder="请输入体重"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 头像 -->
         <a-form-model-item label="头像"
@@ -100,10 +100,10 @@
         <a-form-model-item label="持杆手"
                            prop="holdingRod">
           <a-radio-group v-model="form.holdingRod">
-            <a-radio :value="item.value"
+            <a-radio :value="item.keyAlias"
                      v-for="(item,index) in holdingRodList"
                      :key="index">
-              {{item.label}}
+              {{item.valueAlias}}
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
@@ -116,8 +116,8 @@
                     placeholder="请选择">
             <a-select-option v-for="(item,index) in positionList"
                              :key="index"
-                             :value="item.value">
-              {{item.label}}
+                             :value="item.keyAlias">
+              {{item.valueAlias}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -127,16 +127,16 @@
           <a-input v-model="form.num"
                    placeholder="请输入队服号"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 证件类型 -->
         <a-form-model-item label="证件类型"
                            prop="cardType">
           <a-radio-group v-model="form.cardType">
-            <a-radio :value="item.value"
+            <a-radio :value="item.keyAlias"
                      v-for="(item,index) in cardTypeList"
                      :key="index">
-              {{item.label}}
+              {{item.valueAlias}}
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
@@ -146,7 +146,7 @@
           <a-input v-model="form.identityCard"
                    placeholder="请输入证件号"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 证件正面url -->
         <a-form-model-item label="证件正面照"
@@ -214,26 +214,31 @@ import { uploadImage } from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
   name: "PlayerModal",
+  props: {
+    sexList: {
+      type: Array,
+      required: true
+    },
+    cardTypeList: {
+      type: Array,
+      required: true
+    },
+    holdingRodList: {
+      type: Array,
+      required: true
+    },
+    positionList: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       visible: false,
       labelCol: { span: 5 },
       wrapperCol: { span: 16, offset: 1 },
-      pageTitle: "修改球队信息",
+      pageTitle: "修改运动员信息",
       confirmLoading: false,
-      cardTypeList: [
-        { label: "身份证", value: 0 },
-        { label: "护照", value: 1 }
-      ],
-      sexList: [
-        { label: "男", value: 0 },
-        { label: "女", value: 1 }
-      ],
-      holdingRodList: [
-        { label: "左手", value: 0 },
-        { label: "右手", value: 1 }
-      ],
-      positionList: [],
       form: {
         memberName: undefined, // 姓名
         sex: undefined, // 性别 0男1女
@@ -275,9 +280,9 @@ export default {
         if (result.code === 0) {
           this.form = {
             ...result.data,
-            sex: result.data.sex === "男" ? 0 : 1,
-            cardType: result.data.cardType === "身份证" ? 0 : 1,
-            holdingRod: result.data.holdingRod === "左手" ? 0 : 1
+            sex: result.data.sex === "男" ? "0" : "1",
+            cardType: result.data.cardType === "身份证" ? "0" : "1",
+            holdingRod: result.data.holdingRod === "左手" ? "0" : "1"
           };
           this.pictureList = [
             {
@@ -338,17 +343,21 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.imagePath = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("imagePath");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.imagePath = result.data.fileUrl;
+            this.$refs.ruleForm.validateField("imagePath");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     // 证件照正面
@@ -379,17 +388,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.identityImagePathUp = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("identityImagePathUp");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.identityImagePathUp = result.data.fileUrl;
+            this.$refs.ruleForm.validateField("identityImagePathUp");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove(file) {
@@ -424,17 +437,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.identityImagePathDown = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("identityImagePathDown");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.identityImagePathDown = result.data.fileUrl;
+            this.$refs.ruleForm.validateField("identityImagePathDown");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove1(file) {
@@ -460,7 +477,10 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = {
-            ...this.form
+            ...this.form,
+            sex: Number(this.form.sex),
+            cardType: Number(this.form.cardType),
+            holdingRod: Number(this.form.holdingRod)
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           playerUpdate(data).then(res => {

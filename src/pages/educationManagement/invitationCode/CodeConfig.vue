@@ -8,7 +8,7 @@
 <template>
   <div class="codeConfig-page">
     <a-modal :title="pageTitle"
-             width="400px"
+             width="500px"
              :visible="visible"
              :confirm-loading="confirmLoading"
              :maskClosable="false"
@@ -23,31 +23,37 @@
                     :wrapper-col="wrapperCol">
         <a-form-model-item label="邀请码"
                            prop="code">
-          <a-input v-model="form.code"
-                   placeholder="请输入邀请码"
-                   allowClear
-                   :maxLength="20" />
+          <div class="d-flex">
+            <a-input v-model="form.code"
+                     placeholder="请生成邀请码"
+                     disabled
+                     allowClear
+                     class="mr-10"
+                     :maxLength="30" />
+            <a-button type="primary"
+                      @click="getCode">生成邀请码</a-button>
+          </div>
         </a-form-model-item>
         <a-form-model-item label="教练名称"
                            prop="refereeName">
           <a-input v-model="form.refereeName"
                    placeholder="请输入教练名称"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="联系人"
                            prop="linkMan">
           <a-input v-model="form.linkMan"
                    placeholder="请输入联系人"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="联系电话"
                            prop="telPhone">
           <a-input v-model="form.telPhone"
                    placeholder="请输入联系电话"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -60,7 +66,7 @@
 </template>
 
 <script>
-import { addCode, updateCode } from "@/services/educationCode";
+import { addCode, updateCode, getCode } from "@/services/educationCode";
 export default {
   name: "CodeConfig",
   data() {
@@ -89,7 +95,7 @@ export default {
         code: [
           {
             required: true,
-            message: "请输入邀请码",
+            message: "请生成邀请码",
             trigger: "blur"
           }
         ],
@@ -112,11 +118,34 @@ export default {
       this.currentId = id;
       if (type === 0) {
         this.pageTitle = "新增邀请码";
+        this.resetAllFields();
       } else {
         this.pageTitle = "修改邀请码";
       }
       this.visible = true;
     },
+
+    resetAllFields() {
+      this.form = {
+        refereeName: undefined,
+        code: undefined,
+        linkMan: undefined,
+        telPhone: undefined
+      };
+    },
+
+    // 生成邀请码
+    getCode() {
+      getCode().then(res => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.form.code = result.data.code;
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
     async handleOk() {
       this.confirmLoading = true;
       await this.onSubmit();

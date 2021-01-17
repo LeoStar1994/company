@@ -24,7 +24,7 @@
                                    prop="code">
                   <a-input v-model="form.code"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入邀请码"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -35,7 +35,7 @@
                                    prop="refereeName">
                   <a-input v-model="form.refereeName"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入教练名称"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -47,11 +47,11 @@
                       @click="searchTableData">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -112,10 +112,10 @@ import {
 
 // table columns data
 const columns = [
-  {
-    title: "邀请码ID",
-    dataIndex: "id"
-  },
+  // {
+  //   title: "邀请码ID",
+  //   dataIndex: "id"
+  // },
   {
     title: "邀请码",
     dataIndex: "code"

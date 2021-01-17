@@ -7,7 +7,8 @@ import {
   ROUTES,
   FOEGETPASSWORD,
   FOEGETPASSWORDCODE,
-  RESETPASSWORD
+  RESETPASSWORD,
+  USERAUDITPASSWORD
 } from "@/services/api";
 import { request, METHOD, removeAuthorization } from "@/utils/request";
 
@@ -77,6 +78,12 @@ export function logout() {
   localStorage.removeItem(process.env.VUE_APP_ROLES_KEY);
   removeAuthorization();
 }
+
+// 用户修改密码
+export async function aduitPassword(data) {
+  return request(USERAUDITPASSWORD, METHOD.POST, data);
+}
+
 export default {
   login,
   logout,

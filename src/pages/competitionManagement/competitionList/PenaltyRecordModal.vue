@@ -31,7 +31,7 @@
           <a-input v-model="form.actionTime"
                    placeholder="请输入事件时间(格式为mm:ss)"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 开始时间 -->
         <a-form-model-item label="开始时间"
@@ -39,7 +39,7 @@
           <a-input v-model="form.startTime"
                    placeholder="请输入开始时间(格式为mm:ss)"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 结束时间 -->
         <a-form-model-item label="结束时间"
@@ -47,7 +47,7 @@
           <a-input v-model="form.endTime"
                    placeholder="请输入结束时间(格式为mm:ss)"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 球员号码 -->
         <a-form-model-item label="球员号码"
@@ -55,7 +55,7 @@
           <a-input v-model="form.num"
                    placeholder="请输入球员号码"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 判罚时间 -->
         <a-form-model-item label="判罚时间"
@@ -63,7 +63,7 @@
           <a-input v-model="form.penaltyTime"
                    placeholder="请输入判罚时间(格式为mm:ss)"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 判罚原因 -->
         <a-form-model-item label="判罚原因"
@@ -72,7 +72,7 @@
                       placeholder="请输入判罚原因"
                       allowClear
                       class="w100p"
-                      :maxLength="300"
+                      :maxLength="100"
                       :auto-size="{ minRows: 3, maxRows: 5 }" />
         </a-form-model-item>
       </a-form-model>

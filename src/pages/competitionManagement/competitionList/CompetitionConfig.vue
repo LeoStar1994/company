@@ -22,7 +22,7 @@
           <a-input v-model="form.hockeyGamesName"
                    allowClear
                    placeholder="请输入赛事名称"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 比赛类型 -->
         <a-form-model-item label="比赛类型"
@@ -239,7 +239,7 @@
           <a-input v-model="form.masterOrganizer"
                    placeholder="请输入主办单位"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 承办单位 -->
         <a-form-model-item label="承办单位"
@@ -247,7 +247,7 @@
           <a-input v-model="form.secondaryOrganizer"
                    placeholder="请输入承办单位"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 举办场地 -->
         <a-form-model-item label="举办场地"
@@ -255,7 +255,7 @@
           <a-input v-model="form.gamePlace"
                    allowClear
                    placeholder="请输入举办场地"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 状态 -->
         <a-form-model-item label="状态"
@@ -272,7 +272,7 @@
           <a-input v-model="form.receiveMan"
                    allowClear
                    placeholder="请输入报名表接收人"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 接受邮件 -->
         <a-form-model-item label="接受邮件"
@@ -280,7 +280,7 @@
           <a-input v-model="form.receiveEmail"
                    allowClear
                    placeholder="请输入报名表接受邮件地址"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- buttons -->
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
@@ -553,11 +553,35 @@ export default {
       this.openType = openType;
       this.currentId = id;
       if (openType === 0) {
-        this.$nextTick(() => {
-          this.resetData();
-          this.$refs.competitionForm.resetFields();
-        });
+        this.resetAllFields();
       }
+    },
+
+    resetAllFields() {
+      this.form = {
+        enrollStartTime: null, // 报名开始时间
+        enrollEndTime: null, // 报名结束时间
+        gameStartTime: null, // 比赛开始时间
+        gameEndTime: null, // 比赛结束时间
+        preEnrollStartTime: null, // 预报名开始时间
+        preEnrollEndTime: null, // 预报名结束时间
+        gameGrade: [], // 比赛组别
+        gamePlace: "", // 举办场地
+        gameRuleName: [], // 竞赛规程文件名（可多选，逗号隔开）
+        gameRulePath: [], // 竞赛规程文件路径（可多选，逗号隔开）
+        hockeyGameType: undefined, // 比赛类型 1国际级 2国家级 3国际邀请赛 4国内联赛
+        hockeyGamesName: "", // 赛事名称
+        imageUrl: "", // 宣传封面地址
+        masterOrganizer: "", // 主办单位
+        needPreCode: 0, // 报名是否需要验证码 0不需要 1需要
+        receiveEmail: "", // 接收邮件
+        receiveMan: "", // 报名表接收人
+        saleStatus: 0, // 状态 0上架 1下架
+        secondaryOrganizer: "", // 承办单位
+        shareImageUrl: "", // 分享图片地址
+        shareText: "", // 分享文案
+        gameIntroducation: "" // 赛事介绍
+      };
     },
 
     // date picker
@@ -637,18 +661,22 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.gameRuleName.push(result.data.uploadFilename);
-          this.form.gameRulePath.push(result.data.fileUrl);
-          this.$refs.competitionForm.validateField("gameRuleName");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.gameRuleName.push(result.data.uploadFilename);
+            this.form.gameRulePath.push(result.data.fileUrl);
+            this.$refs.competitionForm.validateField("gameRuleName");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     // 宣传封面
@@ -695,17 +723,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.imageUrl = result.data.fileUrl;
-          this.$refs.competitionForm.validateField("imageUrl");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.imageUrl = result.data.fileUrl;
+            this.$refs.competitionForm.validateField("imageUrl");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError(); //解决一直loading情况，调用onSuccess
+        });
     },
 
     handleImgRemove() {
@@ -743,17 +775,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.shareImageUrl = result.data.fileUrl;
-          this.$refs.competitionForm.validateField("shareImageUrl");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.shareImageUrl = result.data.fileUrl;
+            this.$refs.competitionForm.validateField("shareImageUrl");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove1() {
@@ -791,7 +827,6 @@ export default {
               }
             });
           } else if (this.openType === 1) {
-            console.log(111);
             // 修改
             data.id = this.currentId;
             updateGame(data).then(res => {

@@ -27,16 +27,16 @@
           <a-input v-model="form.trainName"
                    placeholder="请输入姓名"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 性别 -->
         <a-form-model-item label="性别"
                            prop="trainSex">
           <a-radio-group v-model="form.trainSex">
-            <a-radio :value="item.value"
+            <a-radio :value="item.keyAlias"
                      v-for="(item,index) in trainSexList"
                      :key="index">
-              {{item.label}}
+              {{item.valueAlias}}
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
@@ -57,7 +57,7 @@
           <a-input v-model="form.country"
                    placeholder="请输入国籍"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 职务 -->
         <a-form-model-item label="职务"
@@ -69,8 +69,8 @@
             <a-select-option v-for="(item,index) in positionNameList"
                              @change="positionIdChange(form.positionId)"
                              :key="index"
-                             :value="item.value">
-              {{item.label}}
+                             :value="item.keyAlias">
+              {{item.valueAlias}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -99,10 +99,10 @@
         <a-form-model-item label="证件类型"
                            prop="cardType">
           <a-radio-group v-model="form.cardType">
-            <a-radio :value="item.value"
+            <a-radio :value="item.keyAlias"
                      v-for="(item,index) in cardTypeList"
                      :key="index">
-              {{item.label}}
+              {{item.valueAlias}}
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
@@ -112,7 +112,7 @@
           <a-input v-model="form.identityCard"
                    placeholder="请输入身份证/护照号码"
                    allowClear
-                   :maxLength="50" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 证件照 -->
         <a-form-model-item label="证件照"
@@ -155,6 +155,20 @@ import { uploadImage } from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
   name: "OfficerModal",
+  props: {
+    trainSexList: {
+      type: Array,
+      required: true
+    },
+    cardTypeList: {
+      type: Array,
+      required: true
+    },
+    positionNameList: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       visible: false,
@@ -162,18 +176,6 @@ export default {
       wrapperCol: { span: 16, offset: 1 },
       pageTitle: "修改官员信息",
       confirmLoading: false,
-      trainSexList: [
-        { label: "男", value: 0 },
-        { label: "女", value: 1 }
-      ],
-      cardTypeList: [
-        { label: "身份证", value: 0 },
-        { label: "护照", value: 1 }
-      ],
-      positionNameList: [
-        { label: "教练", value: 3 },
-        { label: "领队", value: 2 }
-      ],
       form: {
         trainName: undefined, // 姓名
         trainSex: undefined, // 性别
@@ -271,8 +273,9 @@ export default {
         if (result.code === 0) {
           this.form = {
             ...result.data,
-            cardType: result.data.cardType === "身份证" ? 0 : 1,
-            trainSex: result.data.trainSex === "男" ? 0 : 1
+            cardType: result.data.cardType === "身份证" ? "0" : "1",
+            trainSex: result.data.trainSex === "男" ? "0" : "1",
+            positionId: result.data.positionId.toString()
           };
           this.pictureList = result.data.identityImagePath.map(
             (item, index) => {
@@ -292,10 +295,10 @@ export default {
     },
 
     // 通过职务id获取职务name
-    positionIdChange(id) {
+    positionIdChange(keyAlias) {
       this.form.positionName = this.positionNameList.find(
-        item => item.id === id
-      ).name;
+        item => item.keyAlias === keyAlias
+      ).valueAlias;
     },
 
     // 生日不能大于当前日期
@@ -334,17 +337,21 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.imagePath = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("imagePath");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.imagePath = result.data.fileUrl;
+            this.$refs.ruleForm.validateField("imagePath");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     // 证件照
@@ -371,17 +378,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.identityImagePath.push(result.data.fileUrl);
-          this.$refs.ruleForm.validateField("identityImagePath");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.identityImagePath.push(result.data.fileUrl);
+            this.$refs.ruleForm.validateField("identityImagePath");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove(file) {
@@ -408,7 +419,10 @@ export default {
         if (valid) {
           const data = {
             ...this.form,
-            identityImagePath: this.form.identityImagePath.join()
+            identityImagePath: this.form.identityImagePath.join(),
+            cardType: Number(this.form.cardType),
+            trainSex: Number(this.form.trainSex),
+            positionId: Number(this.form.positionId)
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           officerUpdate(data).then(res => {

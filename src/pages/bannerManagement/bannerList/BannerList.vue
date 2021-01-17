@@ -24,7 +24,7 @@
                                    prop="focusTitle">
                   <a-input v-model="form.focusTitle"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入名称"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -36,11 +36,11 @@
                       @click="searchTableData()">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -98,10 +98,10 @@ import BannerConfig from "./BannerConfig";
 
 // table columns data
 const columns = [
-  {
-    title: "图片ID",
-    dataIndex: "id"
-  },
+  // {
+  //   title: "图片ID",
+  //   dataIndex: "id"
+  // },
   {
     title: "名称",
     dataIndex: "focusTitle"
@@ -195,7 +195,6 @@ export default {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
-            this.$message.success(result.desc);
             this.$refs.BannerConfig.form = {
               focusTitle: result.data.focusTitle,
               imagePath: result.data.imagePath,

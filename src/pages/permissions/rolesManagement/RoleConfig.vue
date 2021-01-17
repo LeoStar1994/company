@@ -21,7 +21,8 @@
           <a-input v-model="form.name"
                    :disabled="openType === 1 && !sassIdIsEmpty"
                    allowClear
-                   :maxLength="20" />
+                   placeholder="请输入角色名称"
+                   :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="状态"
                            prop="state">
@@ -34,9 +35,10 @@
         <a-form-model-item label="备注"
                            prop="remark">
           <a-input v-model="form.remark"
-                   :maxLength="500"
+                   :maxLength="200"
                    :disabled="openType === 1 && !sassIdIsEmpty"
                    allowClear
+                   placeholder="请输入备注"
                    :auto-size="{ minRows: 3, maxRows: 5 }"
                    type="textarea" />
         </a-form-model-item>
@@ -49,6 +51,10 @@
                     :disabled="openType === 1 && !sassIdIsEmpty"
                     :tree-data="treeData" />
             <a-empty v-if="treeData.length === 0" />
+            <a-icon type="sync"
+                    title="刷新列表"
+                    class="syncRoles"
+                    @click="syncRoles" />
           </div>
         </a-form-model-item>
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
@@ -127,10 +133,13 @@ export default {
       this.sequenceNumber = sequenceNumber;
       this.sassIdIsEmpty = sassIdIsEmpty;
       if (openType === 0) {
-        this.$nextTick(() => {
-          this.$refs.ruleForm.resetFields();
-        });
+        this.resetAllFields();
       }
+    },
+
+    // 刷新同步角色
+    syncRoles() {
+      this.$emit("syncRoles");
     },
     // 保存
     onSubmit() {
@@ -171,6 +180,14 @@ export default {
         }
       });
     },
+    resetAllFields() {
+      this.form = {
+        name: "",
+        remark: "",
+        selectedMenusList: [],
+        state: "0"
+      };
+    },
     // 取消
     resetForm() {
       this.$refs.ruleForm.resetFields();
@@ -181,19 +198,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.roleConfig-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 100;
-  margin-top: 24px;
-}
 .treebox {
+  position: relative;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
-  padding: 10px 0;
-  min-height: 180px;
+  padding: 20px 0;
+  min-height: 200px;
+  .syncRoles {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    cursor: pointer;
+  }
 }
 </style>

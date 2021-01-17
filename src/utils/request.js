@@ -3,25 +3,26 @@ import Cookie from "js-cookie";
 
 // 跨域认证信息 header 名
 const xsrfHeaderName = "Authorization";
+const xsrfCookieName = "bbsAuthorization";
 
 axios.defaults.timeout = 5000;
 axios.defaults.withCredentials = true; // 是否携带Cookie
 axios.defaults.xsrfHeaderName = xsrfHeaderName;
-axios.defaults.xsrfCookieName = xsrfHeaderName;
+axios.defaults.xsrfCookieName = xsrfCookieName;
 
 // 认证类型
 const AUTH_TYPE = {
   BEARER: "Bearer",
   BASIC: "basic",
   AUTH1: "auth1",
-  AUTH2: "auth2",
+  AUTH2: "auth2"
 };
 
 // http method
 const METHOD = {
   GET: "get",
   POST: "post",
-  DELETE: "delete",
+  DELETE: "delete"
 };
 
 /**
@@ -52,10 +53,9 @@ async function request(url, method, params, responseType) {
 function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      Cookie.set(xsrfHeaderName, "Bearer " + auth.token, {
-        expires: auth.expireAt,
+      Cookie.set(xsrfCookieName, "Bearer " + auth.token, {
+        expires: auth.expireAt
       });
-      sessionStorage.Authorization = auth.token;
       break;
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:
@@ -72,8 +72,7 @@ function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
 function removeAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      Cookie.remove(xsrfHeaderName);
-      sessionStorage.removeItem(xsrfHeaderName);
+      Cookie.remove(xsrfCookieName);
       break;
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:
@@ -91,10 +90,7 @@ function removeAuthorization(authType = AUTH_TYPE.BEARER) {
 function checkAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      if (Cookie.get(xsrfHeaderName)) {
-        return true;
-      }
-      if (sessionStorage.getItem(xsrfHeaderName)) {
+      if (Cookie.get(xsrfCookieName)) {
         return true;
       }
       break;
@@ -115,31 +111,31 @@ function checkAuthorization(authType = AUTH_TYPE.BEARER) {
 function loadInterceptors(interceptors, options) {
   const { request, response } = interceptors;
   // 加载请求拦截器
-  request.forEach((item) => {
+  request.forEach(item => {
     let { onFulfilled, onRejected } = item;
     if (!onFulfilled || typeof onFulfilled !== "function") {
-      onFulfilled = (config) => config;
+      onFulfilled = config => config;
     }
     if (!onRejected || typeof onRejected !== "function") {
-      onRejected = (error) => Promise.reject(error);
+      onRejected = error => Promise.reject(error);
     }
     axios.interceptors.request.use(
-      (config) => onFulfilled(config, options),
-      (error) => onRejected(error, options)
+      config => onFulfilled(config, options),
+      error => onRejected(error, options)
     );
   });
   // 加载响应拦截器
-  response.forEach((item) => {
+  response.forEach(item => {
     let { onFulfilled, onRejected } = item;
     if (!onFulfilled || typeof onFulfilled !== "function") {
-      onFulfilled = (response) => response;
+      onFulfilled = response => response;
     }
     if (!onRejected || typeof onRejected !== "function") {
-      onRejected = (error) => Promise.reject(error);
+      onRejected = error => Promise.reject(error);
     }
     axios.interceptors.response.use(
-      (response) => onFulfilled(response, options),
-      (error) => onRejected(error, options)
+      response => onFulfilled(response, options),
+      error => onRejected(error, options)
     );
   });
 }
@@ -175,5 +171,5 @@ export {
   removeAuthorization,
   checkAuthorization,
   loadInterceptors,
-  parseUrlParams,
+  parseUrlParams
 };

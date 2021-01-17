@@ -20,6 +20,7 @@ module.exports = {
   FOEGETPASSWORD: `${BASE_URL}/login/forgetPassword/validMobile`, // 找回密码验证手机验证码
   FOEGETPASSWORDCODE: `${BASE_URL}/login/forgetPassword`, // 忘记密码获取手机验证码
   RESETPASSWORD: `${BASE_URL}/login/forgetPassword/modPassword`, // 重置修改密码
+  USERAUDITPASSWORD: `${BASE_URL}/home/modPwd`, // 用户修改密码
 
   /* 权限设置 */
   // 用户管理
@@ -114,6 +115,7 @@ module.exports = {
   CODEADD: `${BASE_URL}/games/code/add`, // 新增
   CODEUPDATE: `${BASE_URL}/games/code/update`, // 修改
   CODEDELETE: `${BASE_URL}/games/code/delete`, // 删除
+  CODEINITDATA: `${BASE_URL}/games/initAdd`, // 生成邀请码
 
   /* 教学管理 */
   // 教学列表
@@ -132,6 +134,7 @@ module.exports = {
   EDUCATIONCODEINITDATA: `${BASE_URL}/enducationInvitationCode/initMod`, // 修改初始化，返显数据
   EDUCATIONCODEUPDATE: `${BASE_URL}/enducationInvitationCode/mod`, // 修改
   EDUCATIONCODEDELETE: `${BASE_URL}/enducationInvitationCode/delete`, // 删除
+  EDUCATIONCODINITCODE: `${BASE_URL}/enducationInvitationCode/initAdd`, // 生成邀请码
 
   /* 焦点图管理 */
   BANNERTABLEDATA: `${BASE_URL}/focus/query`, // table查询

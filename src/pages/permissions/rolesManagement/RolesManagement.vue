@@ -37,11 +37,11 @@
                       @click="searchTableData()">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -69,6 +69,7 @@
                @click="openAlarm(1, record.sequenceNumber)">详情
             </a>
             <a class="mr-12"
+               v-if="isEmpty(record.saasId)"
                @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a>
             <a @click="changeService(record.sequenceNumber, 0)"
                v-if="record.state === 1 && isEmpty(record.saasId)"
@@ -94,6 +95,7 @@
                 :configshow="configshow"
                 :treeData="treeData"
                 @closeConfig='closeConfig'
+                @syncRoles="getRolesList"
                 @searchTableData='searchTableData'></RoleConfig>
     <!-- loading -->
     <transition name="el-fade-in">
@@ -117,10 +119,10 @@ import RoleConfig from "./RoleConfig";
 
 // table columns data
 const columns = [
-  {
-    title: "序号",
-    dataIndex: "sequenceNumber"
-  },
+  // {
+  //   title: "序号",
+  //   dataIndex: "sequenceNumber"
+  // },
   {
     title: "角色名称",
     dataIndex: "name"
@@ -191,9 +193,7 @@ export default {
       }
     }
   },
-  created() {
-    this.getRolesList();
-  },
+  created() {},
   methods: {
     // 获取角色tree list
     getRolesList() {
@@ -240,6 +240,7 @@ export default {
       if (status === 1 || status === 2) {
         await this.roleConfigDetail(id);
       }
+      this.getRolesList();
       this.configshow = true;
       this.$refs.roleConfig.setOpenType(status, id, sassIdIsEmpty);
     },
@@ -251,7 +252,6 @@ export default {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
-          this.$message.success(result.desc);
           this.$refs.roleConfig.form = {
             name: result.data.name,
             remark: result.data.remark,
@@ -350,9 +350,26 @@ export default {
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
     if (to.path !== from.path) {
-      this.reset();
+      if (this.configshow && this.$refs.roleConfig.openType === 0) {
+        const _this = this;
+        this.$confirm({
+          title: "跳转其他页面会清空当前页面已填写的数据，是否继续?",
+          okText: "确定",
+          okType: "primary",
+          cancelText: "取消",
+          onOk() {
+            _this.reset();
+            next();
+          },
+          onCancel() {
+            _this.$message.warning("操作已取消");
+          }
+        });
+      } else {
+        next();
+        this.reset();
+      }
     }
-    next();
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {

@@ -26,7 +26,7 @@
                                    prop="name">
                   <a-input v-model="form.name"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入姓名"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -56,11 +56,11 @@
 
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -131,10 +131,10 @@ import { downloadFile } from "@/utils/util";
 import InfoDetails from "@/components/infoDetails/InfoDetails";
 // table columns data
 const columns = [
-  {
-    title: "记录ID",
-    dataIndex: "id"
-  },
+  // {
+  //   title: "记录ID",
+  //   dataIndex: "id"
+  // },
   {
     title: "姓名",
     dataIndex: "refereeName",

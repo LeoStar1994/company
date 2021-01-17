@@ -22,7 +22,7 @@
           <a-input v-model="form.educationName"
                    allowClear
                    placeholder="请输入标题"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 类型 -->
         <a-form-model-item label="类型"
@@ -153,7 +153,7 @@
           <a-input v-model="form.masterOrganizer"
                    placeholder="请输入主办单位"
                    allowClear
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 培训地点 -->
         <a-form-model-item label="培训地点"
@@ -161,7 +161,7 @@
           <a-input v-model="form.address"
                    allowClear
                    placeholder="请输入培训地点"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 入住酒店 -->
         <a-form-model-item label="入住酒店"
@@ -189,7 +189,7 @@
           <a-input v-model="form.hotelName"
                    allowClear
                    placeholder="请输入酒店名称"
-                   :maxLength="20" />
+                   :maxLength="30" />
           <a-button @click="saveNewHotel"
                     class="mr-10"
                     type="primary">保存酒店</a-button>
@@ -221,7 +221,6 @@
                       list-type="picture-card"
                       :file-list="coverPictureList"
                       :before-upload="beforeUpload"
-                      :headers="getAuthHeaders()"
                       :remove="handleImgRemove"
                       :customRequest="customRequest"
                       @preview="handleImgPreview"
@@ -249,7 +248,6 @@
                       accept=".png, .jpg"
                       list-type="picture-card"
                       :file-list="sharePictureList"
-                      :headers="getAuthHeaders()"
                       :remove="handleImgRemove1"
                       :before-upload="beforeUpload"
                       :customRequest="customRequest1"
@@ -547,9 +545,7 @@ export default {
       this.openType = openType;
       this.currentID = currentID;
       if (openType === 0) {
-        this.$nextTick(() => {
-          this.resetData();
-        });
+        this.resetAllFields();
       }
     },
 
@@ -651,17 +647,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.imageUrl = result.data;
-          this.$refs.educationForm.validateField("imageUrl");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.imageUrl = result.data;
+            this.$refs.educationForm.validateField("imageUrl");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove() {
@@ -699,17 +699,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then(res => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.shareImageUrl = result.data;
-          this.$refs.educationForm.validateField("shareImageUrl");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.shareImageUrl = result.data;
+            this.$refs.educationForm.validateField("shareImageUrl");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
 
     handleImgRemove1() {
@@ -785,15 +789,37 @@ export default {
         }
       });
     },
-    resetData() {
-      this.$refs.educationForm.resetFields();
+
+    resetAllFields() {
+      this.form = {
+        enrollStartTime: null, // 报名开始时间
+        enrollEndTime: null, // 报名结束时间
+        educationStartTime: null, // 培训开始时间
+        educationEndTime: null, // 培训结束时间
+        roomType: [], // 房间类型（可多选）
+        hotelIds: [], // 入住酒店（可多选）
+        toObject: undefined, // 面向人群
+        educationType: undefined, // 类型
+        educationMethod: [], // 授课方式（可多选）
+        educationLevel: undefined, // 培训等级
+        educationName: undefined, // 标题
+        imageUrl: undefined, // 宣传封面地址
+        masterOrganizer: undefined, // 主办单位
+        address: undefined,
+        needPreCode: "0", // 报名是否需要验证码 0不需要 1需要
+        saleStatus: "0", // 状态 0上架 1下架
+        shareImageUrl: undefined, // 分享图片地址
+        shareText: undefined, // 分享文案
+        educationIntroduction: undefined, // 活动详情
+        hotelName: undefined // 新增酒店名称
+      };
       this.coverPictureList = []; // 宣传封面file list
       this.sharePictureList = []; // 分享图片file list
     },
 
     // 取消
     resetForm() {
-      this.resetData();
+      this.resetAllFields();
       this.$emit("closeConfig");
     }
   }

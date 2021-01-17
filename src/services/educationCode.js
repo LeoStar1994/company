@@ -5,6 +5,7 @@ import {
   EDUCATIONCODEINITDATA,
   EDUCATIONCODEUPDATE,
   EDUCATIONCODEDELETE,
+  EDUCATIONCODINITCODE
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -15,6 +16,11 @@ import { request, METHOD } from "@/utils/request";
  */
 export async function getTableData(data) {
   return request(EDUCATIONCODETABLEDATA, METHOD.POST, data);
+}
+
+// 生成邀请码
+export async function getCode(data) {
+  return request(EDUCATIONCODINITCODE, METHOD.GET, data);
 }
 
 // 新增

@@ -25,7 +25,7 @@
                                    prop="name">
                   <a-input v-model="form.name"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入用户名"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -36,7 +36,7 @@
                                    prop="account">
                   <a-input v-model="form.account"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入账号"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -47,7 +47,7 @@
                                    prop="mobile">
                   <a-input v-model="form.mobile"
                            allowClear
-                           :maxLength="10"
+                           :maxLength="30"
                            placeholder="请输入手机号"></a-input>
                 </a-form-model-item>
               </a-col>
@@ -57,14 +57,14 @@
           <!-- 查询、重置、收起 -->
           <span style="float: right; margin-top: 3px;">
             <a-button type="primary"
-                      @click="searchTableData()">查询</a-button>
+                      @click="searchTableData">查询</a-button>
             <a-button style="margin-left: 8px"
                       @click="reset">重置</a-button>
-            <a @click="toggleAdvanced"
+            <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
-            </a>
+            </a> -->
           </span>
         </a-form-model>
       </div>
@@ -92,16 +92,18 @@
                @click="openAlarm(1, record.sequenceNumber)">详情
             </a>
             <a class="mr-12"
+               v-if="isEmpty(record.saasId)"
                @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a>
             <a @click="changeService(record.sequenceNumber, 0)"
-               v-if="record.state === 1"
+               v-if="record.state === 1 && isEmpty(record.saasId)"
                class="text-green mr-12">启用</a>
             <a @click="changeService(record.sequenceNumber, 1)"
-               v-if="record.state === 0"
+               v-if="record.state === 0 && isEmpty(record.saasId)"
                class="text-orange mr-12">停用</a>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
+                          v-if="isEmpty(record.saasId)"
                           @confirm="deleteInfo(record.sequenceNumber)"
                           @cancel="deletecancel">
               <a href="#"
@@ -116,6 +118,7 @@
                  :configshow="configshow"
                  :treeData="treeData"
                  @closeConfig='closeConfig'
+                 @syncRoles="getRolesList"
                  @searchTableData='searchTableData'></UsersConfig>
     <!-- loading -->
     <transition name="el-fade-in">
@@ -139,12 +142,12 @@ import { isEmpty } from "@/utils/util";
 
 // table columns data
 const columns = [
+  // {
+  //   title: "序号",
+  //   dataIndex: "sequenceNumber"
+  // },
   {
-    title: "序号",
-    dataIndex: "sequenceNumber"
-  },
-  {
-    title: "用户",
+    title: "用户昵称",
     dataIndex: "name"
   },
   {
@@ -229,9 +232,7 @@ export default {
       }
     }
   },
-  created() {
-    this.getRolesList();
-  },
+  created() {},
   methods: {
     isEmpty: isEmpty,
     // 获取角色tree list
@@ -263,6 +264,7 @@ export default {
       if (status === 1 || status === 2) {
         await this.userConfigDetail(id);
       }
+      this.getRolesList();
       this.configshow = true;
       this.$refs.userConfig.setOpenType(status, id, sassIdIsEmpty);
     },
@@ -274,14 +276,13 @@ export default {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
-          this.$message.success(result.desc);
           this.$refs.userConfig.form = {
             name: result.data.name,
             account: result.data.account,
             mobile: result.data.mobile,
             password: result.data.password,
             remark: result.data.remark,
-            roles: result.data.roles,
+            roles: result.data.roles[0] ? result.data.roles[0] : "",
             state: result.data.state.toString()
           };
         } else {
@@ -336,14 +337,18 @@ export default {
         pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getUsersTableData(data).then(res => {
-        const result = res.data;
-        if (result.code === 0) {
-          this.dataSource = result.data.records;
-          this.pagination.total = result.data.total;
-        }
-        this.tableLoading = false;
-      });
+      getUsersTableData(data)
+        .then(res => {
+          const result = res.data;
+          if (result.code === 0) {
+            this.dataSource = result.data.records;
+            this.pagination.total = result.data.total;
+          }
+          this.tableLoading = false;
+        })
+        .catch(() => {
+          this.tableLoading = false;
+        });
     },
 
     // 分页
@@ -376,9 +381,26 @@ export default {
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
     if (to.path !== from.path) {
-      this.reset();
+      if (this.configshow && this.$refs.userConfig.openType === 0) {
+        const _this = this;
+        this.$confirm({
+          title: "跳转其他页面会清空当前页面已填写的数据，是否继续?",
+          okText: "确定",
+          okType: "primary",
+          cancelText: "取消",
+          onOk() {
+            _this.reset();
+            next();
+          },
+          onCancel() {
+            _this.$message.warning("操作已取消");
+          }
+        });
+      } else {
+        next();
+        this.reset();
+      }
     }
-    next();
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {

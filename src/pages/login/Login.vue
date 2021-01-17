@@ -39,7 +39,7 @@
               <!-- 账户名 -->
               <a-input autocomplete="autocomplete"
                        size="default"
-                       :maxLength="20"
+                       :maxLength="30"
                        placeholder="请输入您的账号"
                        v-decorator="['account', {rules: [{ required: true, whitespace: true}]}]">
                 <!-- validator: handleCheckAccount -->
@@ -51,12 +51,19 @@
             <a-form-item>
               <a-input size="default"
                        placeholder="请输入密码"
-                       :maxLength="20"
+                       :maxLength="30"
                        autocomplete="autocomplete"
-                       type="password"
+                       :type="passwordType"
                        v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]">
                 <a-icon slot="prefix"
                         type="lock" />
+                <a-tooltip slot="suffix"
+                           title="查看密码">
+                  <a-icon type="eye"
+                          v-if="form.getFieldValue('password')"
+                          @click="passwordType = 'text'"
+                          style="color: rgba(0,0,0,.45)" />
+                </a-tooltip>
               </a-input>
             </a-form-item>
             <!-- 图形验证码 -->
@@ -91,7 +98,7 @@
             <a-form-item>
               <a-input size="default"
                        placeholder="请输入手机号"
-                       :maxLength="13"
+                       :maxLength="30"
                        v-decorator="['mobile', {rules: [{ required: true, validator: handleCheckMobile, whitespace: true}]}]">
                 <a-icon slot="prefix"
                         type="mobile" />
@@ -218,6 +225,7 @@ export default {
       logging: false,
       error: "",
       errorByPhone: "",
+      passwordType: "password",
       form: this.$form.createForm(this),
       form1: this.$form.createForm(this),
       currentTabKey: "commonLogin",
@@ -254,6 +262,7 @@ export default {
       if (activeKey === "commonLogin") {
         this.form.resetFields();
         this.error = "";
+        this.passwordType = "password";
       } else {
         this.form1.resetFields();
         this.errorByPhone = "";
@@ -375,8 +384,15 @@ export default {
               router: "welcome",
               name: "欢迎页面"
             };
+            const auditPassword = {
+              router: "auditPassword",
+              name: "修改密码"
+            };
             const routesConfig = [
-              { router: "root", children: [welcome, ...mapRoutesArr] }
+              {
+                router: "root",
+                children: [welcome, auditPassword, ...mapRoutesArr]
+              }
             ];
             loginRes.user.name = result.data.data.account;
             this.setUser(loginRes.user); // 设置user信息

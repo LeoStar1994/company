@@ -91,24 +91,24 @@ export default {
         videoNames: "", // 视频名称
         videoUrls: "", // 视频连接
         imgUrls: "", //	封面图链接
-        schedulesId: null,
+        schedulesId: null
       },
       // 搜索项校验规则
       rules: {
         videoUrls: [
           {
             required: true,
-            message: "请上传视频",
+            message: "请上传视频"
             // trigger: "change",
-          },
+          }
         ],
         imgUrls: [
           {
             required: true,
-            message: "请上传封面图",
+            message: "请上传封面图"
             // trigger: "change",
-          },
-        ],
+          }
+        ]
       },
       // 视频
       videoList: [],
@@ -116,7 +116,7 @@ export default {
       // 封面图
       pictureList: [], // 宣传封面file list
       previewVisible: false,
-      previewCoverImage: "",
+      previewCoverImage: ""
     };
   },
   created() {},
@@ -140,7 +140,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then((res) => {
+        .then(res => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -152,7 +152,9 @@ export default {
             this.$message.error(result.desc);
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          options.onError();
+        });
     },
 
     videoUploadChange({ fileList }) {
@@ -207,17 +209,21 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData).then((res) => {
-        options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.form.imgUrls = result.data.fileUrl;
-          this.$refs.ruleForm.validateField("imgUrls");
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      uploadImage(formData)
+        .then(res => {
+          options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.form.imgUrls = result.data.fileUrl;
+            this.$refs.ruleForm.validateField("imgUrls");
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+        });
     },
     handleImgRemove() {
       this.form.imageUrl = "";
@@ -238,12 +244,12 @@ export default {
     },
 
     saveVideoInfo() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           videoSave(data)
-            .then((res) => {
+            .then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -267,8 +273,8 @@ export default {
       this.videoList = [];
       this.pictureList = [];
       this.visible = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

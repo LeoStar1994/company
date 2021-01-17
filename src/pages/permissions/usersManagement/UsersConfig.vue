@@ -16,36 +16,48 @@
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
-        <a-form-model-item label="用户"
+        <a-form-model-item label="用户昵称"
                            prop="name">
           <a-input v-model="form.name"
                    allowClear
+                   placeholder="请输入用户昵称"
                    :disabled="openType === 1 && !sassIdIsEmpty"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="账号"
                            prop="account">
           <a-input v-model="form.account"
                    auto-complete="new-account"
                    allowClear
+                   placeholder="请输入账号"
                    :disabled="openType === 1 && !sassIdIsEmpty"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="密码"
                            prop="password">
           <a-input v-model="form.password"
-                   type="password"
+                   :type="passwordType"
                    allowClear
-                   :disabled="openType === 1"
+                   placeholder="请输入密码"
+                   :disabled="openType === 1 || openType === 2"
                    auto-complete="new-password"
-                   :maxLength="20" />
+                   :maxLength="30">
+            <a-tooltip slot="suffix"
+                       title="查看密码">
+              <a-icon type="eye"
+                      v-if="form.password"
+                      @click="passwordType = 'text'"
+                      style="color: rgba(0,0,0,.45)" />
+            </a-tooltip>
+          </a-input>
         </a-form-model-item>
         <a-form-model-item label="手机号"
                            prop="mobile">
           <a-input v-model="form.mobile"
                    allowClear
+                   placeholder="请输入手机号"
                    :disabled="openType === 1"
-                   :maxLength="20" />
+                   :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="状态"
                            prop="state">
@@ -58,7 +70,8 @@
         <a-form-model-item label="备注"
                            prop="remark">
           <a-input v-model="form.remark"
-                   :maxLength="500"
+                   :maxLength="200"
+                   placeholder="请输入备注"
                    :disabled="openType === 1 && !sassIdIsEmpty"
                    allowClear
                    :auto-size="{ minRows: 3, maxRows: 5 }"
@@ -67,12 +80,20 @@
         <a-form-model-item label="角色"
                            prop="roles">
           <div class="treebox">
-            <a-tree v-model="form.roles"
-                    checkable
-                    :disabled="openType === 1 && !sassIdIsEmpty"
-                    :replaceFields='treeDefaultObject'
-                    :tree-data="treeData" />
+            <a-radio-group v-model="form.roles"
+                           :disabled="openType === 1 && !sassIdIsEmpty">
+              <a-radio :value="item.id"
+                       class="d-block pl-10 mb-4"
+                       v-for="item in treeData"
+                       :key="item.id">
+                {{item.name}}
+              </a-radio>
+            </a-radio-group>
             <a-empty v-if="treeData.length === 0" />
+            <a-icon type="sync"
+                    title="刷新列表"
+                    class="syncRoles"
+                    @click="syncRoles" />
           </div>
         </a-form-model-item>
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
@@ -116,19 +137,16 @@ export default {
       openType: null, // 0新增 1查看 2修改
       sequenceNumber: null, // 修改时使用，id
       sassIdIsEmpty: true,
+      passwordType: "password",
       labelCol: { span: 5 },
       wrapperCol: { span: 11, offset: 1 },
-      treeDefaultObject: {
-        title: "name",
-        key: "id"
-      },
       form: {
         name: "",
         account: "",
         mobile: "",
         password: "",
         remark: "",
-        roles: [],
+        roles: "",
         state: "0"
       },
       // 搜索项校验规则
@@ -187,7 +205,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -196,16 +214,20 @@ export default {
       this.sequenceNumber = sequenceNumber;
       this.sassIdIsEmpty = sassIdIsEmpty;
       if (openType === 0) {
-        this.$nextTick(() => {
-          this.$refs.ruleForm.resetFields();
-        });
+        this.resetAllFields();
       }
     },
+
+    // 刷新同步角色
+    syncRoles() {
+      this.$emit("syncRoles");
+    },
+
     // 保存
     onSubmit() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          const data = { ...this.form };
+          const data = { ...this.form, roles: new Array(this.form.roles) };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
@@ -240,6 +262,20 @@ export default {
         }
       });
     },
+
+    resetAllFields() {
+      this.form = {
+        name: "",
+        account: "",
+        mobile: "",
+        password: "",
+        remark: "",
+        roles: [],
+        state: "0"
+      };
+      this.passwordType = "password";
+    },
+
     // 取消
     resetForm() {
       this.$refs.ruleForm.resetFields();
@@ -251,9 +287,16 @@ export default {
 
 <style lang="less" scoped>
 .treebox {
+  position: relative;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
-  padding: 10px 0;
-  min-height: 180px;
+  padding: 20px 0;
+  min-height: 200px;
+  .syncRoles {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    cursor: pointer;
+  }
 }
 </style>
