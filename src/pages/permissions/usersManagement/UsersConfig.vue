@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-18 19:49:05
+ * @LastEditTime: 2021-01-18 21:34:17
  * @LastEditors: Leo
 -->
 <template>
@@ -21,7 +21,7 @@
           <a-input v-model="form.name"
                    allowClear
                    placeholder="请输入用户昵称"
-                   :disabled="openType === 1 && !sassIdIsEmpty"
+                   :disabled="openType === 1 || !sassIdIsEmpty"
                    :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="账号"
@@ -30,7 +30,7 @@
                    auto-complete="new-account"
                    allowClear
                    placeholder="请输入账号"
-                   :disabled="openType === 1 && !sassIdIsEmpty"
+                   :disabled="openType === 1 || !sassIdIsEmpty"
                    :maxLength="30" />
         </a-form-model-item>
         <a-form-model-item label="密码"
@@ -72,7 +72,7 @@
           <a-input v-model="form.remark"
                    :maxLength="200"
                    placeholder="请输入备注"
-                   :disabled="openType === 1 && !sassIdIsEmpty"
+                   :disabled="openType === 1 || !sassIdIsEmpty"
                    allowClear
                    :auto-size="{ minRows: 3, maxRows: 5 }"
                    type="textarea" />
@@ -83,7 +83,7 @@
             <a-tree v-model="form.roles"
                     checkable
                     :replaceFields='treeDefaultObject'
-                    :disabled="openType === 1 && !sassIdIsEmpty"
+                    :disabled="openType === 1 || !sassIdIsEmpty"
                     :tree-data="treeData" />
             <a-empty v-if="treeData.length === 0" />
             <a-icon type="sync"

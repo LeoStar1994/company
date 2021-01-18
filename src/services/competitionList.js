@@ -16,7 +16,7 @@ import {
   SCHEDULEDELETE,
   SCHEDULEVIDEOADD,
   SCHEDULEVIDEODELETE,
-  SCHEDULEVIDEOTABLEDATA
+  SCHEDULEVIDEOTABLEDATA,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -56,7 +56,7 @@ export async function deleteGame(id) {
 
 // 导出秩序册
 export async function exportGameWord(data) {
-  return request(COMPETITIONEXPORT, METHOD.GET, data, "blob");
+  return request(COMPETITIONEXPORT, METHOD.GET, data, "blob", 600000);
 }
 
 /************************** 赛事日程  **************************/

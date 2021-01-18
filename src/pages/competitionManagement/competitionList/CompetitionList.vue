@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 21:04:51
+ * @LastEditTime: 2021-01-18 21:22:22
  * @LastEditors: Leo
 -->
 <template>

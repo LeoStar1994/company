@@ -5,7 +5,7 @@ import Cookie from "js-cookie";
 const xsrfHeaderName = "Authorization";
 const xsrfCookieName = "bbsAuthorization";
 
-axios.defaults.timeout = 30000;
+axios.defaults.timeout = 5000;
 axios.defaults.withCredentials = true; // 是否携带Cookie
 axios.defaults.xsrfHeaderName = xsrfHeaderName;
 axios.defaults.xsrfCookieName = xsrfCookieName;
@@ -32,10 +32,10 @@ const METHOD = {
  * @param params 请求参数
  * @returns {Promise<AxiosResponse<T>>}
  */
-async function request(url, method, params, responseType) {
+async function request(url, method, params, responseType, timeout) {
   switch (method) {
     case METHOD.GET:
-      return axios.get(url, { params, responseType });
+      return axios.get(url, { params, responseType, timeout }, timeout);
     case METHOD.POST:
       return axios.post(url, params);
     case METHOD.DELETE:

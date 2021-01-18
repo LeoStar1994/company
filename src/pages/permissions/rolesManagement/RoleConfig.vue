@@ -2,7 +2,7 @@
  * @Description: 角色管理详情
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-18 19:23:11
+ * @LastEditTime: 2021-01-18 21:35:00
  * @LastEditors: Leo
 -->
 <template>
@@ -19,7 +19,7 @@
         <a-form-model-item label="角色名称"
                            prop="name">
           <a-input v-model="form.name"
-                   :disabled="openType === 1 && !sassIdIsEmpty"
+                   :disabled="openType === 1 || !sassIdIsEmpty"
                    allowClear
                    placeholder="请输入角色名称"
                    :maxLength="30" />
@@ -27,7 +27,7 @@
         <a-form-model-item label="状态"
                            prop="state">
           <a-radio-group v-model="form.state"
-                         :disabled="openType === 1 && !sassIdIsEmpty">
+                         :disabled="openType === 1 || !sassIdIsEmpty">
             <a-radio value="0">启用</a-radio>
             <a-radio value="1">停用</a-radio>
           </a-radio-group>
@@ -36,7 +36,7 @@
                            prop="remark">
           <a-input v-model="form.remark"
                    :maxLength="200"
-                   :disabled="openType === 1 && !sassIdIsEmpty"
+                   :disabled="openType === 1 || !sassIdIsEmpty"
                    allowClear
                    placeholder="请输入备注"
                    :auto-size="{ minRows: 3, maxRows: 5 }"
@@ -48,7 +48,7 @@
             <a-tree v-model="form.selectedMenusList"
                     checkable
                     :replaceFields='treeDefaultObject'
-                    :disabled="openType === 1 && !sassIdIsEmpty"
+                    :disabled="openType === 1 || !sassIdIsEmpty"
                     :tree-data="treeData" />
             <a-empty v-if="treeData.length === 0" />
             <a-icon type="sync"
@@ -60,7 +60,7 @@
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
                     class="mr-20"
-                    :disabled="openType === 1 && !sassIdIsEmpty"
+                    :disabled="openType === 1 || !sassIdIsEmpty"
                     @click="onSubmit">保存
           </a-button>
           <a-button style="margin-left: 10px;"
