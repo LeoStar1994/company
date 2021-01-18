@@ -12,6 +12,7 @@
   border-color: orange !important;
   background-color: orange !important;
   color: #fff !important;
+  border-radius: 4px;
 
   &:hover {
     border-color: orange !important;
@@ -23,6 +24,7 @@
   border-color: #52C41A !important;
   background-color: #52C41A !important;
   color: #fff !important;
+  border-radius: 4px;
 
   &:hover {
     border-color: #52C41A !important;
@@ -174,15 +176,6 @@ each(@colors, {
 each(@text-directions, {
     .text-@{value} {
       text-align: @value
-    }
-  }
-
-);
-
-// opacity
-each(@percents, {
-    .opacity-@{key} {
-      opacity: @value
     }
   }
 

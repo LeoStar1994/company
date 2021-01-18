@@ -2,7 +2,7 @@
  * @Description: 上传视频table 列表
  * @Author: Leo
  * @Date: 2021-01-14 11:08:54
- * @LastEditTime: 2021-01-14 15:23:13
+ * @LastEditTime: 2021-01-18 20:11:30
  * @LastEditors: Leo
 -->
 <template>
@@ -14,8 +14,11 @@
              centered
              destroyOnClose
              :maskClosable="false"
-             @ok="handleOk"
              @cancel="handleCancel">
+      <template slot="footer">
+        <a-button type="primary"
+                  @click="handleCancel">关闭</a-button>
+      </template>
       <!-- operator -->
       <div class="operator">
         <a-button @click="openAlarm(0)"
@@ -40,8 +43,8 @@
                         cancel-text="取消"
                         @confirm="deleteVideo(record.id)"
                         @cancel="deletecancel">
-            <a href="#"
-               class="text-red">删除</a>
+            <a-button type="danger"
+                      size="small">删除</a-button>
           </a-popconfirm>
         </div>
       </standard-table>
@@ -148,13 +151,6 @@ export default {
       this.$message.warning("删除操作已取消");
     },
 
-    async handleOk() {
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 1000);
-    },
     handleCancel() {
       this.visible = false;
     },

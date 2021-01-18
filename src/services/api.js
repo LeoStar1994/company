@@ -147,5 +147,5 @@ module.exports = {
 
   /* 小程序管理 */
   APPLETTABLEDATA: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/query`, // table查询
-  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade` // 获取类型列表
+  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
 };

@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-01-15 17:24:40
+ * @LastEditTime: 2021-01-18 20:30:09
  * @LastEditors: Leo
 -->
 <template>
@@ -44,9 +44,11 @@
                  alt="">
           </span>
           <span v-else-if="item.label === '操作'">
-            <a class="mr-12"
-               @click="openBaseInfoModal">修改球队基本信息
-            </a>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      @click="openBaseInfoModal">修改球队基本信息
+            </a-button>
           </span>
           <span v-else>{{item.value}}</span>
         </a-descriptions-item>
@@ -71,12 +73,16 @@
                  bordered>
           <div slot="action"
                slot-scope="data">
-            <a class="mr-12"
-               @click="openInfoDetails(data)">查看
-            </a>
-            <a class="mr-12"
-               @click="openOfficerModal(data)">修改
-            </a>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      @click="openInfoDetails(data)">查看
+            </a-button>
+            <a-button class="mr-12"
+                      type="danger"
+                      size="small"
+                      @click="openOfficerModal(data)">修改
+            </a-button>
           </div>
         </a-table>
       </div>
@@ -90,9 +96,11 @@
                  bordered>
           <div slot="action"
                slot-scope="data">
-            <a class="mr-12"
-               @click="openPlayerModal(data)">修改
-            </a>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      @click="openPlayerModal(data)">修改
+            </a-button>
           </div>
         </a-table>
       </div>
@@ -140,18 +148,18 @@ export default {
   components: {
     OfficerModal,
     TeamModal,
-    PlayerModal
+    PlayerModal,
   },
   props: {
     detailShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object()
-    }
+      default: new Object(),
+    },
   },
   mounted() {
     this.getAllDicData();
@@ -163,14 +171,14 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: []
+        descList: [],
       },
       yearTypeList: [], //年龄组list
-      dicData: {} // 字典表下拉list
+      dicData: {}, // 字典表下拉list
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   methods: {
     // 返回上一级页面
@@ -195,14 +203,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach(item => {
-        detailKeys.forEach(item1 => {
+      this.infoData.fieldsMapLabelSon.forEach((item) => {
+        detailKeys.forEach((item1) => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1
+              span: item.isOccupyAll ? 2 : 1,
             });
           }
         });
@@ -218,7 +226,7 @@ export default {
 
     // 获取所有字典表下拉list
     getAllDicData() {
-      getAllDicData().then(res => {
+      getAllDicData().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dicData = result.data;
@@ -230,7 +238,7 @@ export default {
 
     // 通过赛事id获取球队基础信息年龄组下拉list
     getYearTypeList() {
-      getYearTypeList(this.infoData.hockeyGamesId).then(res => {
+      getYearTypeList(this.infoData.hockeyGamesId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.yearTypeList = result.data;
@@ -256,8 +264,8 @@ export default {
 
     closeDetail() {
       this.detailShow1 = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

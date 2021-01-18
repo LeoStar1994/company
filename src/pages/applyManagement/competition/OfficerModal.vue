@@ -2,7 +2,7 @@
  * @Description: 官员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-15 17:02:57
+ * @LastEditTime: 2021-01-18 15:07:59
  * @LastEditors: Leo
 -->
 <template>
@@ -51,14 +51,6 @@
                          valueFormat="YYYY-MM-DD"
                          placeholder="生日" />
         </a-form-model-item>
-        <!-- 国籍 -->
-        <a-form-model-item label="国籍"
-                           prop="country">
-          <a-input v-model="form.country"
-                   placeholder="请输入国籍"
-                   allowClear
-                   :maxLength="30" />
-        </a-form-model-item>
         <!-- 职务 -->
         <a-form-model-item label="职务"
                            prop="positionId">
@@ -73,6 +65,33 @@
               {{item.valueAlias}}
             </a-select-option>
           </a-select>
+        </a-form-model-item>
+        <!-- 国籍 -->
+        <a-form-model-item label="国籍"
+                           prop="country">
+          <a-input v-model="form.country"
+                   placeholder="请输入国籍"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 证件类型 -->
+        <a-form-model-item label="证件类型"
+                           prop="cardType">
+          <a-radio-group v-model="form.cardType">
+            <a-radio :value="item.keyAlias"
+                     v-for="(item,index) in cardTypeList"
+                     :key="index">
+              {{item.valueAlias}}
+            </a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <!-- 证件号 -->
+        <a-form-model-item label="身份证/护照号码"
+                           prop="identityCard">
+          <a-input v-model="form.identityCard"
+                   placeholder="请输入身份证/护照号码"
+                   allowClear
+                   :maxLength="30" />
         </a-form-model-item>
         <!-- 头像 -->
         <a-form-model-item label="头像"
@@ -94,25 +113,6 @@
               <div class="ant-upload-text">上传头像</div>
             </div>
           </a-upload>
-        </a-form-model-item>
-        <!-- 证件类型 -->
-        <a-form-model-item label="证件类型"
-                           prop="cardType">
-          <a-radio-group v-model="form.cardType">
-            <a-radio :value="item.keyAlias"
-                     v-for="(item,index) in cardTypeList"
-                     :key="index">
-              {{item.valueAlias}}
-            </a-radio>
-          </a-radio-group>
-        </a-form-model-item>
-        <!-- 证件号 -->
-        <a-form-model-item label="身份证/护照号码"
-                           prop="identityCard">
-          <a-input v-model="form.identityCard"
-                   placeholder="请输入身份证/护照号码"
-                   allowClear
-                   :maxLength="30" />
         </a-form-model-item>
         <!-- 证件照 -->
         <a-form-model-item label="证件照"
@@ -158,16 +158,16 @@ export default {
   props: {
     trainSexList: {
       type: Array,
-      required: true
+      required: true,
     },
     cardTypeList: {
       type: Array,
-      required: true
+      required: true,
     },
     positionNameList: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -188,7 +188,7 @@ export default {
         identityCard: undefined, // 证件号
         identityImagePath: [], // 证件照片
         trainId: null,
-        teamId: null
+        teamId: null,
       },
       // 搜索项校验规则
       rules: {
@@ -196,65 +196,65 @@ export default {
           {
             required: true,
             message: "请输入姓名",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         trainSex: [
           {
             required: true,
             message: "请选择性别",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         born: [
           {
             required: true,
             message: "请选择生日",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         country: [
           {
             required: true,
             message: "请输入国家",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         positionId: [
           {
             required: true,
             message: "请选择职务",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         imagePath: [
           {
             required: true,
             message: "请上传头像",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         cardType: [
           {
             required: true,
             message: "请选择证件类型",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         identityCard: [
           {
             required: true,
             message: "请输入身份证/护照",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         identityImagePath: [
           {
             required: true,
             message: "请上传证件照",
-            trigger: "change"
-          }
-        ]
+            trigger: "change",
+          },
+        ],
       },
 
       // 头像
@@ -262,20 +262,20 @@ export default {
       // 证件照
       pictureList: [],
       previewVisible: false,
-      previewImage: ""
+      previewImage: "",
     };
   },
   created() {},
   methods: {
     setOpenType(data) {
-      getOfficerData(data.teamId, data.id).then(res => {
+      getOfficerData(data.teamId, data.id).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.form = {
             ...result.data,
             cardType: result.data.cardType === "身份证" ? "0" : "1",
             trainSex: result.data.trainSex === "男" ? "0" : "1",
-            positionId: result.data.positionId.toString()
+            positionId: result.data.positionId.toString(),
           };
           this.pictureList = result.data.identityImagePath.map(
             (item, index) => {
@@ -283,7 +283,7 @@ export default {
                 uid: Math.random(),
                 status: "done",
                 url: item,
-                name: `身份证照${index}`
+                name: `身份证照${index}`,
               };
             }
           );
@@ -297,7 +297,7 @@ export default {
     // 通过职务id获取职务name
     positionIdChange(keyAlias) {
       this.form.positionName = this.positionNameList.find(
-        item => item.keyAlias === keyAlias
+        (item) => item.keyAlias === keyAlias
       ).valueAlias;
     },
 
@@ -338,7 +338,7 @@ export default {
       const formData = new FormData();
       formData.append("file", options.file);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -379,7 +379,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -415,17 +415,17 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = {
             ...this.form,
             identityImagePath: this.form.identityImagePath.join(),
             cardType: Number(this.form.cardType),
             trainSex: Number(this.form.trainSex),
-            positionId: Number(this.form.positionId)
+            positionId: Number(this.form.positionId),
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          officerUpdate(data).then(res => {
+          officerUpdate(data).then((res) => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {
@@ -445,8 +445,8 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.pictureList = [];
       this.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

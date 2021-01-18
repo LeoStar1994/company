@@ -10,11 +10,12 @@ import "animate.css/source/animate.css";
 import Plugins from "@/plugins";
 import { initI18n } from "@/utils/i18n";
 import bootstrap from "@/bootstrap";
-import "./less/style.less";
 import Loading from "./components/loading/Loading.vue";
 import { isEmpty, isRihgtPhone } from "@/utils/util";
 import moment from "moment";
 import "moment/locale/zh-cn";
+import "./less/style.less";
+
 moment.locale("zh-cn");
 Vue.prototype.$isEmpty = isEmpty;
 Vue.prototype.$isRihgtPhone = isRihgtPhone;
@@ -25,7 +26,7 @@ Vue.mixin({
     // 上传文件地址
     bannerUploadUrl() {
       return process.env.VUE_APP_API_BASE_URL + "/focus/upload/img";
-    }
+    },
   },
   methods: {
     // getAuthHeaders() {
@@ -33,7 +34,7 @@ Vue.mixin({
     //     Authorization: `Bearer ${sessionStorage.Authorization || ""}`
     //   };
     // }
-  }
+  },
 });
 
 const router = initRouter(store.state.setting.asyncRoutes);
@@ -52,5 +53,5 @@ new Vue({
   router,
   store,
   i18n,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

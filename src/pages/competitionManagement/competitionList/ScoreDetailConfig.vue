@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表 / 赛事日程 / 成绩录入
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-11 17:26:34
+ * @LastEditTime: 2021-01-18 20:32:42
  * @LastEditors: Leo
 -->
 <template>
@@ -102,9 +102,11 @@
                           bordered>
             <div slot="action"
                  slot-scope="{record}">
-              <a class="mr-12"
-                 @click="openShootRecordModal(1, 0, record)">修改
-              </a>
+              <a-button class="mr-12"
+                        type="primary"
+                        size="small"
+                        @click="openShootRecordModal(1, 0, record)">修改
+              </a-button>
             </div>
           </standard-table>
         </div>
@@ -121,9 +123,11 @@
                           bordered>
             <div slot="action"
                  slot-scope="{record}">
-              <a class="mr-12"
-                 @click="openPenaltyRecordModal(1, 0, record)">修改
-              </a>
+              <a-button class="mr-12"
+                        type="primary"
+                        size="small"
+                        @click="openPenaltyRecordModal(1, 0, record)">修改
+              </a-button>
             </div>
           </standard-table>
         </div>
@@ -144,9 +148,11 @@
             </div>
             <div slot="action"
                  slot-scope="{record}">
-              <a class="mr-12"
-                 @click="openFreeKickModal(1, 0, record)">修改
-              </a>
+              <a-button class="mr-12"
+                        type="primary"
+                        size="small"
+                        @click="openFreeKickModal(1, 0, record)">修改
+              </a-button>
             </div>
           </standard-table>
         </div>
@@ -168,9 +174,11 @@
                           bordered>
             <div slot="action"
                  slot-scope="{record}">
-              <a class="mr-12"
-                 @click="openShootRecordModal(1, 1, record)">修改
-              </a>
+              <a-button class="mr-12"
+                        type="primary"
+                        size="small"
+                        @click="openShootRecordModal(1, 1, record)">修改
+              </a-button>
             </div>
           </standard-table>
         </div>
@@ -187,9 +195,11 @@
                    bordered>
             <div slot="action"
                  slot-scope="{record}">
-              <a class="mr-12"
-                 @click="openPenaltyRecordModal(1, 1, record)">修改
-              </a>
+              <a-button class="mr-12"
+                        type="primary"
+                        size="small"
+                        @click="openPenaltyRecordModal(1, 1, record)">修改
+              </a-button>
             </div>
           </a-table>
         </div>
@@ -210,9 +220,11 @@
             </div>
             <div slot="action"
                  slot-scope="{record}">
-              <a class="mr-12"
-                 @click="openFreeKickModal(1, 1, record)">修改
-              </a>
+              <a-button class="mr-12"
+                        type="primary"
+                        size="small"
+                        @click="openFreeKickModal(1, 1, record)">修改
+              </a-button>
             </div>
           </standard-table>
         </div>
@@ -271,7 +283,7 @@ import {
   getScoreData,
   getPenaltyData,
   getFreekickData,
-  getRefereeInfo
+  getRefereeInfo,
 } from "@/services/scoreModals";
 
 const refereeInfoList = [
@@ -279,56 +291,56 @@ const refereeInfoList = [
     label: "主裁判",
     field: "referee",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "边裁",
     field: "sideReferee",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "计时",
     field: "timeMan",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "宣告",
     field: "declareMan",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "记罚",
     field: "penaltyMan",
     value: `leo`,
-    span: 1
+    span: 1,
   },
   {
     label: "记录",
     field: "recordMan",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "裁判监督",
     field: "refereeSupervision",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "比赛监督",
     field: "matchSupervise",
     value: ``,
-    span: 1
+    span: 1,
   },
   {
     label: "助理",
     field: "assistant",
     value: ``,
-    span: 1
-  }
+    span: 1,
+  },
 ];
 
 export default {
@@ -339,18 +351,18 @@ export default {
     PenaltyRecordModal,
     FreeKickModal,
     RefereeInfoModal,
-    StandardTable
+    StandardTable,
   },
   props: {
     scoreShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object()
-    }
+      default: new Object(),
+    },
   },
   data() {
     return {
@@ -359,11 +371,11 @@ export default {
       awayTeamId: null, // 客队id
       homeTeamId: null, // 主队id
       schedulesId: null, // 日程id
-      gameResultForm: {}
+      gameResultForm: {},
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   mounted() {},
   methods: {
@@ -396,7 +408,7 @@ export default {
     },
 
     getGamesResultData() {
-      getGamesResult(this.schedulesId).then(res => {
+      getGamesResult(this.schedulesId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.$refs.gameResultModal.form = { ...result.data };
@@ -414,7 +426,7 @@ export default {
     },
     // 获取裁判信息
     getRefereeInfoData() {
-      getRefereeInfo(this.schedulesId).then(res => {
+      getRefereeInfo(this.schedulesId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           console.log(result);
@@ -452,11 +464,13 @@ export default {
             assistant1: result.data.assistant[0]
               ? result.data.assistant[0]
               : "", // 助理
-            assistant2: result.data.assistant[1] ? result.data.assistant[1] : ""
+            assistant2: result.data.assistant[1]
+              ? result.data.assistant[1]
+              : "",
           };
           this.$refs.refereeInfoModal.form.schedulesId =
             result.data.schedulesId;
-          this.infoData.refereeInfoList = refereeInfoList.map(item => {
+          this.infoData.refereeInfoList = refereeInfoList.map((item) => {
             item.value = result.data[item.field].join();
             return item;
           });
@@ -482,7 +496,7 @@ export default {
     },
 
     searchShootRecordTableData(teamId, teamType) {
-      getScoreData(this.schedulesId, teamId).then(res => {
+      getScoreData(this.schedulesId, teamId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           if (teamType === 0) {
@@ -505,7 +519,7 @@ export default {
     },
 
     searchPenaltyRecordTableData(teamId, teamType) {
-      getPenaltyData(this.schedulesId, teamId).then(res => {
+      getPenaltyData(this.schedulesId, teamId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           if (teamType === 0) {
@@ -528,7 +542,7 @@ export default {
     },
 
     searchFreeKickRecordTableData(teamId, teamType) {
-      getFreekickData(this.schedulesId, teamId).then(res => {
+      getFreekickData(this.schedulesId, teamId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           if (teamType === 0) {
@@ -540,8 +554,8 @@ export default {
           this.$message.error(result.desc);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

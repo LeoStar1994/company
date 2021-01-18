@@ -2,7 +2,7 @@
  * @Description: 权限管理 / 角色管理.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 16:08:14
+ * @LastEditTime: 2021-01-18 20:25:24
  * @LastEditors: Leo
 -->
 <template>
@@ -18,15 +18,15 @@
                       :wrapper-col="wrapperCol">
           <div :class="advanced ? null: 'fold'">
             <a-row>
-              <!-- 用户名 -->
+              <!-- 用户昵称 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="用户名"
+                <a-form-model-item label="用户昵称"
                                    prop="name">
                   <a-input v-model="form.name"
                            allowClear
                            :maxLength="30"
-                           placeholder="请输入用户名"></a-input>
+                           placeholder="请输入用户昵称"></a-input>
                 </a-form-model-item>
               </a-col>
               <!-- 账号 -->
@@ -88,26 +88,31 @@
           </div>
           <div slot="action"
                slot-scope="{record}">
-            <a class="mr-12"
-               @click="openAlarm(1, record.sequenceNumber)">详情
-            </a>
-            <a class="mr-12"
-               v-if="isEmpty(record.saasId)"
-               @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a>
-            <a @click="changeService(record.sequenceNumber, 0)"
-               v-if="record.state === 1 && isEmpty(record.saasId)"
-               class="text-green mr-12">启用</a>
-            <a @click="changeService(record.sequenceNumber, 1)"
-               v-if="record.state === 0 && isEmpty(record.saasId)"
-               class="text-orange mr-12">停用</a>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      @click="openAlarm(1, record.sequenceNumber, isEmpty(record.saasId))">详情
+            </a-button>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      v-if="isEmpty(record.saasId)"
+                      @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a-button>
+            <a-button @click="changeService(record.sequenceNumber, 0)"
+                      v-if="record.state === 1 && isEmpty(record.saasId)"
+                      class="greenButton mr-12">启用</a-button>
+            <a-button @click="changeService(record.sequenceNumber, 1)"
+                      size="small"
+                      v-if="record.state === 0 && isEmpty(record.saasId)"
+                      class="orangeButton mr-12">停用</a-button>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
                           v-if="isEmpty(record.saasId)"
                           @confirm="deleteInfo(record.sequenceNumber)"
                           @cancel="deletecancel">
-              <a href="#"
-                 class="text-red">删除</a>
+              <a-button type="danger"
+                        size="small">删除</a-button>
             </a-popconfirm>
           </div>
         </standard-table>
@@ -118,7 +123,8 @@
                  :configshow="configshow"
                  :treeData="treeData"
                  @closeConfig='closeConfig'
-                 @syncRoles="getRolesList"
+                 @initSyncRoles="getRolesList"
+                 @syncRoles="userConfigDetail"
                  @searchTableData='searchTableData'></UsersConfig>
     <!-- loading -->
     <transition name="el-fade-in">
@@ -135,7 +141,7 @@ import {
   rolesTreeList,
   changeUserState,
   deleteUserInfo,
-  initUserDetail
+  initUserDetail,
 } from "@/services/usersManagement";
 import UsersConfig from "./UsersConfig";
 import { isEmpty } from "@/utils/util";
@@ -148,37 +154,38 @@ const columns = [
   // },
   {
     title: "用户昵称",
-    dataIndex: "name"
+    dataIndex: "name",
   },
   {
     title: "账号",
-    dataIndex: "account"
+    dataIndex: "account",
   },
   {
     title: "手机号",
-    dataIndex: "mobile"
+    dataIndex: "mobile",
   },
   {
     title: "创建时间",
-    dataIndex: "createTime"
+    dataIndex: "createTime",
   },
   {
     title: "更新时间",
-    dataIndex: "updateTime"
+    dataIndex: "updateTime",
   },
   {
     title: "角色名称",
-    dataIndex: "rolesName"
+    dataIndex: "rolesName",
   },
   {
     title: "状态",
     dataIndex: "state",
-    scopedSlots: { customRender: "state" }
+    scopedSlots: { customRender: "state" },
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+    width: "260px",
+  },
 ];
 
 export default {
@@ -200,25 +207,25 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
         name: undefined,
         account: undefined,
-        mobile: undefined
+        mobile: undefined,
       },
       // 搜索项校验规则
       rules: {
         name: [],
         account: [],
-        mobile: []
+        mobile: [],
       },
       statusMapText: {
         0: "启用",
-        1: "停用"
-      }
+        1: "停用",
+      },
     };
   },
   computed: {
@@ -230,14 +237,17 @@ export default {
       } else {
         return this.$t("description");
       }
-    }
+    },
   },
   created() {},
+  mounted() {
+    this.getRolesList();
+  },
   methods: {
     isEmpty: isEmpty,
-    // 获取角色tree list
+    // 新增获取角色tree list
     getRolesList() {
-      rolesTreeList().then(res => {
+      rolesTreeList().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.treeData = result.data.roleModels;
@@ -264,7 +274,6 @@ export default {
       if (status === 1 || status === 2) {
         await this.userConfigDetail(id);
       }
-      this.getRolesList();
       this.configshow = true;
       this.$refs.userConfig.setOpenType(status, id, sassIdIsEmpty);
     },
@@ -272,7 +281,7 @@ export default {
     // 查看 | 修改返显数据
     userConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initUserDetail(id).then(res => {
+      initUserDetail(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -282,9 +291,10 @@ export default {
             mobile: result.data.mobile,
             password: result.data.password,
             remark: result.data.remark,
-            roles: result.data.roles[0] ? result.data.roles[0] : "",
-            state: result.data.state.toString()
+            roles: result.data.roles,
+            state: result.data.state.toString(),
           };
+          this.treeData = result.data.roleModels;
         } else {
           this.$message.error(result.desc);
         }
@@ -295,10 +305,10 @@ export default {
     changeService(sequenceNumber, state) {
       const data = {
         sequenceNumber,
-        state
+        state,
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      changeUserState(data).then(res => {
+      changeUserState(data).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -313,7 +323,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteUserInfo(id).then(res => {
+      deleteUserInfo(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -334,11 +344,11 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
       getUsersTableData(data)
-        .then(res => {
+        .then((res) => {
           const result = res.data;
           if (result.code === 0) {
             this.dataSource = result.data.records;
@@ -376,7 +386,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    }
+    },
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -394,7 +404,7 @@ export default {
           },
           onCancel() {
             _this.$message.warning("操作已取消");
-          }
+          },
         });
       } else {
         next();
@@ -403,10 +413,10 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.searchTableData();
     });
-  }
+  },
 };
 </script>
 

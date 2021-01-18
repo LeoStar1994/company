@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-05 16:06:58
+ * @LastEditTime: 2021-01-18 19:49:05
  * @LastEditors: Leo
 -->
 <template>
@@ -39,7 +39,7 @@
                    :type="passwordType"
                    allowClear
                    placeholder="请输入密码"
-                   :disabled="openType === 1 || openType === 2"
+                   :disabled="openType === 1"
                    auto-complete="new-password"
                    :maxLength="30">
             <a-tooltip slot="suffix"
@@ -80,15 +80,11 @@
         <a-form-model-item label="角色"
                            prop="roles">
           <div class="treebox">
-            <a-radio-group v-model="form.roles"
-                           :disabled="openType === 1 && !sassIdIsEmpty">
-              <a-radio :value="item.id"
-                       class="d-block pl-10 mb-4"
-                       v-for="item in treeData"
-                       :key="item.id">
-                {{item.name}}
-              </a-radio>
-            </a-radio-group>
+            <a-tree v-model="form.roles"
+                    checkable
+                    :replaceFields='treeDefaultObject'
+                    :disabled="openType === 1 && !sassIdIsEmpty"
+                    :tree-data="treeData" />
             <a-empty v-if="treeData.length === 0" />
             <a-icon type="sync"
                     title="刷新列表"
@@ -124,19 +120,24 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     treeData: {
       type: Array,
       required: true,
-      default: new Array()
-    }
+      default: new Array(),
+    },
   },
   data() {
     return {
       openType: null, // 0新增 1查看 2修改
       sequenceNumber: null, // 修改时使用，id
       sassIdIsEmpty: true,
+      treeDefaultObject: {
+        children: "children",
+        title: "name",
+        key: "id",
+      },
       passwordType: "password",
       labelCol: { span: 5 },
       wrapperCol: { span: 11, offset: 1 },
@@ -146,8 +147,8 @@ export default {
         mobile: "",
         password: "",
         remark: "",
-        roles: "",
-        state: "0"
+        roles: [],
+        state: "0",
       },
       // 搜索项校验规则
       rules: {
@@ -155,8 +156,8 @@ export default {
           {
             required: true,
             message: "请输入用户",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
           // {
           //   min: 3,
           //   max: 10,
@@ -168,44 +169,44 @@ export default {
           {
             required: true,
             message: "请输入账号！",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             pattern: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
             message: "账号必须输入邮箱！",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         password: [
           {
             required: true,
             message: "请输入密码！",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             min: 6,
             max: 12,
             message: "请输入6-12位密码！",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         mobile: [
           {
             required: true,
             message: "请输入手机号！",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             pattern: /^1\d{10}$/,
             message: "请输入正确手机号！",
-            trigger: "blur"
-          }
-        ]
-      }
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -220,18 +221,22 @@ export default {
 
     // 刷新同步角色
     syncRoles() {
-      this.$emit("syncRoles");
+      if (this.openType === 0) {
+        this.$emit("initSyncRoles", this.sequenceNumber);
+      } else if (this.openType === 1) {
+        this.$emit("syncRoles", this.sequenceNumber);
+      }
     },
 
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          const data = { ...this.form, roles: new Array(this.form.roles) };
+          const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addUser(data).then(res => {
+            addUser(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -245,7 +250,7 @@ export default {
           } else if (this.openType === 2) {
             // 修改
             data.sequenceNumber = this.sequenceNumber;
-            updateUser(data).then(res => {
+            updateUser(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -271,7 +276,7 @@ export default {
         password: "",
         remark: "",
         roles: [],
-        state: "0"
+        state: "0",
       };
       this.passwordType = "password";
     },
@@ -280,8 +285,8 @@ export default {
     resetForm() {
       this.$refs.ruleForm.resetFields();
       this.$emit("closeConfig");
-    }
-  }
+    },
+  },
 };
 </script>
 

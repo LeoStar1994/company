@@ -2,7 +2,7 @@
  * @Description: 小程序管理 / 更新小程序.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-13 18:03:55
+ * @LastEditTime: 2021-01-18 20:21:29
  * @LastEditors: Leo
 -->
 <template>
@@ -27,7 +27,8 @@
                         v-if="isShowButtonUpgrade"
                         @confirm="updateVersion(record.userIdentify)"
                         @cancel="cancel">
-            <a href="#">升级版本</a>
+            <a-button size="small"
+                      type="primary">升级版本</a-button>
           </a-popconfirm>
         </div>
       </standard-table>
@@ -49,32 +50,32 @@ const columns = [
   {
     title: "图标",
     dataIndex: "headImg",
-    scopedSlots: { customRender: "appletIcon" }
+    scopedSlots: { customRender: "appletIcon" },
   },
   {
     title: "小程序名称",
-    dataIndex: "nickName"
+    dataIndex: "nickName",
   },
   {
     title: "上一个线上版本",
-    dataIndex: "lastUserVersion"
+    dataIndex: "lastUserVersion",
   },
   {
     title: "当前版本号",
-    dataIndex: "nowUserVersion"
+    dataIndex: "nowUserVersion",
   },
   {
     title: "当前体验版",
-    dataIndex: "testerUserVersion"
+    dataIndex: "testerUserVersion",
   },
   {
     title: "可升级的版本号",
-    dataIndex: "msgUpdateUserVersion"
+    dataIndex: "msgUpdateUserVersion",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 export default {
@@ -88,7 +89,7 @@ export default {
       dataSource: [],
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
-      isShowButtonUpgrade: true
+      isShowButtonUpgrade: true,
     };
   },
   computed: {
@@ -97,7 +98,7 @@ export default {
     // page header desc
     desc() {
       return this.$t("description");
-    }
+    },
   },
   created() {
     this.searchTableData();
@@ -108,7 +109,7 @@ export default {
       const data = { userIdentify: this.user.userIdentify };
       this.tableLoading = true;
       getTableData(data)
-        .then(res => {
+        .then((res) => {
           const result = res.data;
           if (result.code === 0) {
             this.dataSource = [{ ...result.data }];
@@ -125,7 +126,7 @@ export default {
     updateVersion(userIdentify) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       updateAppletVersion({ userIdentify })
-        .then(res => {
+        .then((res) => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -142,8 +143,8 @@ export default {
 
     cancel() {
       this.$message.warning("操作已取消");
-    }
-  }
+    },
+  },
 };
 </script>
 

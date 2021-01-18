@@ -2,7 +2,7 @@
  * @Description: 运动员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-15 17:31:47
+ * @LastEditTime: 2021-01-18 15:10:05
  * @LastEditors: Leo
 -->
 <template>
@@ -40,25 +40,6 @@
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
-        <!-- 生日 -->
-        <a-form-model-item prop="born"
-                           label="生日">
-          <a-date-picker v-model="form.born"
-                         :disabled-date="disabledBornDate"
-                         show-time
-                         style="width:100%"
-                         format="YYYY-MM-DD"
-                         valueFormat="YYYY-MM-DD"
-                         placeholder="生日" />
-        </a-form-model-item>
-        <!-- 国家 -->
-        <a-form-model-item prop="country"
-                           label="国家">
-          <a-input v-model="form.country"
-                   placeholder="请输入国家"
-                   allowClear
-                   :maxLength="30" />
-        </a-form-model-item>
         <!-- 身高 -->
         <a-form-model-item label="身高"
                            prop="height">
@@ -75,57 +56,22 @@
                    allowClear
                    :maxLength="30" />
         </a-form-model-item>
-        <!-- 头像 -->
-        <a-form-model-item label="头像"
-                           prop="imagePath">
-          <a-upload name="avatar"
-                    list-type="picture-card"
-                    class="avatar-uploader"
-                    :show-upload-list="false"
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    :before-upload="beforeUpload"
-                    :customRequest="avatarCustomRequest"
-                    @change="avatarHandleChange">
-            <img v-if="form.imagePath"
-                 :src="form.imagePath"
-                 width="86px"
-                 alt="avatar" />
-            <div v-else>
-              <a-icon :type="loading ? 'loading' : 'plus'" />
-              <div class="ant-upload-text">上传头像</div>
-            </div>
-          </a-upload>
+        <!-- 生日 -->
+        <a-form-model-item prop="born"
+                           label="生日">
+          <a-date-picker v-model="form.born"
+                         :disabled-date="disabledBornDate"
+                         show-time
+                         style="width:100%"
+                         format="YYYY-MM-DD"
+                         valueFormat="YYYY-MM-DD"
+                         placeholder="生日" />
         </a-form-model-item>
-        <!-- 持杆手 -->
-        <a-form-model-item label="持杆手"
-                           prop="holdingRod">
-          <a-radio-group v-model="form.holdingRod">
-            <a-radio :value="item.keyAlias"
-                     v-for="(item,index) in holdingRodList"
-                     :key="index">
-              {{item.valueAlias}}
-            </a-radio>
-          </a-radio-group>
-        </a-form-model-item>
-        <!-- 位置 -->
-        <a-form-model-item label="位置"
-                           prop="position">
-          <a-select style="width: 100%"
-                    v-model="form.position"
-                    allowClear
-                    placeholder="请选择">
-            <a-select-option v-for="(item,index) in positionList"
-                             :key="index"
-                             :value="item.keyAlias">
-              {{item.valueAlias}}
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <!-- 队服号 -->
-        <a-form-model-item label="队服号"
-                           prop="num">
-          <a-input v-model="form.num"
-                   placeholder="请输入队服号"
+        <!-- 国家 -->
+        <a-form-model-item prop="country"
+                           label="国家">
+          <a-input v-model="form.country"
+                   placeholder="请输入国家"
                    allowClear
                    :maxLength="30" />
         </a-form-model-item>
@@ -147,6 +93,60 @@
                    placeholder="请输入证件号"
                    allowClear
                    :maxLength="30" />
+        </a-form-model-item>
+        <!-- 队服号 -->
+        <a-form-model-item label="队服号"
+                           prop="num">
+          <a-input v-model="form.num"
+                   placeholder="请输入队服号"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 位置 -->
+        <a-form-model-item label="位置"
+                           prop="position">
+          <a-select style="width: 100%"
+                    v-model="form.position"
+                    allowClear
+                    placeholder="请选择">
+            <a-select-option v-for="(item,index) in positionList"
+                             :key="index"
+                             :value="item.keyAlias">
+              {{item.valueAlias}}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <!-- 持杆手 -->
+        <a-form-model-item label="持杆手"
+                           prop="holdingRod">
+          <a-radio-group v-model="form.holdingRod">
+            <a-radio :value="item.keyAlias"
+                     v-for="(item,index) in holdingRodList"
+                     :key="index">
+              {{item.valueAlias}}
+            </a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <!-- 头像 -->
+        <a-form-model-item label="头像"
+                           prop="imagePath">
+          <a-upload name="avatar"
+                    list-type="picture-card"
+                    class="avatar-uploader"
+                    :show-upload-list="false"
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    :before-upload="beforeUpload"
+                    :customRequest="avatarCustomRequest"
+                    @change="avatarHandleChange">
+            <img v-if="form.imagePath"
+                 :src="form.imagePath"
+                 width="86px"
+                 alt="avatar" />
+            <div v-else>
+              <a-icon :type="loading ? 'loading' : 'plus'" />
+              <div class="ant-upload-text">上传头像</div>
+            </div>
+          </a-upload>
         </a-form-model-item>
         <!-- 证件正面url -->
         <a-form-model-item label="证件正面照"
@@ -217,20 +217,20 @@ export default {
   props: {
     sexList: {
       type: Array,
-      required: true
+      required: true,
     },
     cardTypeList: {
       type: Array,
-      required: true
+      required: true,
     },
     holdingRodList: {
       type: Array,
-      required: true
+      required: true,
     },
     positionList: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -255,7 +255,7 @@ export default {
         identityImagePathDown: undefined, // 证件背url
         identityImagePathUp: undefined, // 证件正面url
         teamId: null, // 球队id
-        detailId: null // 运动员id
+        detailId: null, // 运动员id
       },
       // 搜索项校验规则
       rules: {},
@@ -269,36 +269,36 @@ export default {
 
       pictureList1: [],
       previewVisible1: false,
-      previewImage1: ""
+      previewImage1: "",
     };
   },
   created() {},
   methods: {
     setOpenType(data) {
-      getPlayerData(data.teamId, data.id).then(res => {
+      getPlayerData(data.teamId, data.id).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.form = {
             ...result.data,
             sex: result.data.sex === "男" ? "0" : "1",
             cardType: result.data.cardType === "身份证" ? "0" : "1",
-            holdingRod: result.data.holdingRod === "左手" ? "0" : "1"
+            holdingRod: result.data.holdingRod === "左手" ? "0" : "1",
           };
           this.pictureList = [
             {
               uid: Math.random(),
               status: "done",
               url: result.data.identityImagePathUp,
-              name: `证件照正面`
-            }
+              name: `证件照正面`,
+            },
           ];
           this.pictureList1 = [
             {
               uid: Math.random(),
               status: "done",
               url: result.data.identityImagePathDown,
-              name: `证件照正面`
-            }
+              name: `证件照正面`,
+            },
           ];
         } else {
           this.$message.error(result.desc);
@@ -344,7 +344,7 @@ export default {
       const formData = new FormData();
       formData.append("file", options.file);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -389,7 +389,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -438,7 +438,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -474,16 +474,16 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = {
             ...this.form,
             sex: Number(this.form.sex),
             cardType: Number(this.form.cardType),
-            holdingRod: Number(this.form.holdingRod)
+            holdingRod: Number(this.form.holdingRod),
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          playerUpdate(data).then(res => {
+          playerUpdate(data).then((res) => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {
@@ -503,8 +503,8 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.pictureList = [];
       this.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

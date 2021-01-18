@@ -2,7 +2,7 @@
  * @Description: 角色管理详情
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-05 16:03:54
+ * @LastEditTime: 2021-01-18 19:23:11
  * @LastEditors: Leo
 -->
 <template>
@@ -85,13 +85,13 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     treeData: {
       type: Array,
       required: true,
-      default: new Array()
-    }
+      default: new Array(),
+    },
   },
   data() {
     return {
@@ -103,13 +103,13 @@ export default {
       treeDefaultObject: {
         children: "children",
         title: "name",
-        key: "id"
+        key: "id",
       },
       form: {
         name: "",
         remark: "",
         selectedMenusList: [],
-        state: "0"
+        state: "0",
       },
       // 搜索项校验规则
       rules: {
@@ -117,14 +117,14 @@ export default {
           {
             required: true,
             message: "请输入角色名称",
-            trigger: "blur"
-          }
-        ]
-      }
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -139,17 +139,21 @@ export default {
 
     // 刷新同步角色
     syncRoles() {
-      this.$emit("syncRoles");
+      if (this.openType === 0) {
+        this.$emit("initSyncRoles", this.sequenceNumber);
+      } else if (this.openType === 1) {
+        this.$emit("syncRoles", this.sequenceNumber);
+      }
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addRole(data).then(res => {
+            addRole(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -163,7 +167,7 @@ export default {
           } else if (this.openType === 2) {
             // 修改
             data.sequenceNumber = this.sequenceNumber;
-            updateRole(data).then(res => {
+            updateRole(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -185,15 +189,15 @@ export default {
         name: "",
         remark: "",
         selectedMenusList: [],
-        state: "0"
+        state: "0",
       };
     },
     // 取消
     resetForm() {
       this.$refs.ruleForm.resetFields();
       this.$emit("closeConfig");
-    }
-  }
+    },
+  },
 };
 </script>
 

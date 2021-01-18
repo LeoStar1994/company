@@ -2,7 +2,7 @@
  * @Description: 球队信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-15 17:31:47
+ * @LastEditTime: 2021-01-18 19:48:10
  * @LastEditors: Leo
 -->
 <template>
@@ -21,6 +21,14 @@
                     :rules="rules"
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
+        <!-- 球队名称 -->
+        <a-form-model-item prop="teamName"
+                           label="球队名称">
+          <a-input v-model="form.teamName"
+                   placeholder="请输入球队名称"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
         <!-- 球队区域 -->
         <a-form-model-item label="球队区域"
                            prop="teamArea">
@@ -35,30 +43,65 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
+        <!-- 年龄组 -->
+        <a-form-model-item label="年龄组"
+                           prop="yearType">
+          <a-radio-group v-model="form.yearType">
+            <a-radio :value="item"
+                     v-for="(item,index) in yearTypeList"
+                     :key="index">
+              {{item}}
+            </a-radio>
+          </a-radio-group>
+        </a-form-model-item>
+        <!-- 主场颜色 -->
+        <a-form-model-item label="主场颜色"
+                           prop="mainColor">
+          <a-input v-model="form.mainColor"
+                   placeholder="请输入主场颜色"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 客场颜色 -->
+        <a-form-model-item label="客场颜色"
+                           prop="secondColor">
+          <a-input v-model="form.secondColor"
+                   placeholder="请输入客场颜色"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 联系人 -->
+        <a-form-model-item label="联系人"
+                           prop="linkMan">
+          <a-input v-model="form.linkMan"
+                   placeholder="请输入联系人"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 联系电话 -->
+        <a-form-model-item label="联系电话"
+                           prop="telPhone">
+          <a-input v-model="form.telPhone"
+                   placeholder="请输入联系电话"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
         <!-- 球队学校 -->
-        <a-form-model-item label="球队学校"
+        <!-- <a-form-model-item label="球队学校"
                            prop="teamSchool">
           <a-input v-model="form.teamSchool"
                    placeholder="请输入球队学校"
                    allowClear
                    :maxLength="30" />
-        </a-form-model-item>
-        <!-- 球队名称 -->
-        <a-form-model-item prop="teamName"
-                           label="球队名称">
-          <a-input v-model="form.teamName"
-                   placeholder="请输入球队名称"
-                   allowClear
-                   :maxLength="30" />
-        </a-form-model-item>
+        </a-form-model-item> -->
         <!-- 球队简称 -->
-        <a-form-model-item label="球队简称"
+        <!-- <a-form-model-item label="球队简称"
                            prop="teamShortName">
           <a-input v-model="form.teamShortName"
                    placeholder="请输入球队简称"
                    allowClear
                    :maxLength="30" />
-        </a-form-model-item>
+        </a-form-model-item> -->
         <!-- 球队logo -->
         <a-form-model-item label="球队logo"
                            prop="teamLogoPath">
@@ -79,54 +122,6 @@
               <div class="ant-upload-text">上传球队logo</div>
             </div>
           </a-upload>
-        </a-form-model-item>
-        <!-- 主场颜色 -->
-        <a-form-model-item label="主场颜色"
-                           prop="mainColor">
-          <a-input v-model="form.mainColor"
-                   placeholder="请输入主场颜色"
-                   allowClear
-                   :maxLength="30" />
-        </a-form-model-item>
-        <!-- 客场颜色 -->
-        <a-form-model-item label="客场颜色"
-                           prop="secondColor">
-          <a-input v-model="form.secondColor"
-                   placeholder="请输入客场颜色"
-                   allowClear
-                   :maxLength="30" />
-        </a-form-model-item>
-        <!-- 年龄组 -->
-        <a-form-model-item label="年龄组"
-                           prop="yearType">
-          <a-checkbox-group v-model="form.yearType"
-                            style="width: 100%; vertical-align: middle;">
-            <a-row>
-              <a-col :span="8"
-                     v-for="(item, index) in yearTypeList"
-                     :key="index">
-                <a-checkbox :value="item">
-                  {{item}}
-                </a-checkbox>
-              </a-col>
-            </a-row>
-          </a-checkbox-group>
-        </a-form-model-item>
-        <!-- 联系人 -->
-        <a-form-model-item label="联系人"
-                           prop="linkMan">
-          <a-input v-model="form.linkMan"
-                   placeholder="请输入联系人"
-                   allowClear
-                   :maxLength="30" />
-        </a-form-model-item>
-        <!-- 联系电话 -->
-        <a-form-model-item label="联系电话"
-                           prop="telPhone">
-          <a-input v-model="form.telPhone"
-                   placeholder="请输入联系电话"
-                   allowClear
-                   :maxLength="30" />
         </a-form-model-item>
         <!-- 集体照 -->
         <a-form-model-item label="集体照"
@@ -172,12 +167,12 @@ export default {
   props: {
     yearTypeList: {
       type: Array,
-      required: true
+      required: true,
     },
     teamAreaList: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -194,11 +189,11 @@ export default {
         teamLogoPath: undefined, // 球队logo
         mainColor: undefined, // 主场颜色
         secondColor: undefined, // 客场颜色
-        yearType: [], // 年龄组
+        yearType: undefined, // 年龄组
         linkMan: undefined, // 联系人
         telPhone: undefined, // 联系电话
         teamImage: [], // 集体照
-        id: null // 球队id
+        id: null, // 球队id
       },
       // 搜索项校验规则
       rules: {
@@ -206,79 +201,79 @@ export default {
           {
             required: true,
             message: "请输入球队区域",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
-        teamSchool: [
-          {
-            required: true,
-            message: "请输入球队学校",
-            trigger: "blur"
-          }
-        ],
+        // teamSchool: [
+        //   {
+        //     required: true,
+        //     message: "请输入球队学校",
+        //     trigger: "blur",
+        //   },
+        // ],
         teamName: [
           {
             required: true,
             message: "请输入球队名称",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
-        teamShortName: [
-          {
-            required: true,
-            message: "请输入球队简称",
-            trigger: "blur"
-          }
-        ],
+        // teamShortName: [
+        //   {
+        //     required: true,
+        //     message: "请输入球队简称",
+        //     trigger: "blur",
+        //   },
+        // ],
         teamLogoPath: [
           {
             required: true,
             message: "请上传球队logo",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         mainColor: [
           {
             required: true,
             message: "请输入主场颜色",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         secondColor: [
           {
             required: true,
             message: "请输入客场颜色",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         yearType: [
           {
             required: true,
             message: "请选择年龄组",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         linkMan: [
           {
             required: true,
             message: "请输入联系人",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         telPhone: [
           {
             required: true,
             message: "请输入联系电话",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         teamImage: [
           {
             required: true,
             message: "请上传集体照",
-            trigger: "change"
-          }
-        ]
+            trigger: "change",
+          },
+        ],
       },
 
       // 头像
@@ -286,24 +281,24 @@ export default {
       // 证件照
       pictureList: [],
       previewVisible: false,
-      previewImage: ""
+      previewImage: "",
     };
   },
   methods: {
     setOpenType(teamId) {
-      getBaseData(teamId).then(res => {
+      getBaseData(teamId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.form = {
             ...result.data,
-            yearType: result.data.yearType.split(",")
+            // yearType: result.data.yearType.split(","),
           };
           this.pictureList = result.data.teamImage.map((item, index) => {
             return {
               uid: Math.random(),
               status: "done",
               url: item,
-              name: `集体照${index}`
+              name: `集体照${index}`,
             };
           });
         } else {
@@ -342,7 +337,7 @@ export default {
       const formData = new FormData();
       formData.append("file", options.file);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -383,7 +378,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -419,15 +414,15 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = {
             ...this.form,
             teamImage: this.form.teamImage.join(),
-            yearType: this.form.yearType.join()
+            // yearType: this.form.yearType.join(),
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          baseInfoUpdate(data).then(res => {
+          baseInfoUpdate(data).then((res) => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {
@@ -447,8 +442,8 @@ export default {
       this.$refs.ruleForm.resetFields();
       this.pictureList = [];
       this.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

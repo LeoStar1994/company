@@ -2,7 +2,7 @@
  * @Description: 权限管理 / 角色管理.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-05 16:02:34
+ * @LastEditTime: 2021-01-18 20:25:46
  * @LastEditors: Leo
 -->
 <template>
@@ -26,7 +26,7 @@
                   <a-input v-model="form.name"
                            allowClear
                            :maxLength="10"
-                           placeholder="请输入用户名"></a-input>
+                           placeholder="请输入角色名称"></a-input>
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -65,26 +65,32 @@
           </div>
           <div slot="action"
                slot-scope="{record}">
-            <a class="mr-12"
-               @click="openAlarm(1, record.sequenceNumber)">详情
-            </a>
-            <a class="mr-12"
-               v-if="isEmpty(record.saasId)"
-               @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a>
-            <a @click="changeService(record.sequenceNumber, 0)"
-               v-if="record.state === 1 && isEmpty(record.saasId)"
-               class="text-green mr-12">启用</a>
-            <a @click="changeService(record.sequenceNumber, 1)"
-               v-if="record.state === 0 && isEmpty(record.saasId)"
-               class="text-orange mr-12">停用</a>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      @click="openAlarm(1, record.sequenceNumber)">详情
+            </a-button>
+            <a-button class="mr-12"
+                      type="primary"
+                      size="small"
+                      v-if="isEmpty(record.saasId)"
+                      @click="openAlarm(2, record.sequenceNumber, isEmpty(record.saasId))">修改</a-button>
+            <a-button @click="changeService(record.sequenceNumber, 0)"
+                      size="small"
+                      v-if="record.state === 1 && isEmpty(record.saasId)"
+                      class="gerrenButton mr-12">启用</a-button>
+            <a-button @click="changeService(record.sequenceNumber, 1)"
+                      size="small"
+                      v-if="record.state === 0 && isEmpty(record.saasId)"
+                      class="orangeButton mr-12">停用</a-button>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
                           v-if="isEmpty(record.saasId)"
                           @confirm="deleteInfo(record.sequenceNumber)"
                           @cancel="deletecancel">
-              <a href="#"
-                 class="text-red">删除</a>
+              <a-button type="danger"
+                        size="small">删除</a-button>
             </a-popconfirm>
           </div>
         </standard-table>
@@ -95,7 +101,8 @@
                 :configshow="configshow"
                 :treeData="treeData"
                 @closeConfig='closeConfig'
-                @syncRoles="getRolesList"
+                @initSyncRoles="getRolesList"
+                @syncRoles="roleConfigDetail"
                 @searchTableData='searchTableData'></RoleConfig>
     <!-- loading -->
     <transition name="el-fade-in">
@@ -113,7 +120,7 @@ import {
   roleTreeList,
   changeRoleState,
   deleteRoleInfo,
-  initRoleDetail
+  initRoleDetail,
 } from "@/services/rolesManagement";
 import RoleConfig from "./RoleConfig";
 
@@ -125,25 +132,26 @@ const columns = [
   // },
   {
     title: "角色名称",
-    dataIndex: "name"
+    dataIndex: "name",
   },
   {
     title: "创建时间",
-    dataIndex: "createTime"
+    dataIndex: "createTime",
   },
   {
     title: "更新时间",
-    dataIndex: "updateTime"
+    dataIndex: "updateTime",
   },
   {
     title: "状态",
     dataIndex: "state",
-    scopedSlots: { customRender: "state" }
+    scopedSlots: { customRender: "state" },
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+    width: "260px",
+  },
 ];
 
 export default {
@@ -165,21 +173,21 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        name: undefined
+        name: undefined,
       },
       // 搜索项校验规则
       rules: {
-        name: []
+        name: [],
       },
       statusMapText: {
         0: "启用",
-        1: "停用"
-      }
+        1: "停用",
+      },
     };
   },
   computed: {
@@ -191,13 +199,15 @@ export default {
       } else {
         return this.$t("description");
       }
-    }
+    },
   },
-  created() {},
+  mounted() {
+    this.getRolesList();
+  },
   methods: {
     // 获取角色tree list
     getRolesList() {
-      roleTreeList().then(res => {
+      roleTreeList().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.treeData = result.data.menuModels;
@@ -212,11 +222,11 @@ export default {
     formatRoleTreeData(targetArr) {
       let mapArr;
       if (targetArr.length > 0 && targetArr instanceof Array) {
-        mapArr = targetArr.map(item => {
+        mapArr = targetArr.map((item) => {
           return {
             key: item.id,
             title: item.name,
-            children: item.children && this.formatRoleTreeData(item.children)
+            children: item.children && this.formatRoleTreeData(item.children),
           };
         });
       }
@@ -240,7 +250,6 @@ export default {
       if (status === 1 || status === 2) {
         await this.roleConfigDetail(id);
       }
-      this.getRolesList();
       this.configshow = true;
       this.$refs.roleConfig.setOpenType(status, id, sassIdIsEmpty);
     },
@@ -248,7 +257,7 @@ export default {
     // 查看 | 修改返显数据
     roleConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      initRoleDetail(id).then(res => {
+      initRoleDetail(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -256,8 +265,9 @@ export default {
             name: result.data.name,
             remark: result.data.remark,
             selectedMenusList: result.data.selectedMenusList,
-            state: result.data.state.toString()
+            state: result.data.state.toString(),
           };
+          this.treeData = result.data.menuModels;
         } else {
           this.$message.error(result.desc);
         }
@@ -268,10 +278,10 @@ export default {
     changeService(sequenceNumber, state) {
       const data = {
         sequenceNumber,
-        state
+        state,
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      changeRoleState(data).then(res => {
+      changeRoleState(data).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -286,7 +296,7 @@ export default {
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteRoleInfo(id).then(res => {
+      deleteRoleInfo(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -307,10 +317,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getRoleTableData(data).then(res => {
+      getRoleTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.records;
@@ -345,7 +355,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    }
+    },
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -363,7 +373,7 @@ export default {
           },
           onCancel() {
             _this.$message.warning("操作已取消");
-          }
+          },
         });
       } else {
         next();
@@ -372,10 +382,10 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.searchTableData();
     });
-  }
+  },
 };
 </script>
 
