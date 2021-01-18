@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 20:14:53
+ * @LastEditTime: 2021-01-18 21:04:51
  * @LastEditors: Leo
 -->
 <template>
@@ -442,12 +442,28 @@ export default {
       this.scheduleShow = false;
     },
   },
-  // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
     if (to.path !== from.path) {
-      this.reset();
+      if (this.configshow && this.$refs.competitionConfig.openType === 0) {
+        const _this = this;
+        this.$confirm({
+          title: "跳转其他页面会清空当前页面已填写的数据，是否继续?",
+          okText: "确定",
+          okType: "primary",
+          cancelText: "取消",
+          onOk() {
+            _this.reset();
+            next();
+          },
+          onCancel() {
+            _this.$message.warning("操作已取消");
+          },
+        });
+      } else {
+        next();
+        this.reset();
+      }
     }
-    next();
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {

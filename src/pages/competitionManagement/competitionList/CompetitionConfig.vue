@@ -2,7 +2,7 @@
  * @Description: 赛事列表 / 详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-18 19:42:12
+ * @LastEditTime: 2021-01-18 20:58:55
  * @LastEditors: Leo
 -->
 <template>
@@ -582,6 +582,9 @@ export default {
         shareText: "", // 分享文案
         gameIntroducation: "", // 赛事介绍
       };
+      this.gameRulefileList = []; // 竞赛规程file list
+      this.coverPictureList = []; // 宣传封面file list
+      this.sharePictureList = []; // 分享图片file list
     },
 
     // date picker
