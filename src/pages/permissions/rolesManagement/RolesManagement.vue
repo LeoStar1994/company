@@ -2,7 +2,7 @@
  * @Description: 权限管理 / 角色管理.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 20:25:46
+ * @LastEditTime: 2021-01-18 21:49:58
  * @LastEditors: Leo
 -->
 <template>
@@ -48,7 +48,7 @@
       <div>
         <!-- operator -->
         <div class="operator">
-          <a-button @click="openAlarm(0)"
+          <a-button @click="openAlarm(0, null, true)"
                     class="mr-10"
                     type="primary">新增</a-button>
         </div>
