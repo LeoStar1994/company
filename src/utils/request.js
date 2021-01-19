@@ -53,9 +53,11 @@ async function request(url, method, params, responseType, timeout) {
 function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
-      Cookie.set(xsrfCookieName, "Bearer " + auth.token, {
-        expires: auth.expireAt,
-      });
+      Cookie.set(
+        xsrfCookieName,
+        "Bearer " + auth.token,
+        { expires: auth.expireAt } // 设置cookie失效时间
+      );
       break;
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:
@@ -70,6 +72,7 @@ function setAuthorization(auth, authType = AUTH_TYPE.BEARER) {
  * @param authType {AUTH_TYPE} 认证类型
  */
 function removeAuthorization(authType = AUTH_TYPE.BEARER) {
+  console.log(123);
   switch (authType) {
     case AUTH_TYPE.BEARER:
       Cookie.remove(xsrfCookieName);

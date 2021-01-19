@@ -2,7 +2,7 @@
  * @Description: 球队信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-18 19:48:10
+ * @LastEditTime: 2021-01-19 15:46:56
  * @LastEditors: Leo
 -->
 <template>
@@ -363,6 +363,10 @@ export default {
     },
     handleImgChange({ fileList }) {
       this.pictureList = fileList;
+      if (fileList.length === 2) {
+        this.pictureList = fileList.slice(1);
+        this.$message.warning("集体照只能上传一张照片");
+      }
     },
     customRequest(options) {
       const formData = new FormData();

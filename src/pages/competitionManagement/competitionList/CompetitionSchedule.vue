@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表 / 赛事日程table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-18 20:13:21
+ * @LastEditTime: 2021-01-19 00:06:32
  * @LastEditors: Leo
 -->
 <template>
@@ -125,6 +125,7 @@
     <ScoreDetailConfig ref="scoreDetailConfig"
                        :scoreShow="scoreShow"
                        :infoData="infoData"
+                       @searchTableData="searchTableData"
                        @closeDetail="closeDetail"></ScoreDetailConfig>
 
     <!-- 上传视频 -->
@@ -537,6 +538,7 @@ export default {
     goBackTrain() {
       this.reset();
       this.$emit("closeSchedule");
+      this.$emit("searchTableData");
     },
   },
 };

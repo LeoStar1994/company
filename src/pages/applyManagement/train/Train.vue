@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 20:34:54
+ * @LastEditTime: 2021-01-19 00:04:24
  * @LastEditors: Leo
 -->
 <template>
@@ -84,6 +84,7 @@
     <!-- 详情config -->
     <InfosTable ref="infosTable"
                 :configshow="configshow"
+                @searchTableData="searchTableData"
                 @closeConfig="closeConfig"></InfosTable>
     <!-- loading -->
     <transition name="el-fade-in">

@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 赛事 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-18 20:10:23
+ * @LastEditTime: 2021-01-19 00:02:09
  * @LastEditors: Leo
 -->
 <template>
@@ -146,6 +146,7 @@
                  :infoData="infoData"
                  :detailShow="detailShow"
                  @closeDetail="closeDetail"
+                 @searchTableData="searchTableData"
                  @refreshAllInfoData="openDetails"></InfoDetails>
 
     <!-- loading -->
@@ -638,6 +639,7 @@ export default {
       // this.$refs.infosForm.resetFields();
       this.reset();
       this.$emit("closeConfig");
+      this.$emit("searchTableData");
     },
   },
 };

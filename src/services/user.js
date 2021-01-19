@@ -8,7 +8,7 @@ import {
   FOEGETPASSWORD,
   FOEGETPASSWORDCODE,
   RESETPASSWORD,
-  USERAUDITPASSWORD
+  USERAUDITPASSWORD,
 } from "@/services/api";
 import { request, METHOD, removeAuthorization } from "@/utils/request";
 
@@ -88,5 +88,5 @@ export default {
   login,
   logout,
   loginByPhone,
-  getRoutesConfig
+  getRoutesConfig,
 };

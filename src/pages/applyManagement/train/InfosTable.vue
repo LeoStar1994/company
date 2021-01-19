@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-18 20:16:05
+ * @LastEditTime: 2021-01-19 00:03:43
  * @LastEditors: Leo
 -->
 <template>
@@ -111,6 +111,7 @@
     <InfoDetails ref="infoDetails"
                  :infoData="infoData"
                  :detailShow="detailShow"
+                 @searchTableData="searchTableData"
                  @closeDetail="closeDetail"></InfoDetails>
 
     <!-- loading -->
@@ -497,6 +498,7 @@ export default {
       // this.$refs.infosForm.resetFields();
       this.reset();
       this.$emit("closeConfig");
+      this.$emit("searchTableData");
     },
   },
 };

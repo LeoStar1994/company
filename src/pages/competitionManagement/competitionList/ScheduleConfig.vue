@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表 / 赛事日程 / 新增|修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-18 16:12:42
+ * @LastEditTime: 2021-01-19 13:40:18
  * @LastEditors: Leo
 -->
 <template>
@@ -85,6 +85,7 @@
                              style="width:100%"
                              format="YYYY-MM-DD HH:mm"
                              valueFormat="YYYY-MM-DD HH:mm"
+                             @openChange="handleStartOpenChange"
                              placeholder="开始时间" />
             </a-form-model-item>
             <span class="mx-4 h40">~</span>
@@ -92,10 +93,12 @@
                                class="flex-1">
               <a-date-picker v-model="scheduleConfigForm.sessionsEndTime"
                              :disabled-date="disabledEndDate"
-                             style="width:100%"
                              show-time
+                             style="width:100%"
                              format="YYYY-MM-DD HH:mm"
                              valueFormat="YYYY-MM-DD HH:mm"
+                             :open="endOpen"
+                             @openChange="handleEndOpenChange"
                              placeholder="结束时间" />
             </a-form-model-item>
           </div>
@@ -120,7 +123,7 @@
           <a-input v-model="scheduleConfigForm.liveAppid"
                    placeholder="请输入直播APPID"
                    allowClear
-                   :maxLength="30" />
+                   :maxLength="200" />
         </a-form-model-item>
         <!-- 直播URL -->
         <a-form-model-item label="直播URL"
@@ -128,7 +131,7 @@
           <a-input v-model="scheduleConfigForm.liveUrl"
                    placeholder="请输入直播URL"
                    allowClear
-                   :maxLength="30" />
+                   :maxLength="200" />
         </a-form-model-item>
       </a-form-model>
 
@@ -142,6 +145,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import { addSchedule, updateSchedule } from "@/services/competitionList";
 export default {
   name: "scheduleConfig",
@@ -161,6 +165,7 @@ export default {
       wrapperCol: { span: 16, offset: 1 },
       placeList: [{ label: "比赛场地", prop: "place", place: "" }],
       openType: 0,
+      endOpen: false,
       scheduleConfigVisible: false,
       scheduleConfigTitle: "新增邀请码",
       confirmLoading: false,
@@ -237,6 +242,7 @@ export default {
   },
   created() {},
   methods: {
+    moment,
     /**
      * @description: 打开详情页
      * @param : type{int} 0: 新增， 1:修改
@@ -316,17 +322,27 @@ export default {
     // 比赛时间
     disabledStartDate(startValue) {
       const endValue = this.scheduleConfigForm.sessionsEndTime;
+
       if (!startValue || !endValue) {
         return false;
       }
-      return startValue.valueOf() > new Date(endValue).valueOf();
+      return startValue.valueOf() > moment(endValue).valueOf();
     },
     disabledEndDate(endValue) {
       const startValue = this.scheduleConfigForm.sessionsStartTime;
       if (!endValue || !startValue) {
         return false;
       }
-      return new Date(startValue).valueOf() >= endValue.valueOf();
+      return moment(startValue).valueOf() >= endValue.valueOf();
+    },
+
+    handleStartOpenChange(open) {
+      if (!open) {
+        this.endOpen = true;
+      }
+    },
+    handleEndOpenChange(open) {
+      this.endOpen = open;
     },
 
     // 确定

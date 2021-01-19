@@ -36,7 +36,7 @@ import { logout } from "@/services/user";
 export default {
   name: "HeaderAvatar",
   computed: {
-    ...mapGetters("account", ["user"])
+    ...mapGetters("account", ["user"]),
   },
   methods: {
     logout() {
@@ -48,8 +48,8 @@ export default {
     },
     auditPassword() {
       this.$router.push("/auditPassword");
-    }
-  }
+    },
+  },
 };
 </script>
 

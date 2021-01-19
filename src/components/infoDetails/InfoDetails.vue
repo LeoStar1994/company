@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-01-18 20:30:09
+ * @LastEditTime: 2021-01-19 00:10:44
  * @LastEditors: Leo
 -->
 <template>
@@ -47,7 +47,7 @@
             <a-button class="mr-12"
                       type="primary"
                       size="small"
-                      @click="openBaseInfoModal">修改球队基本信息
+                      @click="openBaseInfoModal">修改
             </a-button>
           </span>
           <span v-else>{{item.value}}</span>
@@ -79,7 +79,7 @@
                       @click="openInfoDetails(data)">查看
             </a-button>
             <a-button class="mr-12"
-                      type="danger"
+                      type="primary"
                       size="small"
                       @click="openOfficerModal(data)">修改
             </a-button>
@@ -184,6 +184,7 @@ export default {
     // 返回上一级页面
     goBackInfosTable() {
       this.$emit("closeDetail");
+      this.$emit("searchTableData");
     },
 
     // 打开图片

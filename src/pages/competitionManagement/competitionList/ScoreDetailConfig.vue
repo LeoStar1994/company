@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表 / 赛事日程 / 成绩录入
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-18 20:32:42
+ * @LastEditTime: 2021-01-19 00:05:20
  * @LastEditors: Leo
 -->
 <template>
@@ -382,6 +382,7 @@ export default {
     // 返回上一级页面
     goBackScheduleTable() {
       this.$emit("closeDetail");
+      this.$emit("searchTableData");
     },
 
     setLastPageData(data) {

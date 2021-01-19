@@ -2,7 +2,7 @@
  * @Description: 赛事列表 / 详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-18 20:58:55
+ * @LastEditTime: 2021-01-19 16:01:01
  * @LastEditors: Leo
 -->
 <template>
@@ -45,10 +45,10 @@
                             style="width: 100%; vertical-align: middle;">
             <a-row>
               <a-col :span="6"
-                     v-for="(item, index) in gameGradeList"
-                     :key="index">
-                <a-checkbox :value="item.value">
-                  {{item.label}}
+                     v-for="item in dicData.hokeyGamesGrade"
+                     :key="item.id">
+                <a-checkbox :value="item.valueAlias">
+                  {{item.valueAlias}}
                 </a-checkbox>
               </a-col>
             </a-row>
@@ -304,6 +304,7 @@
 <script>
 import { mapState } from "vuex";
 import { uploadImage, addGame, updateGame } from "@/services/competitionList";
+import { getAllDicData } from "@/services/competition";
 import { getBase64 } from "@/utils/util.js";
 import Editor from "@/components/wangEditor/wangEditor.vue";
 
@@ -325,6 +326,7 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 11, offset: 1 },
       editorIsClear: false, // 富文本编辑器是否clear
+      dicData: {}, // 字典表下拉list
       hockeyGameTypeList: [
         { label: "国际级", value: 1 },
         { label: "国家级", value: 2 },
@@ -338,14 +340,6 @@ export default {
       saleStatusList: [
         { label: "上线", value: 0 },
         { label: "下线", value: 1 },
-      ],
-      gameGradeList: [
-        { label: "U12", value: "U12" },
-        { label: "U14", value: "U14" },
-        { label: "U16", value: "U16" },
-        { label: "U18", value: "U18" },
-        { label: "成年组-男子", value: "成年组-男子" },
-        { label: "成年组-女子", value: "成年组-女子" },
       ],
       form: {
         enrollStartTime: null, // 报名开始时间
@@ -547,8 +541,22 @@ export default {
   computed: {
     ...mapState(["pageMinHeight"]),
   },
-  created() {},
+  created() {
+    this.getAllDicData();
+  },
   methods: {
+    // 获取所有字典表下拉list
+    getAllDicData() {
+      getAllDicData().then((res) => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.dicData = result.data;
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
     setOpenType(openType, id) {
       this.openType = openType;
       this.currentId = id;
