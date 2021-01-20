@@ -13,5 +13,5 @@ export async function getTableData(data) {
 
 // 更新小程序最新版本
 export async function updateAppletVersion(data) {
-  return request(APPLETUPDATEVERSION, METHOD.POST, data);
+  return request(APPLETUPDATEVERSION, METHOD.GET, data);
 }
