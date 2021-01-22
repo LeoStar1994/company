@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-18 21:34:17
+ * @LastEditTime: 2021-01-22 13:59:40
  * @LastEditors: Leo
 -->
 <template>
@@ -29,7 +29,7 @@
           <a-input v-model="form.account"
                    auto-complete="new-account"
                    allowClear
-                   placeholder="请输入账号"
+                   placeholder="请输入账号(6-8位字母/数字)"
                    :disabled="openType === 1 || !sassIdIsEmpty"
                    :maxLength="30" />
         </a-form-model-item>
@@ -152,19 +152,13 @@ export default {
       },
       // 搜索项校验规则
       rules: {
-        name: [
-          {
-            required: true,
-            message: "请输入用户",
-            trigger: "blur",
-          },
-          // {
-          //   min: 3,
-          //   max: 10,
-          //   message: "Length should be 3 to 5",
-          //   trigger: "blur",
-          // },
-        ],
+        // name: [
+        //   {
+        //     required: true,
+        //     message: "请输入用户",
+        //     trigger: "blur",
+        //   },
+        // ],
         account: [
           {
             required: true,
@@ -172,8 +166,8 @@ export default {
             trigger: "blur",
           },
           {
-            pattern: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
-            message: "账号必须输入邮箱！",
+            pattern: /^[a-z0-9]{6,8}$/i,
+            message: "账号需输入6~8位字母或数字！",
             trigger: "blur",
           },
         ],

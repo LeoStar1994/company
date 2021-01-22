@@ -2,7 +2,7 @@
  * @Description: 运动员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-18 15:10:05
+ * @LastEditTime: 2021-01-21 16:40:18
  * @LastEditors: Leo
 -->
 <template>
@@ -405,7 +405,7 @@ export default {
         });
     },
 
-    handleImgRemove(file) {
+    handleImgRemove() {
       this.form.identityImagePathUp = "";
     },
 
@@ -454,7 +454,7 @@ export default {
         });
     },
 
-    handleImgRemove1(file) {
+    handleImgRemove1() {
       this.form.identityImagePathDown = "";
     },
 

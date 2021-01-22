@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 21:05:56
+ * @LastEditTime: 2021-01-21 16:40:59
  * @LastEditors: Leo
 -->
 <template>
@@ -330,13 +330,6 @@ export default {
     },
   },
   // 监听页面离开事件， 清空页面数据
-  beforeRouteLeave(to, from, next) {
-    if (to.path !== from.path) {
-      this.reset();
-    }
-    next();
-  },
-
   beforeRouteLeave(to, from, next) {
     if (to.path !== from.path) {
       if (this.configshow && this.$refs.educationConfig.openType === 0) {

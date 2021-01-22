@@ -2,7 +2,7 @@
  * @Description: 小程序管理 / 更新小程序.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-20 16:11:01
+ * @LastEditTime: 2021-01-21 16:39:59
  * @LastEditors: Leo
 -->
 <template>
@@ -123,7 +123,7 @@ export default {
     },
 
     // 升级版本
-    updateVersion(userIdentify) {
+    updateVersion() {
       const data = { userIdentify: this.user.userIdentify };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       updateAppletVersion(data)

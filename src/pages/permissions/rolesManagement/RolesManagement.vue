@@ -2,7 +2,7 @@
  * @Description: 权限管理 / 角色管理.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 21:49:58
+ * @LastEditTime: 2021-01-22 13:40:31
  * @LastEditors: Leo
 -->
 <template>
@@ -78,7 +78,7 @@
             <a-button @click="changeService(record.sequenceNumber, 0)"
                       size="small"
                       v-if="record.state === 1 && isEmpty(record.saasId)"
-                      class="gerrenButton mr-12">启用</a-button>
+                      class="greenButton mr-12">启用</a-button>
             <a-button @click="changeService(record.sequenceNumber, 1)"
                       size="small"
                       v-if="record.state === 0 && isEmpty(record.saasId)"
@@ -281,31 +281,39 @@ export default {
         state,
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      changeRoleState(data).then((res) => {
-        this.$refs.loading.closeLoading();
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.searchTableData();
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      changeRoleState(data)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.searchTableData();
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
     },
 
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteRoleInfo(id).then((res) => {
-        this.$refs.loading.closeLoading();
-        const result = res.data;
-        if (result.code === 0) {
-          this.$message.success(result.desc);
-          this.searchTableData();
-        } else {
-          this.$message.error(result.desc);
-        }
-      });
+      deleteRoleInfo(id)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.searchTableData();
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
     },
 
     deletecancel() {
@@ -320,14 +328,18 @@ export default {
         pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getRoleTableData(data).then((res) => {
-        const result = res.data;
-        if (result.code === 0) {
-          this.dataSource = result.data.records;
-          this.pagination.total = result.data.total;
-        }
-        this.tableLoading = false;
-      });
+      getRoleTableData(data)
+        .then((res) => {
+          const result = res.data;
+          if (result.code === 0) {
+            this.dataSource = result.data.records;
+            this.pagination.total = result.data.total;
+          }
+          this.tableLoading = false;
+        })
+        .catch(() => {
+          this.tableLoading = false;
+        });
     },
 
     // 分页

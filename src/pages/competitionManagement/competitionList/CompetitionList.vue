@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-19 00:07:53
+ * @LastEditTime: 2021-01-22 13:33:02
  * @LastEditors: Leo
 -->
 <template>
@@ -29,10 +29,10 @@
                            placeholder="请输入赛事名称"></a-input>
                 </a-form-model-item>
               </a-col>
-              <!-- 报名状态 -->
+              <!-- 赛事状态 -->
               <a-col :md="8"
                      :sm="24">
-                <a-form-model-item label="报名状态"
+                <a-form-model-item label="赛事状态"
                                    prop="enrollStatus">
                   <a-select style="width: 100%"
                             v-model="form.enrollStatus"
@@ -158,7 +158,7 @@ const columns = [
     scopedSlots: { customRender: "status" },
   },
   {
-    title: "报名球队",
+    title: "参赛球队",
     dataIndex: "enrollCount",
   },
   {
@@ -200,7 +200,7 @@ export default {
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
       form: {
-        enrollStatus: undefined,
+        enrollStatus: "",
         hockeyGamesName: undefined,
       },
       // 搜索项校验规则
@@ -209,6 +209,7 @@ export default {
         hockeyGamesName: [],
       },
       enrollStatusList: [
+        { label: "全部", value: "" },
         { label: "未开始", value: 0 },
         { label: "报名中", value: 1 },
         { label: "比赛中", value: 2 },
