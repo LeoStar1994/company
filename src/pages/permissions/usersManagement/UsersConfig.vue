@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-22 13:59:40
+ * @LastEditTime: 2021-01-22 19:11:33
  * @LastEditors: Leo
 -->
 <template>
@@ -29,7 +29,7 @@
           <a-input v-model="form.account"
                    auto-complete="new-account"
                    allowClear
-                   placeholder="请输入账号(6-8位字母/数字)"
+                   placeholder="请输入账号"
                    :disabled="openType === 1 || !sassIdIsEmpty"
                    :maxLength="30" />
         </a-form-model-item>
@@ -77,7 +77,7 @@
                    :auto-size="{ minRows: 3, maxRows: 5 }"
                    type="textarea" />
         </a-form-model-item>
-        <a-form-model-item label="角色"
+        <!-- <a-form-model-item label="角色"
                            prop="roles">
           <div class="treebox">
             <a-tree v-model="form.roles"
@@ -91,7 +91,26 @@
                     class="syncRoles"
                     @click="syncRoles" />
           </div>
+        </a-form-model-item> -->
+
+        <a-form-model-item label="角色"
+                           prop="roles">
+          <div class="treebox">
+            <a-tree v-model="form.roles"
+                    checkable
+                    :replaceFields='treeDefaultObject'
+                    :disabled="openType === 1 || !sassIdIsEmpty"
+                    :checkedKeys="rolesSelectedRowKeys"
+                    @check="rolesSelectChange"
+                    :tree-data="treeData" />
+            <a-empty v-if="treeData.length === 0" />
+            <a-icon type="sync"
+                    title="刷新列表"
+                    class="syncRoles"
+                    @click="syncRoles" />
+          </div>
         </a-form-model-item>
+
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
                     class="mr-20"
@@ -133,6 +152,10 @@ export default {
       openType: null, // 0新增 1查看 2修改
       sequenceNumber: null, // 修改时使用，id
       sassIdIsEmpty: true,
+
+      rolesSelectedRowKeys: [],
+      allSelectedNodes: [],
+
       treeDefaultObject: {
         children: "children",
         title: "name",
@@ -155,7 +178,7 @@ export default {
         // name: [
         //   {
         //     required: true,
-        //     message: "请输入用户",
+        //     message: "请输入用户昵称",
         //     trigger: "blur",
         //   },
         // ],
@@ -166,8 +189,9 @@ export default {
             trigger: "blur",
           },
           {
-            pattern: /^[a-z0-9]{6,8}$/i,
-            message: "账号需输入6~8位字母或数字！",
+            // pattern: /^[a-z0-9]{6,8}$/i,
+            pattern: /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/,
+            message: "账号必须输入邮箱！",
             trigger: "blur",
           },
         ],
@@ -220,6 +244,12 @@ export default {
       } else if (this.openType === 1) {
         this.$emit("syncRoles", this.sequenceNumber);
       }
+    },
+
+    rolesSelectChange(selectedKeys, info) {
+      // 已勾选子节点以及半勾选状态的父节点
+      this.allSelectedNodes = selectedKeys.concat(info.halfCheckedKeys);
+      this.rolesSelectedRowKeys = selectedKeys;
     },
 
     // 保存
