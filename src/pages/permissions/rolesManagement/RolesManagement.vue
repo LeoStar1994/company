@@ -2,7 +2,7 @@
  * @Description: 权限管理 / 角色管理.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-22 19:49:45
+ * @LastEditTime: 2021-01-22 19:54:09
  * @LastEditors: Leo
 -->
 <template>
@@ -260,12 +260,6 @@ export default {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
-          // this.$refs.roleConfig.form = {
-          //   name: result.data.name,
-          //   remark: result.data.remark,
-          //   selectedMenusList: result.data.selectedMenusList,
-          //   state: result.data.state.toString(),
-          // };
           this.$refs.roleConfig.handleOpenEdit(result.data);
           this.treeData = result.data.menuModels;
         } else {
