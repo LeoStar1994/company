@@ -136,6 +136,33 @@
             </a-form-model-item>
           </div>
         </a-form-model-item>
+        <!-- 年龄时间 -->
+        <a-form-model-item label="年龄时间"
+                           required>
+          <div class="d-flex h40">
+            <a-form-model-item prop="yearOldStartTime"
+                               class="flex-1">
+              <a-date-picker v-model="form.yearOldStartTime"
+                             :disabled-date="disabledStartDate3"
+                             show-time
+                             style="width:100%"
+                             format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
+                             placeholder="开始时间" />
+            </a-form-model-item>
+            <span class="mx-4 h40">~</span>
+            <a-form-model-item prop="yearOldEndTime"
+                               class="flex-1">
+              <a-date-picker v-model="form.yearOldEndTime"
+                             :disabled-date="disabledEndDate3"
+                             show-time
+                             style="width:100%"
+                             format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
+                             placeholder="结束时间" />
+            </a-form-model-item>
+          </div>
+        </a-form-model-item>
         <!-- 报名是否需要验证码 -->
         <a-form-model-item label="报名是否需要验证码"
                            prop="needPreCode">
@@ -357,6 +384,8 @@ export default {
         enrollEndTime: null, // 报名结束时间
         educationStartTime: null, // 培训开始时间
         educationEndTime: null, // 培训结束时间
+        yearOldStartTime: null,
+        yearOldEndTime: null,
         roomType: [], // 房间类型（可多选）
         hotelIds: [], // 入住酒店（可多选）
         toObject: undefined, // 面向人群
@@ -487,6 +516,20 @@ export default {
             trigger: "change"
           }
         ],
+        yearOldStartTime: [
+          {
+            required: true,
+            message: "请选择年龄开始时间",
+            trigger: "change"
+          }
+        ],
+        yearOldEndTime: [
+          {
+            required: true,
+            message: "请选择年龄结束时间",
+            trigger: "change"
+          }
+        ],
         address: [
           {
             required: true,
@@ -597,6 +640,22 @@ export default {
     },
     disabledEndDate2(endValue) {
       const startValue = this.form.educationStartTime;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return new Date(startValue).valueOf() >= endValue.valueOf();
+    },
+
+    // 年龄时间
+    disabledStartDate3(startValue) {
+      const endValue = this.form.yearOldEndTime;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > new Date(endValue).valueOf();
+    },
+    disabledEndDate3(endValue) {
+      const startValue = this.form.yearOldStartTime;
       if (!endValue || !startValue) {
         return false;
       }
@@ -796,6 +855,8 @@ export default {
         enrollEndTime: null, // 报名结束时间
         educationStartTime: null, // 培训开始时间
         educationEndTime: null, // 培训结束时间
+        yearOldStartTime: null,
+        yearOldEndTime: null,
         roomType: [], // 房间类型（可多选）
         hotelIds: [], // 入住酒店（可多选）
         toObject: undefined, // 面向人群

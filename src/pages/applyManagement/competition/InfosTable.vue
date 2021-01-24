@@ -145,6 +145,7 @@
     <InfoDetails ref="infoDetails"
                  :infoData="infoData"
                  :detailShow="detailShow"
+                 :useType="useType"
                  @closeDetail="closeDetail"
                  @searchTableData="searchTableData"
                  @refreshAllInfoData="openDetails"></InfoDetails>
@@ -165,7 +166,7 @@ import {
   changeCheckStatus,
   exportTeam,
   deleteTeam,
-  getTeamDetail,
+  getTeamDetail
 } from "@/services/competition";
 import { downloadFile } from "@/utils/util";
 
@@ -177,110 +178,110 @@ const columns = [
   // },
   {
     title: "球队名称",
-    dataIndex: "teamName",
+    dataIndex: "teamName"
     // scopedSlots: { customRender: "infoName" },
   },
   {
     title: "运动员人数",
-    dataIndex: "totalMember",
+    dataIndex: "totalMember"
   },
   {
     title: "官员人数",
-    dataIndex: "totalTrain",
+    dataIndex: "totalTrain"
   },
   {
     title: "领队",
-    dataIndex: "linkMan",
+    dataIndex: "linkMan"
   },
   {
     title: "手机号",
-    dataIndex: "telPhone",
+    dataIndex: "telPhone"
   },
   {
     title: "审核状态",
-    dataIndex: "checkStatus",
+    dataIndex: "checkStatus"
     // scopedSlots: { customRender: "checkStatus" }
   },
   {
     title: "报名时间",
-    dataIndex: "createTime",
+    dataIndex: "createTime"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 const fieldsMapLabel = [
   {
     field: "teamName",
     labelName: "球队名称",
-    sort: 1,
+    sort: 1
   },
   {
     field: "linkMan",
     labelName: "联系人",
-    sort: 2,
+    sort: 2
   },
   {
     field: "mainColor",
     labelName: "主场赛服颜色",
-    sort: 3,
+    sort: 3
   },
   {
     field: "telPhone",
     labelName: "联系电话",
-    sort: 4,
+    sort: 4
   },
   {
     field: "secondColor",
     labelName: "客场赛服颜色",
     sort: 5,
-    isOccupyAll: true,
+    isOccupyAll: true
   },
   {
     field: "teamImage",
     labelName: "集体照",
     sort: 6,
-    isOccupyAll: true,
-  },
+    isOccupyAll: true
+  }
 ];
 const fieldsMapLabelSon = [
   {
     field: "trainSex",
     labelName: "性别",
-    sort: 1,
+    sort: 1
   },
   {
     field: "country",
     labelName: "国籍",
-    sort: 2,
+    sort: 2
   },
   {
     field: "born",
     labelName: "出生日期",
-    sort: 3,
+    sort: 3
   },
   {
     field: "cardType",
     labelName: "证件类型",
-    sort: 4,
+    sort: 4
   },
   {
     field: "positionName",
     labelName: "职务",
-    sort: 5,
+    sort: 5
   },
   {
     field: "identityCard",
     labelName: "证件号码",
-    sort: 6,
+    sort: 6
   },
   {
     field: "identityImagePath",
     labelName: "证件照片",
     sort: 7,
-    isOccupyAll: true,
-  },
+    isOccupyAll: true
+  }
 ];
 export default {
   name: "InfosTable",
@@ -288,11 +289,12 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
+      useType: "competition",
       advanced: true,
       tableLoading: false,
       columns: columns,
@@ -307,7 +309,7 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
@@ -315,20 +317,20 @@ export default {
       checkStatusList: [
         { label: "待审核", value: 0 },
         { label: "通过", value: 1 },
-        { label: "不通过", value: 2 },
+        { label: "不通过", value: 2 }
       ],
       form: {
         teamName: undefined,
         checkStatus: undefined,
-        hockeyGamesId: null,
+        hockeyGamesId: null
       },
       // 搜索项校验规则
       rules: {
         teamName: [],
-        checkStatus: [],
+        checkStatus: []
       },
       checkStatusrules: {
-        checkResult: [],
+        checkResult: []
       },
       detailShow: false,
       // 详情数据
@@ -341,72 +343,72 @@ export default {
         officerColumns: [
           {
             title: "ID",
-            dataIndex: "id",
+            dataIndex: "id"
           },
           {
             title: "姓名",
-            dataIndex: "trainName",
+            dataIndex: "trainName"
           },
           {
             title: "职务",
-            dataIndex: "positionName",
+            dataIndex: "positionName"
           },
           {
             title: "性别",
-            dataIndex: "trainSex",
+            dataIndex: "trainSex"
           },
           {
             title: "国籍",
-            dataIndex: "country",
+            dataIndex: "country"
           },
           {
             title: "身份证号/护照号码",
-            dataIndex: "identityCard",
+            dataIndex: "identityCard"
           },
           {
             title: "操作",
-            scopedSlots: { customRender: "action" },
-          },
+            scopedSlots: { customRender: "action" }
+          }
         ],
         // 运动员 columns
         playerColumns: [
           {
             title: "ID",
-            dataIndex: "id",
+            dataIndex: "id"
           },
           {
             title: "姓名",
             dataIndex: "memberName",
-            scopedSlots: { customRender: "playerName" },
+            scopedSlots: { customRender: "playerName" }
           },
           {
             title: "队服号",
-            dataIndex: "num",
+            dataIndex: "num"
           },
           {
             title: "位置",
-            dataIndex: "position",
+            dataIndex: "position"
           },
           {
             title: "身高cm",
-            dataIndex: "height",
+            dataIndex: "height"
           },
           {
             title: "体重kg",
-            dataIndex: "weight",
+            dataIndex: "weight"
           },
           {
             title: "持杆手",
-            dataIndex: "holdingRod",
+            dataIndex: "holdingRod"
           },
           {
             title: "身份证号/港澳通行证号码",
-            dataIndex: "identityCard",
+            dataIndex: "identityCard"
           },
           {
             title: "操作",
-            scopedSlots: { customRender: "action" },
-          },
+            scopedSlots: { customRender: "action" }
+          }
         ],
         // 官员 tableData
         officerTableData: [],
@@ -414,17 +416,17 @@ export default {
         playerTableData: [],
         // 基础信息
         descList: [],
-        fieldsMapLabelSon: fieldsMapLabelSon,
+        fieldsMapLabelSon: fieldsMapLabelSon
       },
       checkStatusData: {
         hockeyGamesJoinId: undefined, // 审核状态
         checkStatus: undefined, // 赛事报名id
-        checkResult: "", // 审核意见
-      },
+        checkResult: "" // 审核意见
+      }
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -442,10 +444,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getInfosTableData(data).then((res) => {
+      getInfosTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.list;
@@ -480,9 +482,8 @@ export default {
 
     // 查看
     openDetails(teamId) {
-      getTeamDetail({ teamId }).then((res) => {
+      getTeamDetail({ teamId }).then(res => {
         const result = res.data;
-        console.log(result.data);
         if (result.code === 0) {
           this.infoData.name = result.data.team.teamName;
           this.infoData.imgURL = result.data.team.teamLogoPath;
@@ -502,14 +503,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.fieldsMapLabel.forEach((item) => {
-        detailKeys.forEach((item1) => {
+      this.fieldsMapLabel.forEach(item => {
+        detailKeys.forEach(item1 => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1,
+              span: item.isOccupyAll ? 2 : 1
             });
           }
         });
@@ -517,7 +518,7 @@ export default {
       finallyData.push({
         label: "操作",
         value: "",
-        span: 1,
+        span: 1
       });
       return finallyData;
     },
@@ -542,7 +543,7 @@ export default {
           onCancel() {
             _this.$message.info("已取消操作");
           },
-          class: "test",
+          class: "test"
         });
       } else if (checkStatus === 2) {
         // 不通过打开弹框输入意见
@@ -554,7 +555,7 @@ export default {
     changeCheckResult(data) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       changeCheckStatus(data)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -587,11 +588,11 @@ export default {
       const data = {
         hockeyGameId: this.form.hockeyGamesId,
         checkStatus,
-        teamId,
+        teamId
       };
       this.$refs.loading.openLoading("正在导出数据，请稍后。。");
       exportTeam(data)
-        .then(async (res) => {
+        .then(async res => {
           if (res.status === 200 && res.data) {
             let filename = "";
             const disposition = res.headers["content-disposition"];
@@ -615,7 +616,7 @@ export default {
     deleteDetails(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deleteTeam(id)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -640,8 +641,8 @@ export default {
       this.reset();
       this.$emit("closeConfig");
       this.$emit("searchTableData");
-    },
-  },
+    }
+  }
 };
 </script>
 

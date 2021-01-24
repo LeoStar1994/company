@@ -148,21 +148,26 @@ export default {
   components: {
     OfficerModal,
     TeamModal,
-    PlayerModal,
+    PlayerModal
   },
   props: {
     detailShow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object(),
+      default: new Object()
     },
+    useType: {
+      type: String
+    }
   },
   mounted() {
-    this.getAllDicData();
+    if (this.useType === "competition") {
+      this.getAllDicData();
+    }
   },
   data() {
     return {
@@ -171,14 +176,21 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: [],
+        descList: []
       },
       yearTypeList: [], //年龄组list
-      dicData: {}, // 字典表下拉list
+      dicData: {
+        hokeyGamesTeamArea: [],
+        hokeyGamesCardType: [],
+        hokeyGamesTeamDetailPosition: [],
+        hokeyGamesTeamDetailHoldingRod: [],
+        hokeyGamesSexType: [],
+        hokeyGamesTrainPosition: []
+      } // 字典表下拉list
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   methods: {
     // 返回上一级页面
@@ -204,14 +216,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach((item) => {
-        detailKeys.forEach((item1) => {
+      this.infoData.fieldsMapLabelSon.forEach(item => {
+        detailKeys.forEach(item1 => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1,
+              span: item.isOccupyAll ? 2 : 1
             });
           }
         });
@@ -227,7 +239,7 @@ export default {
 
     // 获取所有字典表下拉list
     getAllDicData() {
-      getAllDicData().then((res) => {
+      getAllDicData().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dicData = result.data;
@@ -239,7 +251,7 @@ export default {
 
     // 通过赛事id获取球队基础信息年龄组下拉list
     getYearTypeList() {
-      getYearTypeList(this.infoData.hockeyGamesId).then((res) => {
+      getYearTypeList(this.infoData.hockeyGamesId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.yearTypeList = result.data;
@@ -265,8 +277,8 @@ export default {
 
     closeDetail() {
       this.detailShow1 = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

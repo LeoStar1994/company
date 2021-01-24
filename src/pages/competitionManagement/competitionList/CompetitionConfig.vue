@@ -135,6 +135,33 @@
             </a-form-model-item>
           </div>
         </a-form-model-item>
+        <!-- 年龄时间 -->
+        <a-form-model-item label="年龄时间"
+                           required>
+          <div class="d-flex h40">
+            <a-form-model-item prop="yearOldStartTime"
+                               class="flex-1">
+              <a-date-picker v-model="form.yearOldStartTime"
+                             :disabled-date="disabledStartDate3"
+                             show-time
+                             style="width:100%"
+                             format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
+                             placeholder="开始时间" />
+            </a-form-model-item>
+            <span class="mx-4 h40">~</span>
+            <a-form-model-item prop="yearOldEndTime"
+                               class="flex-1">
+              <a-date-picker v-model="form.yearOldEndTime"
+                             :disabled-date="disabledEndDate3"
+                             show-time
+                             style="width:100%"
+                             format="YYYY-MM-DD"
+                             valueFormat="YYYY-MM-DD"
+                             placeholder="结束时间" />
+            </a-form-model-item>
+          </div>
+        </a-form-model-item>
         <!-- 报名是否需要验证码 -->
         <a-form-model-item label="报名是否需要验证码"
                            prop="needPreCode">
@@ -313,11 +340,11 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   components: {
-    Editor,
+    Editor
   },
   data() {
     return {
@@ -331,15 +358,15 @@ export default {
         { label: "国际级", value: 1 },
         { label: "国家级", value: 2 },
         { label: "国际邀请赛", value: 3 },
-        { label: "国内联赛", value: 4 },
+        { label: "国内联赛", value: 4 }
       ],
       needPreCodeList: [
         { label: "不需要", value: 0 },
-        { label: "需要", value: 1 },
+        { label: "需要", value: 1 }
       ],
       saleStatusList: [
         { label: "上线", value: 0 },
-        { label: "下线", value: 1 },
+        { label: "下线", value: 1 }
       ],
       form: {
         enrollStartTime: null, // 报名开始时间
@@ -348,6 +375,8 @@ export default {
         gameEndTime: null, // 比赛结束时间
         preEnrollStartTime: null, // 预报名开始时间
         preEnrollEndTime: null, // 预报名结束时间
+        yearOldStartTime: null,
+        yearOldEndTime: null,
         gameGrade: [], // 比赛组别
         gamePlace: "", // 举办场地
         gameRuleName: [], // 竞赛规程文件名（可多选，逗号隔开）
@@ -363,7 +392,7 @@ export default {
         secondaryOrganizer: "", // 承办单位
         shareImageUrl: "", // 分享图片地址
         shareText: "", // 分享文案
-        gameIntroducation: "", // 赛事介绍
+        gameIntroducation: "" // 赛事介绍
       },
       // 搜索项校验规则
       rules: {
@@ -371,8 +400,8 @@ export default {
           {
             required: true,
             message: "请输入赛事名称",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
           // {
           //   min: 3,
           //   max: 10,
@@ -384,147 +413,161 @@ export default {
           {
             required: true,
             message: "请输入比赛类型",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameGrade: [
           {
             required: true,
             message: "请选择比赛组别",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         needPreCode: [
           {
             required: true,
             message: "请选择报名是否需要验证码",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         saleStatus: [
           {
             required: true,
             message: "请选择状态",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         imageUrl: [
           {
             required: true,
             message: "请上传宣传封面",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         shareImageUrl: [
           {
             required: true,
             message: "请上传分享图片",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameRuleName: [
           {
             required: true,
             message: "请上传竞赛规程",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         receiveEmail: [
           {
             required: true,
             message: "请输入报名表接受邮件地址",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         receiveMan: [
           {
             required: true,
             message: "请输入报名表接收人",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         shareText: [
           {
             required: true,
             message: "请输入分享文案",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         masterOrganizer: [
           {
             required: true,
             message: "请输入主办单位",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         secondaryOrganizer: [
           {
             required: true,
             message: "请输入承办单位",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         preEnrollStartTime: [
           {
             required: true,
             message: "请选择预报名开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         preEnrollEndTime: [
           {
             required: true,
             message: "请选择预报名结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         enrollStartTime: [
           {
             required: true,
             message: "请选择报名开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         enrollEndTime: [
           {
             required: true,
             message: "请选择报名结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameStartTime: [
           {
             required: true,
             message: "请选择比赛开始时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
         ],
         gameEndTime: [
           {
             required: true,
             message: "请选择比赛结束时间",
-            trigger: "change",
-          },
+            trigger: "change"
+          }
+        ],
+        yearOldStartTime: [
+          {
+            required: true,
+            message: "请选择年龄开始时间",
+            trigger: "change"
+          }
+        ],
+        yearOldEndTime: [
+          {
+            required: true,
+            message: "请选择年龄结束时间",
+            trigger: "change"
+          }
         ],
         gamePlace: [
           {
             required: true,
             message: "请输入举办场地",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         mobile: [
           {
             required: true,
             message: "请输入手机号！",
-            trigger: "blur",
+            trigger: "blur"
           },
           {
             pattern: /^1\d{10}$/,
             message: "请输入正确手机号！",
-            trigger: "blur",
-          },
-        ],
+            trigger: "blur"
+          }
+        ]
       },
 
       gameRulefileList: [], // 竞赛规程file list
@@ -535,11 +578,11 @@ export default {
 
       sharePictureList: [], // 分享图片file list
       previewVisible1: false,
-      previewShareImage: "",
+      previewShareImage: ""
     };
   },
   computed: {
-    ...mapState(["pageMinHeight"]),
+    ...mapState(["pageMinHeight"])
   },
   created() {
     this.getAllDicData();
@@ -547,7 +590,7 @@ export default {
   methods: {
     // 获取所有字典表下拉list
     getAllDicData() {
-      getAllDicData().then((res) => {
+      getAllDicData().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dicData = result.data;
@@ -573,6 +616,8 @@ export default {
         gameEndTime: null, // 比赛结束时间
         preEnrollStartTime: null, // 预报名开始时间
         preEnrollEndTime: null, // 预报名结束时间
+        yearOldStartTime: null,
+        yearOldEndTime: null,
         gameGrade: [], // 比赛组别
         gamePlace: "", // 举办场地
         gameRuleName: [], // 竞赛规程文件名（可多选，逗号隔开）
@@ -588,7 +633,7 @@ export default {
         secondaryOrganizer: "", // 承办单位
         shareImageUrl: "", // 分享图片地址
         shareText: "", // 分享文案
-        gameIntroducation: "", // 赛事介绍
+        gameIntroducation: "" // 赛事介绍
       };
       this.gameRulefileList = []; // 竞赛规程file list
       this.coverPictureList = []; // 宣传封面file list
@@ -644,6 +689,22 @@ export default {
       return new Date(startValue).valueOf() >= endValue.valueOf();
     },
 
+    // 年龄时间
+    disabledStartDate3(startValue) {
+      const endValue = this.form.yearOldEndTime;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > new Date(endValue).valueOf();
+    },
+    disabledEndDate3(endValue) {
+      const startValue = this.form.yearOldStartTime;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return new Date(startValue).valueOf() >= endValue.valueOf();
+    },
+
     // upload
     // 竞赛规程
     gameRuleUploadChange({ fileList }) {
@@ -673,7 +734,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then((res) => {
+        .then(res => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -735,7 +796,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then((res) => {
+        .then(res => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -787,7 +848,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then((res) => {
+        .then(res => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -814,19 +875,18 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.competitionForm.validate((valid) => {
+      this.$refs.competitionForm.validate(valid => {
         if (valid) {
           let data = {
             ...this.form,
             gameGrade: this.form.gameGrade.join(),
             gameRuleName: this.form.gameRuleName.join(),
-            gameRulePath: this.form.gameRulePath.join(),
+            gameRulePath: this.form.gameRulePath.join()
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          console.log(this.openType);
           if (this.openType === 0) {
             // 新增
-            addGame(data).then((res) => {
+            addGame(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -840,7 +900,7 @@ export default {
           } else if (this.openType === 1) {
             // 修改
             data.id = this.currentId;
-            updateGame(data).then((res) => {
+            updateGame(data).then(res => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -868,8 +928,8 @@ export default {
     resetForm() {
       this.resetData();
       this.$emit("closeConfig");
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -36,18 +36,43 @@
                     v-model="form.pageKey"
                     allowClear
                     placeholder="请选择类型">
-            <a-select-option v-for="(item,index) in pageKeyList"
-                             :key="index"
+            <a-select-option v-for="item in pageKeyList"
+                             :key="item.id"
                              :value="item.id">
               {{item.name}}
             </a-select-option>
           </a-select>
         </a-form-model-item>
-        <!-- 链接URL -->
-        <a-form-model-item label="链接URL"
-                           prop="linkUrl">
+        <!-- 动作行为 -->
+        <a-form-model-item label="动作行为"
+                           prop="action">
+          <a-select style="width: 100%"
+                    v-model="form.action"
+                    allowClear
+                    @change="actionChange(form.action)"
+                    placeholder="请选择类型">
+            <a-select-option v-for="item in actionList"
+                             :key="item.id"
+                             :value="item.id">
+              {{item.name}}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <!-- appid -->
+        <a-form-model-item label="appid"
+                           prop="appid"
+                           v-if="Number(form.action) === 2">
+          <a-input v-model="form.appid"
+                   placeholder="请输入appid"
+                   allowClear
+                   :maxLength="30" />
+        </a-form-model-item>
+        <!-- 链接地址 -->
+        <a-form-model-item label="链接地址"
+                           prop="linkUrl"
+                           v-if="Number(form.action) !== 0 && form.action !== undefined ">
           <a-input v-model="form.linkUrl"
-                   placeholder="请输入链接URL"
+                   placeholder="请输入链接地址"
                    allowClear
                    :maxLength="30" />
         </a-form-model-item>
@@ -138,7 +163,10 @@ export default {
       pageTitle: "新增焦点图",
       openType: 0,
       confirmLoading: false,
+      linkUrlCheck: false,
       form: {
+        action: undefined,
+        appid: undefined,
         endTime: null,
         startTime: null,
         sortNum: undefined,
@@ -186,6 +214,20 @@ export default {
           {
             required: true,
             message: "请选择类型",
+            trigger: "change"
+          }
+        ],
+        action: [
+          {
+            required: true,
+            message: "请选择动作行为",
+            trigger: "change"
+          }
+        ],
+        appid: [
+          {
+            required: true,
+            message: "请输入appid",
             trigger: "blur"
           }
         ],
@@ -205,6 +247,7 @@ export default {
         ]
       },
       pageKeyList: [], // 类型list
+      actionList: [], // 动作行为list
       pictureList: [], // 图片file list
       previewVisible: false,
       previewCoverImage: ""
@@ -227,6 +270,8 @@ export default {
 
     resetAllFields() {
       this.form = {
+        action: undefined,
+        appid: undefined,
         endTime: null,
         startTime: null,
         sortNum: undefined,
@@ -238,11 +283,22 @@ export default {
       };
     },
 
+    actionChange(action) {
+      const numberAction = Number(action);
+      if (numberAction === 0) {
+        this.form.appid = undefined;
+        this.form.linkUrl = undefined;
+      } else if (numberAction === 1 || numberAction === 3) {
+        this.form.appid = undefined;
+      }
+    },
+
     fetchTypeList() {
       getTypeList().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.pageKeyList = result.data.pageKeyEnumSelectedModel;
+          this.actionList = result.data.focusActionEnumSelectedModel;
         } else {
           this.$message.error(result.desc);
         }
