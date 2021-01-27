@@ -2,7 +2,7 @@
  * @Description: 用户管理details详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-22 19:11:33
+ * @LastEditTime: 2021-01-25 17:45:48
  * @LastEditors: Leo
 -->
 <template>
@@ -241,7 +241,7 @@ export default {
     syncRoles() {
       if (this.openType === 0) {
         this.$emit("initSyncRoles", this.sequenceNumber);
-      } else if (this.openType === 1) {
+      } else if (this.openType === 2) {
         this.$emit("syncRoles", this.sequenceNumber);
       }
     },

@@ -2,7 +2,7 @@
  * @Description: 焦点图管理 / 焦点图列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-18 20:15:27
+ * @LastEditTime: 2021-01-25 14:21:14
  * @LastEditors: Leo
 -->
 <template>
@@ -201,6 +201,8 @@ export default {
               focusTitle: result.data.focusTitle,
               imagePath: result.data.imagePath,
               linkUrl: result.data.linkUrl,
+              action: result.data.action,
+              appid: result.data.appid,
               pageKey: result.data.pageKey,
               sortNum: result.data.sortNum,
               startTime: result.data.startTime,

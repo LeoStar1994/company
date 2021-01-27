@@ -2,7 +2,7 @@
  * @Description: 角色管理详情
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-22 19:50:24
+ * @LastEditTime: 2021-01-25 17:45:30
  * @LastEditors: Leo
 -->
 <template>
@@ -165,7 +165,7 @@ export default {
     syncRoles() {
       if (this.openType === 0) {
         this.$emit("initSyncRoles", this.sequenceNumber);
-      } else if (this.openType === 1) {
+      } else if (this.openType === 2) {
         this.$emit("syncRoles", this.sequenceNumber);
       }
     },
@@ -210,6 +210,7 @@ export default {
       this.form = {
         ...data,
         selectedMenusList: uniqueChild,
+        state: data.state.toString(),
       };
     },
 

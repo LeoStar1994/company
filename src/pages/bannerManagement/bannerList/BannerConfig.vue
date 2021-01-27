@@ -2,7 +2,7 @@
  * @Description: 焦点图详情弹框
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2020-12-31 17:59:38
+ * @LastEditTime: 2021-01-25 17:12:45
  * @LastEditors: Leo
 -->
 <template>
@@ -74,7 +74,7 @@
           <a-input v-model="form.linkUrl"
                    placeholder="请输入链接地址"
                    allowClear
-                   :maxLength="30" />
+                   :maxLength="255" />
         </a-form-model-item>
         <!-- 生效日期 -->
         <a-form-model-item label="生效日期"
@@ -151,7 +151,7 @@ import {
   getTypeList,
   addBanner,
   updateBanner,
-  uploadImage
+  uploadImage,
 } from "@/services/banner";
 export default {
   name: "BannerConfig",
@@ -174,7 +174,7 @@ export default {
         linkUrl: undefined,
         imagePath: undefined,
         focusTitle: undefined,
-        id: null
+        id: null,
       },
       // 搜索项校验规则
       rules: {
@@ -182,75 +182,75 @@ export default {
           {
             required: true,
             message: "请选择生效开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         endTime: [
           {
             required: true,
             message: "请选择生效结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         imagePath: [
           {
             required: true,
             message: "请上传图片",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         sortNum: [
           {
             required: true,
             message: "请输入排序值",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             pattern: /^\d+$/,
-            message: "排序只能输入数字！"
-          }
+            message: "排序只能输入数字！",
+          },
         ],
         pageKey: [
           {
             required: true,
             message: "请选择类型",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         action: [
           {
             required: true,
             message: "请选择动作行为",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         appid: [
           {
             required: true,
             message: "请输入appid",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         linkUrl: [
           {
             required: true,
             message: "请输入链接URL",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         focusTitle: [
           {
             required: true,
             message: "请输入名称",
-            trigger: "blur"
-          }
-        ]
+            trigger: "blur",
+          },
+        ],
       },
       pageKeyList: [], // 类型list
       actionList: [], // 动作行为list
       pictureList: [], // 图片file list
       previewVisible: false,
-      previewCoverImage: ""
+      previewCoverImage: "",
     };
   },
   created() {
@@ -279,7 +279,7 @@ export default {
         linkUrl: undefined,
         imagePath: undefined,
         focusTitle: undefined,
-        id: null
+        id: null,
       };
     },
 
@@ -294,7 +294,7 @@ export default {
     },
 
     fetchTypeList() {
-      getTypeList().then(res => {
+      getTypeList().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.pageKeyList = result.data.pageKeyEnumSelectedModel;
@@ -365,7 +365,7 @@ export default {
         }
       }, 100);
       uploadImage(formData)
-        .then(res => {
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -387,14 +387,14 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
             addBanner(data)
-              .then(res => {
+              .then((res) => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -411,7 +411,7 @@ export default {
           } else if (this.openType === 1) {
             // 修改
             updateBanner(data)
-              .then(res => {
+              .then((res) => {
                 this.$refs.loading.closeLoading();
                 const result = res.data;
                 if (result.code === 0) {
@@ -438,7 +438,7 @@ export default {
     closeModal() {
       this.resetAllData();
       this.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
