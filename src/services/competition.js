@@ -13,7 +13,8 @@ import {
   OFFICERINIT,
   PLAYERINIT,
   GETYEARTYPELIST,
-  GETDICINITDATA
+  GETDICINITDATA,
+  GETGAMEGRADEDATA,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -74,6 +75,9 @@ export async function exportTeam(data) {
 // 获取字典表所有下拉list data
 export async function getAllDicData(data) {
   return request(GETDICINITDATA, METHOD.GET, data);
+}
+export async function getGameGradeData(data) {
+  return request(GETGAMEGRADEDATA, METHOD.GET, data);
 }
 // 通过赛事id获取球队基础信息年龄组下拉list
 export async function getYearTypeList(hockeyGamesId) {

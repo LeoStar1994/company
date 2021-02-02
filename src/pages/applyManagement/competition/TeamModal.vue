@@ -2,7 +2,7 @@
  * @Description: 球队信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-19 15:46:56
+ * @LastEditTime: 2021-02-02 10:18:19
  * @LastEditors: Leo
 -->
 <template>
@@ -47,10 +47,10 @@
         <a-form-model-item label="年龄组"
                            prop="yearType">
           <a-radio-group v-model="form.yearType">
-            <a-radio :value="item"
+            <a-radio :value="item.id"
                      v-for="(item,index) in yearTypeList"
                      :key="index">
-              {{item}}
+              {{item.name}}
             </a-radio>
           </a-radio-group>
         </a-form-model-item>

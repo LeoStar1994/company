@@ -64,6 +64,7 @@ module.exports = {
   PLAYERUPDATE: `${BASE_URL}/games/join/detail/update`, // 队员信息修改
   GETYEARTYPELIST: `${BASE_URL}/games/join/dictionary/gameGrade`, // 获取球队基础年龄组下拉list
   GETDICINITDATA: `${BASE_URL}/games/join/dictionary`, // 获取字典表所有下拉list
+  GETGAMEGRADEDATA: `${BASE_URL}/games/dictionary/gameGrade`, // 获取字典表所有下拉list
 
   /* 赛事管理 */
   // 赛事列表
