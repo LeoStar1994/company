@@ -2,7 +2,8 @@
 import {
   EDUCATIONTABLEDATA,
   EDUCATIONTYPELIST,
-  EDUCATIONUPLOAD,
+  EDUCATIONUPLOADCOVER,
+  EDUCATIONUPLOADSHARE,
   EDUCATIONADDHOTEL,
   EDUCATIONADD,
   EDUCATIONINITDATA,
@@ -26,8 +27,11 @@ export async function getTypeList() {
 }
 
 // 上传图片
-export async function uploadImage(data) {
-  return request(EDUCATIONUPLOAD, METHOD.POST, data);
+export async function uploadImageCover(data) {
+  return request(EDUCATIONUPLOADCOVER, METHOD.POST, data);
+}
+export async function uploadImageShare(data) {
+  return request(EDUCATIONUPLOADSHARE, METHOD.POST, data);
 }
 
 // 新增酒店

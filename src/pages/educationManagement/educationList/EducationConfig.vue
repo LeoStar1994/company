@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-01-14 16:00:53
+ * @LastEditTime: 2021-02-03 18:51:29
  * @LastEditors: Leo
 -->
 <template>
@@ -349,7 +349,8 @@ import {
   addHotel,
   addEducation,
   updateEducation,
-  uploadImage
+  uploadImageCover,
+  uploadImageShare,
 } from "@/services/education";
 
 export default {
@@ -357,11 +358,11 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
-    Editor
+    Editor,
   },
   data() {
     return {
@@ -401,7 +402,7 @@ export default {
         shareImageUrl: undefined, // 分享图片地址
         shareText: undefined, // 分享文案
         educationIntroduction: undefined, // 活动详情
-        hotelName: undefined // 新增酒店名称
+        hotelName: undefined, // 新增酒店名称
       },
       // 搜索项校验规则
       rules: {
@@ -409,8 +410,8 @@ export default {
           {
             required: true,
             message: "请输入标题",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
           // {
           //   min: 3,
           //   max: 10,
@@ -422,149 +423,149 @@ export default {
           {
             required: true,
             message: "请选择类型",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         toObject: [
           {
             required: true,
             message: "请选择面向人群",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         educationLevel: [
           {
             required: true,
             message: "请选择培训等级",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         needPreCode: [
           {
             required: true,
             message: "请选择报名是否需要验证码",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         saleStatus: [
           {
             required: true,
             message: "请选择状态",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         shareText: [
           {
             required: true,
             message: "请输入分享文案",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         imageUrl: [
           {
             required: true,
             message: "请上传封面图片",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         shareImageUrl: [
           {
             required: true,
             message: "请上传分享图片",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         masterOrganizer: [
           {
             required: true,
             message: "请输入主办单位",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         secondaryOrganizer: [
           {
             required: true,
             message: "请输入承办单位",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         enrollStartTime: [
           {
             required: true,
             message: "请选择报名开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         enrollEndTime: [
           {
             required: true,
             message: "请选择报名结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         educationStartTime: [
           {
             required: true,
             message: "请选择培训开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         educationEndTime: [
           {
             required: true,
             message: "请选择培训结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         yearOldStartTime: [
           {
             required: true,
             message: "请选择年龄开始时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         yearOldEndTime: [
           {
             required: true,
             message: "请选择年龄结束时间",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         address: [
           {
             required: true,
             message: "请输入培训地点",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         educationIntroduction: [
           {
             required: true,
             message: "请输入活动详情",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         hotelIds: [
           {
             required: true,
             message: "请选择入住酒店",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         roomType: [
           {
             required: true,
             message: "请选择房间类型",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         educationMethod: [
           {
             required: true,
             message: "请选择授课方式",
-            trigger: "change"
-          }
-        ]
+            trigger: "change",
+          },
+        ],
       },
 
       coverPictureList: [], // 宣传封面file list
@@ -573,11 +574,11 @@ export default {
 
       sharePictureList: [], // 分享图片file list
       previewVisible1: false,
-      previewShareImage: ""
+      previewShareImage: "",
     };
   },
   computed: {
-    ...mapState(["pageMinHeight"])
+    ...mapState(["pageMinHeight"]),
   },
   created() {},
   mounted() {
@@ -594,7 +595,7 @@ export default {
 
     // 初始化list数据
     getAllListData() {
-      getTypeList().then(res => {
+      getTypeList().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.educationLevelList = result.data.educationLevelEnumSelectedModel; // 培训等级
@@ -706,8 +707,8 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
-        .then(res => {
+      uploadImageCover(formData)
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -758,8 +759,8 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
-        .then(res => {
+      uploadImageShare(formData)
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -782,15 +783,15 @@ export default {
     // 新增新的酒店名字
     saveNewHotel() {
       const data = {
-        hotelName: this.form.hotelName
+        hotelName: this.form.hotelName,
       };
-      addHotel(data).then(res => {
+      addHotel(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.$message.success(result.desc);
           this.hotelIdsList.push({
             id: result.data.id,
-            name: result.data.hotelName
+            name: result.data.hotelName,
           });
           this.cancelAddHotel();
         } else {
@@ -811,13 +812,13 @@ export default {
 
     // 保存
     onSubmit() {
-      this.$refs.educationForm.validate(valid => {
+      this.$refs.educationForm.validate((valid) => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           if (this.openType === 0) {
             // 新增
-            addEducation(data).then(res => {
+            addEducation(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -831,7 +832,7 @@ export default {
           } else if (this.openType === 1) {
             // 修改
             data.id = this.currentID;
-            updateEducation(data).then(res => {
+            updateEducation(data).then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -872,7 +873,7 @@ export default {
         shareImageUrl: undefined, // 分享图片地址
         shareText: undefined, // 分享文案
         educationIntroduction: undefined, // 活动详情
-        hotelName: undefined // 新增酒店名称
+        hotelName: undefined, // 新增酒店名称
       };
       this.coverPictureList = []; // 宣传封面file list
       this.sharePictureList = []; // 分享图片file list
@@ -882,7 +883,7 @@ export default {
     resetForm() {
       this.resetAllFields();
       this.$emit("closeConfig");
-    }
-  }
+    },
+  },
 };
 </script>

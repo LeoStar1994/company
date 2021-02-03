@@ -74,7 +74,17 @@ module.exports = {
   COMPETITIONUPDATE: `${BASE_URL}/games/update`, // 修改
   COMPETITIONDELETE: `${BASE_URL}/games/delete`, // 删除
   COMPETITIONEXPORT: `${BASE_URL}/games/join/export/word`, // 导出秩序册
-  COMPETITIONUPLOAD: `${BASE_URL}/games/api/file/upload/oss`, // 上传url
+  COVERIMAGE: `${BASE_URL}/api/file/upload/image/hockeyGameImageUrl`, // 宣传封面
+  SHAREIMAGE: `${BASE_URL}/api/file/upload/image/hockeyGameShareImageUrl`, // 分享图片
+  GAMERULE: `${BASE_URL}/api/file/upload/image/hockeyGameRule`, // 竞赛规程
+  VIDEO: `${BASE_URL}/api/file/upload/image/hockeyGamesSchedules`, // 上传视频
+  VIDEOIMAGE: `${BASE_URL}/api/file/upload/image/hockeyGamesSchedulesImage`, // 视频封面
+  OFFICERIMAGE: `${BASE_URL}/api/file/upload/image/gameTrain`, // 上传官员照片
+  OFFICERCARD: `${BASE_URL}/api/file/upload/image/gameTrainIdentity`, // 上传官员身份证
+  TEAMLOGO: `${BASE_URL}/api/file/upload/image/gameTeamLogo`, // 上传球队logo
+  TEAMIMAGE: `${BASE_URL}/api/file/upload/image/gameTeamImage`, // 上传球队集体照
+  PLAYERIMAGE: `${BASE_URL}/api/file/upload/image/gameTeamDetail`, // 上传运动员照片
+  PLAYERCARD: `${BASE_URL}/api/file/upload/image/gameTeamDetailIdentity`, // 上传运动员身份证
 
   // 赛事列表 => 赛事日程
   SCHEDULETABLEDATA: `${BASE_URL}/games/schedules/list`, // table查询
@@ -122,7 +132,8 @@ module.exports = {
   // 教学列表
   EDUCATIONTABLEDATA: `${BASE_URL}/enducation/query`, // table查询
   EDUCATIONTYPELIST: `${BASE_URL}/enducation/initAdd`, // 获取列表数据
-  EDUCATIONUPLOAD: `${BASE_URL}/enducation/upload/img`, // 上传图片
+  EDUCATIONUPLOADCOVER: `${BASE_URL}/api/file/upload/image/educationImageUrl`, // 宣传封面
+  EDUCATIONUPLOADSHARE: `${BASE_URL}/api/file/upload/image/educationShareImageUrl`, // 分享图片
   EDUCATIONADDHOTEL: `${BASE_URL}/enducation/initAddHotel`, // 新增酒店
   EDUCATIONADD: `${BASE_URL}/enducation/add`, // 新增
   EDUCATIONINITDATA: `${BASE_URL}/enducation/initMod`, // 修改初始化，返显数据
@@ -140,7 +151,7 @@ module.exports = {
   /* 焦点图管理 */
   BANNERTABLEDATA: `${BASE_URL}/focus/query`, // table查询
   BANNERTYPELIST: `${BASE_URL}/focus/initAdd`, // 获取类型列表
-  BANNERUPLOAD: `${BASE_URL}/focus/upload/img`, // 上传图片
+  BANNERUPLOAD: `${BASE_URL}/api/file/upload/image/focus`, // 上传图片
   BANNERADD: `${BASE_URL}/focus/add`, // 新增
   BANNERINITDATA: `${BASE_URL}/focus/initMod`, // 修改初始化，返显数据
   BANNERUPDATE: `${BASE_URL}/focus/mod`, // 修改数据

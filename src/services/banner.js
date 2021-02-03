@@ -25,7 +25,7 @@ export async function getTypeList() {
 }
 
 // 上传图片
-export async function uploadImage(data) {
+export async function uploadBannerImage(data) {
   return request(BANNERUPLOAD, METHOD.POST, data);
 }
 

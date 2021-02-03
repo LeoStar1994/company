@@ -2,7 +2,7 @@
  * @Description: 球队信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-02-02 10:18:19
+ * @LastEditTime: 2021-02-03 19:05:58
  * @LastEditors: Leo
 -->
 <template>
@@ -160,7 +160,7 @@
 
 <script>
 import { getBaseData, baseInfoUpdate } from "@/services/competition";
-import { uploadImage } from "@/services/competitionList";
+import { uploadTeamLogo, uploadTeamImage } from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
   name: "TeamModal",
@@ -336,7 +336,7 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData)
+      uploadTeamLogo(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
@@ -381,7 +381,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadTeamImage(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;

@@ -2,7 +2,7 @@
  * @Description: 赛事列表 / 详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-02-02 10:15:54
+ * @LastEditTime: 2021-02-03 18:37:45
  * @LastEditors: Leo
 -->
 <template>
@@ -330,7 +330,13 @@
 
 <script>
 import { mapState } from "vuex";
-import { uploadImage, addGame, updateGame } from "@/services/competitionList";
+import {
+  uploadImageCover,
+  uploadGameRule,
+  uploadImageShare,
+  addGame,
+  updateGame,
+} from "@/services/competitionList";
 import { getGameGradeData } from "@/services/competition";
 import { getBase64 } from "@/utils/util.js";
 import Editor from "@/components/wangEditor/wangEditor.vue";
@@ -733,7 +739,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadGameRule(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
@@ -795,7 +801,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadImageCover(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
@@ -847,7 +853,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadImageShare(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;

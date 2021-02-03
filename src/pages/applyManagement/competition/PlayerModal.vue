@@ -2,7 +2,7 @@
  * @Description: 运动员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-21 16:40:18
+ * @LastEditTime: 2021-02-03 19:09:21
  * @LastEditors: Leo
 -->
 <template>
@@ -210,7 +210,10 @@
 
 <script>
 import { getPlayerData, playerUpdate } from "@/services/competition";
-import { uploadImage } from "@/services/competitionList";
+import {
+  uploadPlayerImage,
+  uploadPlayerCard,
+} from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
   name: "PlayerModal",
@@ -343,7 +346,7 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData)
+      uploadPlayerImage(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
@@ -388,7 +391,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadPlayerCard(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
@@ -437,7 +440,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadPlayerCard(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;

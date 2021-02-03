@@ -2,7 +2,7 @@
  * @Description: 官员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-18 15:07:59
+ * @LastEditTime: 2021-02-03 19:03:05
  * @LastEditors: Leo
 -->
 <template>
@@ -151,7 +151,10 @@
 
 <script>
 import { getOfficerData, officerUpdate } from "@/services/competition";
-import { uploadImage } from "@/services/competitionList";
+import {
+  uploadOfficerImage,
+  uploadOfficerCard,
+} from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 export default {
   name: "OfficerModal",
@@ -337,7 +340,7 @@ export default {
     avatarCustomRequest(options) {
       const formData = new FormData();
       formData.append("file", options.file);
-      uploadImage(formData)
+      uploadOfficerImage(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
@@ -378,7 +381,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadOfficerCard(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;

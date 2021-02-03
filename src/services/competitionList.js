@@ -5,7 +5,6 @@ import {
   COMPETITIONDETAIL,
   COMPETITIONUPDATE,
   COMPETITIONDELETE,
-  COMPETITIONUPLOAD,
   COMPETITIONEXPORT,
   SCHEDULEGRADELIST,
   SCHEDULETEAMSLIST,
@@ -17,6 +16,17 @@ import {
   SCHEDULEVIDEOADD,
   SCHEDULEVIDEODELETE,
   SCHEDULEVIDEOTABLEDATA,
+  COVERIMAGE,
+  SHAREIMAGE,
+  GAMERULE,
+  VIDEO,
+  VIDEOIMAGE,
+  OFFICERIMAGE,
+  OFFICERCARD,
+  TEAMLOGO,
+  TEAMIMAGE,
+  PLAYERIMAGE,
+  PLAYERCARD,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -28,10 +38,50 @@ import { request, METHOD } from "@/utils/request";
 export async function getTableData(data) {
   return request(COMPETITIONTABLEDATA, METHOD.GET, data);
 }
-
-// 上传图片
-export async function uploadImage(data) {
-  return request(COMPETITIONUPLOAD, METHOD.POST, data);
+/******   上传图片   ********/
+// 宣传封面
+export async function uploadImageCover(data) {
+  return request(COVERIMAGE, METHOD.POST, data);
+}
+// 竞赛规程
+export async function uploadGameRule(data) {
+  return request(GAMERULE, METHOD.POST, data);
+}
+// 分享图片
+export async function uploadImageShare(data) {
+  return request(SHAREIMAGE, METHOD.POST, data);
+}
+// 上传视频
+export async function uploadVideo(data) {
+  return request(VIDEO, METHOD.POST, data);
+}
+// 上传视频封面图
+export async function uploadVideoImage(data) {
+  return request(VIDEOIMAGE, METHOD.POST, data);
+}
+// 上传官员照片
+export async function uploadOfficerImage(data) {
+  return request(OFFICERIMAGE, METHOD.POST, data);
+}
+// 上传官员身份证
+export async function uploadOfficerCard(data) {
+  return request(OFFICERCARD, METHOD.POST, data);
+}
+// 上传球队logo
+export async function uploadTeamLogo(data) {
+  return request(TEAMLOGO, METHOD.POST, data);
+}
+// 上传球队集体照
+export async function uploadTeamImage(data) {
+  return request(TEAMIMAGE, METHOD.POST, data);
+}
+// 上传运动员照片
+export async function uploadPlayerImage(data) {
+  return request(PLAYERIMAGE, METHOD.POST, data);
+}
+// 上传运动员身份证
+export async function uploadPlayerCard(data) {
+  return request(PLAYERCARD, METHOD.POST, data);
 }
 
 // 新增
@@ -56,7 +106,7 @@ export async function deleteGame(id) {
 
 // 导出秩序册
 export async function exportGameWord(data) {
-  return request(COMPETITIONEXPORT, METHOD.GET, data, "blob", 600000);
+  return request(COMPETITIONEXPORT, METHOD.GET, data, "blob", 1200000);
 }
 
 /************************** 赛事日程  **************************/

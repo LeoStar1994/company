@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表 / 赛事日程 / 新增|修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-19 13:40:18
+ * @LastEditTime: 2021-02-03 17:57:28
  * @LastEditors: Leo
 -->
 <template>
@@ -30,8 +30,8 @@
                     placeholder="请选择">
             <a-select-option v-for="(item,index) in gameGradeList"
                              :key="index"
-                             :value="item">
-              {{item}}
+                             :value="item.id">
+              {{item.name}}
             </a-select-option>
           </a-select>
         </a-form-model-item>

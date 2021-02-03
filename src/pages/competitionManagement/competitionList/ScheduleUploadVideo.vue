@@ -2,7 +2,7 @@
  * @Description: 赛事列表 => 赛事日程 => 上传视频modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-14 15:12:57
+ * @LastEditTime: 2021-02-03 18:58:36
  * @LastEditors: Leo
 -->
 <template>
@@ -75,7 +75,11 @@
 </template>
 
 <script>
-import { uploadImage, videoSave } from "@/services/competitionList";
+import {
+  uploadVideo,
+  uploadVideoImage,
+  videoSave,
+} from "@/services/competitionList";
 import { getBase64 } from "@/utils/util.js";
 
 export default {
@@ -91,24 +95,24 @@ export default {
         videoNames: "", // 视频名称
         videoUrls: "", // 视频连接
         imgUrls: "", //	封面图链接
-        schedulesId: null
+        schedulesId: null,
       },
       // 搜索项校验规则
       rules: {
         videoUrls: [
           {
             required: true,
-            message: "请上传视频"
+            message: "请上传视频",
             // trigger: "change",
-          }
+          },
         ],
         imgUrls: [
           {
             required: true,
-            message: "请上传封面图"
+            message: "请上传封面图",
             // trigger: "change",
-          }
-        ]
+          },
+        ],
       },
       // 视频
       videoList: [],
@@ -116,7 +120,7 @@ export default {
       // 封面图
       pictureList: [], // 宣传封面file list
       previewVisible: false,
-      previewCoverImage: ""
+      previewCoverImage: "",
     };
   },
   created() {},
@@ -139,8 +143,8 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
-        .then(res => {
+      uploadVideo(formData)
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -209,8 +213,8 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
-        .then(res => {
+      uploadVideoImage(formData)
+        .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
           if (result.code === 0) {
@@ -244,12 +248,12 @@ export default {
     },
 
     saveVideoInfo() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const data = { ...this.form };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
           videoSave(data)
-            .then(res => {
+            .then((res) => {
               this.$refs.loading.closeLoading();
               const result = res.data;
               if (result.code === 0) {
@@ -273,8 +277,8 @@ export default {
       this.videoList = [];
       this.pictureList = [];
       this.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -2,7 +2,7 @@
  * @Description: 赛事管理 / 赛事列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-22 13:33:02
+ * @LastEditTime: 2021-02-03 14:05:41
  * @LastEditors: Leo
 -->
 <template>
@@ -348,7 +348,7 @@ export default {
         return;
       }
       const data = { hockeyGameId };
-      this.$refs.loading.openLoading("正在导出数据，请稍后。。");
+      this.$refs.loading.openLoading("正在导出数据，请稍后。。", 1200000);
       exportGameWord(data)
         .then(async (res) => {
           if (res.status === 200 && res.data) {

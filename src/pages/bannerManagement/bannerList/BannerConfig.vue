@@ -2,7 +2,7 @@
  * @Description: 焦点图详情弹框
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-25 17:12:45
+ * @LastEditTime: 2021-02-03 19:10:53
  * @LastEditors: Leo
 -->
 <template>
@@ -151,7 +151,7 @@ import {
   getTypeList,
   addBanner,
   updateBanner,
-  uploadImage,
+  uploadBannerImage,
 } from "@/services/banner";
 export default {
   name: "BannerConfig",
@@ -364,7 +364,7 @@ export default {
           clearInterval(intervalId);
         }
       }, 100);
-      uploadImage(formData)
+      uploadBannerImage(formData)
         .then((res) => {
           options.onSuccess(res, options.file); //解决一直loading情况，调用onSuccess
           const result = res.data;
