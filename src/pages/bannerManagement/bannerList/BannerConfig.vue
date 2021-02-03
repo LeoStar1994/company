@@ -2,7 +2,7 @@
  * @Description: 焦点图详情弹框
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-02-03 19:10:53
+ * @LastEditTime: 2021-02-03 19:24:32
  * @LastEditors: Leo
 -->
 <template>
@@ -370,7 +370,7 @@ export default {
           const result = res.data;
           if (result.code === 0) {
             this.$message.success(result.desc);
-            this.form.imagePath = result.data;
+            this.form.imagePath = result.data.fileUrl;
             this.$refs.ruleForm.validateField("imagePath");
           } else {
             this.$message.error(result.desc);

@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-02-03 18:51:29
+ * @LastEditTime: 2021-02-03 19:22:15
  * @LastEditors: Leo
 -->
 <template>
@@ -713,7 +713,7 @@ export default {
           const result = res.data;
           if (result.code === 0) {
             this.$message.success(result.desc);
-            this.form.imageUrl = result.data;
+            this.form.imageUrl = result.data.fileUrl;
             this.$refs.educationForm.validateField("imageUrl");
           } else {
             this.$message.error(result.desc);
@@ -765,7 +765,7 @@ export default {
           const result = res.data;
           if (result.code === 0) {
             this.$message.success(result.desc);
-            this.form.shareImageUrl = result.data;
+            this.form.shareImageUrl = result.data.fileUrl;
             this.$refs.educationForm.validateField("shareImageUrl");
           } else {
             this.$message.error(result.desc);
