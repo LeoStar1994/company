@@ -2,7 +2,7 @@
  * @Description: 焦点图详情弹框
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-02-03 19:24:32
+ * @LastEditTime: 2021-02-05 15:35:17
  * @LastEditors: Leo
 -->
 <template>
@@ -105,7 +105,7 @@
           <div class="clearfix">
             <a-upload :action="bannerUploadUrl"
                       :customRequest="customRequest"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="pictureList"
                       :before-upload="beforeUpload"

@@ -2,7 +2,7 @@
  * @Description: 官员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-02-03 19:03:05
+ * @LastEditTime: 2021-02-05 15:33:43
  * @LastEditors: Leo
 -->
 <template>
@@ -119,7 +119,7 @@
                            prop="identityImagePath">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="pictureList"
                       :before-upload="beforeUpload"

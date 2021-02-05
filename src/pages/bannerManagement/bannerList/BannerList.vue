@@ -2,7 +2,7 @@
  * @Description: 焦点图管理 / 焦点图列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-25 14:21:14
+ * @LastEditTime: 2021-02-05 15:13:55
  * @LastEditors: Leo
 -->
 <template>
@@ -228,7 +228,6 @@ export default {
 
     // 删除
     deleteInfo(id) {
-      console.log(id);
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deleteBanner(id)
         .then((res) => {

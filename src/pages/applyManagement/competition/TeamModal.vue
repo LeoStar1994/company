@@ -128,7 +128,7 @@
                            prop="teamImage">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="pictureList"
                       :before-upload="beforeUpload"

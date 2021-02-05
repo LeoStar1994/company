@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-01-19 00:10:44
+ * @LastEditTime: 2021-02-05 15:30:09
  * @LastEditors: Leo
 -->
 <template>
@@ -83,6 +83,14 @@
                       size="small"
                       @click="openOfficerModal(data)">修改
             </a-button>
+            <a-popconfirm title="是否删除该条数据?"
+                          ok-text="确定"
+                          cancel-text="取消"
+                          @confirm="deleteOfficer(data)"
+                          @cancel="deletecancel">
+              <a-button size="small"
+                        type="danger">删除</a-button>
+            </a-popconfirm>
           </div>
         </a-table>
       </div>
@@ -101,6 +109,14 @@
                       size="small"
                       @click="openPlayerModal(data)">修改
             </a-button>
+            <a-popconfirm title="是否删除该条数据?"
+                          ok-text="确定"
+                          cancel-text="取消"
+                          @confirm="deletePlayer(data)"
+                          @cancel="deletecancel">
+              <a-button size="small"
+                        type="danger">删除</a-button>
+            </a-popconfirm>
           </div>
         </a-table>
       </div>
@@ -134,6 +150,10 @@
                  :cardTypeList="dicData.hokeyGamesCardType"></PlayerModal>
     <!-- 性别、持杆手、位置、证件类型 -->
 
+    <!-- loading -->
+    <transition name="el-fade-in">
+      <loading ref="loading"></loading>
+    </transition>
   </div>
 </template>
 
@@ -142,27 +162,32 @@ import { mapState } from "vuex";
 import OfficerModal from "../../pages/applyManagement/competition/OfficerModal";
 import TeamModal from "../../pages/applyManagement/competition/TeamModal";
 import PlayerModal from "../../pages/applyManagement/competition/PlayerModal";
-import { getAllDicData, getYearTypeList } from "@/services/competition";
+import {
+  getAllDicData,
+  getYearTypeList,
+  deleteOfficer,
+  deletePlayer,
+} from "@/services/competition";
 export default {
   name: "InfosDetails",
   components: {
     OfficerModal,
     TeamModal,
-    PlayerModal
+    PlayerModal,
   },
   props: {
     detailShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object()
+      default: new Object(),
     },
     useType: {
-      type: String
-    }
+      type: String,
+    },
   },
   mounted() {
     if (this.useType === "competition") {
@@ -176,7 +201,7 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: []
+        descList: [],
       },
       yearTypeList: [], //年龄组list
       dicData: {
@@ -185,12 +210,12 @@ export default {
         hokeyGamesTeamDetailPosition: [],
         hokeyGamesTeamDetailHoldingRod: [],
         hokeyGamesSexType: [],
-        hokeyGamesTrainPosition: []
-      } // 字典表下拉list
+        hokeyGamesTrainPosition: [],
+      }, // 字典表下拉list
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   methods: {
     // 返回上一级页面
@@ -216,14 +241,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach(item => {
-        detailKeys.forEach(item1 => {
+      this.infoData.fieldsMapLabelSon.forEach((item) => {
+        detailKeys.forEach((item1) => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1
+              span: item.isOccupyAll ? 2 : 1,
             });
           }
         });
@@ -239,7 +264,7 @@ export default {
 
     // 获取所有字典表下拉list
     getAllDicData() {
-      getAllDicData().then(res => {
+      getAllDicData().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dicData = result.data;
@@ -251,7 +276,7 @@ export default {
 
     // 通过赛事id获取球队基础信息年龄组下拉list
     getYearTypeList() {
-      getYearTypeList(this.infoData.hockeyGamesId).then(res => {
+      getYearTypeList(this.infoData.hockeyGamesId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.yearTypeList = result.data;
@@ -265,10 +290,56 @@ export default {
     openOfficerModal(data) {
       this.$refs.officerModal.setOpenType(data);
     },
+    // 删除官员信息
+    deleteOfficer(data) {
+      const postData = {
+        trainId: data.id,
+      };
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      deleteOfficer(postData)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.refreshAllInfoData(data.teamId);
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
+    },
 
     // 修改运动员信息
     openPlayerModal(data) {
       this.$refs.playerModal.setOpenType(data);
+    },
+    // 删除运动员信息
+    deletePlayer(data) {
+      const postData = {
+        teamDetailId: data.id,
+      };
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      deletePlayer(postData)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.refreshAllInfoData(data.teamId);
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
+    },
+
+    deletecancel() {
+      this.$message.warning("删除操作已取消");
     },
 
     refreshAllInfoData(teamId) {
@@ -277,8 +348,8 @@ export default {
 
     closeDetail() {
       this.detailShow1 = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -15,6 +15,8 @@ import {
   GETYEARTYPELIST,
   GETDICINITDATA,
   GETGAMEGRADEDATA,
+  OFFICERDELETE,
+  PLAYERDELETE,
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -101,6 +103,10 @@ export async function getOfficerData(teamId, trainId) {
 export async function officerUpdate(data) {
   return request(OFFICERUPDATE, METHOD.POST, data);
 }
+// 官员信息删除
+export async function deleteOfficer(data) {
+  return request(OFFICERDELETE, METHOD.POST, data);
+}
 
 // 获取运动员信息
 export async function getPlayerData(teamId, detailId) {
@@ -109,4 +115,8 @@ export async function getPlayerData(teamId, detailId) {
 // 运动员信息修改
 export async function playerUpdate(data) {
   return request(PLAYERUPDATE, METHOD.POST, data);
+}
+// 运动员信息删除
+export async function deletePlayer(data) {
+  return request(PLAYERDELETE, METHOD.POST, data);
 }

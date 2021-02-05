@@ -2,7 +2,7 @@
  * @Description: 赛事列表 => 赛事日程 => 上传视频modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-02-03 18:58:36
+ * @LastEditTime: 2021-02-05 15:35:43
  * @LastEditors: Leo
 -->
 <template>
@@ -23,10 +23,11 @@
                     :label-col="labelCol"
                     :wrapper-col="wrapperCol">
         <!-- 视频 -->
+        <!-- accept=".avi,.wmv,.mpeg,.wma,.rmvb,.rm,.flash,.mp4,.mid" -->
         <a-form-model-item label="视频"
                            prop="videoUrls">
           <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    accept=".avi,.wmv,.mpeg,.wma,.rmvb,.rm,.flash,.mp4,.mid"
+                    accept=".mp4"
                     :multiple="true"
                     :file-list="videoList"
                     :customRequest="customRequest"
@@ -42,7 +43,7 @@
                            prop="imgUrls">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="pictureList"
                       :before-upload="beforeUpload"

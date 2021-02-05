@@ -2,7 +2,7 @@
  * @Description: 赛事列表 / 详情页
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-02-03 18:37:45
+ * @LastEditTime: 2021-02-05 15:35:34
  * @LastEditors: Leo
 -->
 <template>
@@ -194,7 +194,7 @@
                            prop="imageUrl">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="coverPictureList"
                       :before-upload="beforeUpload"
@@ -222,7 +222,7 @@
                            prop="shareImageUrl">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="sharePictureList"
                       :before-upload="beforeUpload"

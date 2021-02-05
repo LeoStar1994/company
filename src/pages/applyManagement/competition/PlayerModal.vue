@@ -2,7 +2,7 @@
  * @Description: 运动员信息修改modal
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-02-03 19:09:21
+ * @LastEditTime: 2021-02-05 15:35:04
  * @LastEditors: Leo
 -->
 <template>
@@ -153,7 +153,7 @@
                            prop="identityImagePathDown">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="pictureList"
                       :before-upload="beforeUpload"
@@ -178,7 +178,7 @@
                            prop="identityImagePathUp">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="pictureList1"
                       :before-upload="beforeUpload"

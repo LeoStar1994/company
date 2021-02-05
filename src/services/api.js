@@ -60,8 +60,10 @@ module.exports = {
   BASEINFOUPDATE: `${BASE_URL}/games/join/team/update`, // 球队基础信息修改
   OFFICERINIT: `${BASE_URL}/games/join/train/allInfo`, // 获取官员信息
   OFFICERUPDATE: `${BASE_URL}/games/join/train/update`, // 官员信息修改
+  OFFICERDELETE: `${BASE_URL}/games/join/delTrain`, // 官员信息删除
   PLAYERINIT: `${BASE_URL}/games/join/detail/allInfo`, // 获取队员信息
   PLAYERUPDATE: `${BASE_URL}/games/join/detail/update`, // 队员信息修改
+  PLAYERDELETE: `${BASE_URL}/games/join/delTeamDetail`, // 队员信息删除
   GETYEARTYPELIST: `${BASE_URL}/games/join/dictionary/gameGrade`, // 获取球队基础年龄组下拉list
   GETDICINITDATA: `${BASE_URL}/games/join/dictionary`, // 获取字典表所有下拉list
   GETGAMEGRADEDATA: `${BASE_URL}/games/dictionary/gameGrade`, // 获取字典表所有下拉list

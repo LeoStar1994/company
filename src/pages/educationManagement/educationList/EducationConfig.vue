@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-02-03 19:22:15
+ * @LastEditTime: 2021-02-05 15:35:57
  * @LastEditors: Leo
 -->
 <template>
@@ -244,7 +244,7 @@
                            prop="imageUrl">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="coverPictureList"
                       :before-upload="beforeUpload"
@@ -272,7 +272,7 @@
                            prop="shareImageUrl">
           <div class="clearfix">
             <a-upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".png, .jpg"
+                      accept=".png,.jpg,.jpeg,.PNG,.JPG,.JPEG"
                       list-type="picture-card"
                       :file-list="sharePictureList"
                       :remove="handleImgRemove1"
