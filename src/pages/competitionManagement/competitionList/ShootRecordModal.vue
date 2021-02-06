@@ -224,10 +224,12 @@ export default {
     // 第一助攻号码不能与球员号码与第二助攻相同
     checkFirstAssists(rule, value, callback) {
       const { secondAssistsNum, scoreNum } = this.form;
-      if (value === scoreNum) {
-        callback("第一助攻球员不能与进球球员号码相同");
-      } else if (value === secondAssistsNum) {
-        callback("第一助攻球员不能与第二助攻球员号码相同！");
+      if (!this.$isEmpty(value)) {
+        if (value === scoreNum) {
+          callback("第一助攻球员不能与进球球员号码相同");
+        } else if (value === secondAssistsNum) {
+          callback("第一助攻球员不能与第二助攻球员号码相同！");
+        }
       }
       callback();
     },
@@ -235,10 +237,12 @@ export default {
     // 第二助攻号码不能与球员号码与第一助攻相同
     checkSecondAssistsNum(rule, value, callback) {
       const { firstAssistsNum, scoreNum } = this.form;
-      if (value === scoreNum) {
-        callback("第二助攻球员不能与进球球员号码相同");
-      } else if (value === firstAssistsNum) {
-        callback("第二助攻球员不能与第一助攻球员号码相同！");
+      if (!this.$isEmpty(value)) {
+        if (value === scoreNum) {
+          callback("第二助攻球员不能与进球球员号码相同");
+        } else if (value === firstAssistsNum) {
+          callback("第二助攻球员不能与第一助攻球员号码相同！");
+        }
       }
       callback();
     },
