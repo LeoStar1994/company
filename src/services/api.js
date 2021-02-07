@@ -5,6 +5,7 @@
 //     ? process.env.VUE_APP_API_BASE_URL
 //     : API_PROXY_PREFIX;
 const BASE_URL = process.env.VUE_APP_API_BASE_URL;
+const WECHAT_BASE_URL = process.env.VUE_APP_API_WECHAT_BASE_URL;
 module.exports = {
   /* 登录 */
 
@@ -160,6 +161,6 @@ module.exports = {
   BANNERDELETE: `${BASE_URL}/focus/delete`, // 删除数据
 
   /* 小程序管理 */
-  APPLETTABLEDATA: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/query`, // table查询
-  APPLETUPDATEVERSION: `http://devihmg.mocaptech.com:8090/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
+  APPLETTABLEDATA: `${WECHAT_BASE_URL}/wxapplet-admin/api/bss/miniprogram/query`, // table查询
+  APPLETUPDATEVERSION: `${WECHAT_BASE_URL}/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
 };
