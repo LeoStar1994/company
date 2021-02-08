@@ -2,7 +2,7 @@
  * @Description: 裁判信息弹框
  * @Author: Leo
  * @Date: 2020-12-29 17:00:45
- * @LastEditTime: 2021-01-11 17:21:02
+ * @LastEditTime: 2021-02-08 13:32:23
  * @LastEditors: Leo
 -->
 <template>
@@ -215,11 +215,11 @@ export default {
         penaltyMan1: "", // 记罚
         penaltyMan2: "",
         assistant1: "", // 助理
-        assistant2: ""
+        assistant2: "",
       },
       // 搜索项校验规则
       rules: {
-        timeMan: [
+        /* timeMan: [
           {
             required: true,
             message: "请输入计时",
@@ -281,8 +281,8 @@ export default {
             message: "请输入助理",
             trigger: "blur"
           }
-        ]
-      }
+        ] */
+      },
     };
   },
   created() {},
@@ -297,7 +297,7 @@ export default {
     },
     // 保存
     onSubmit() {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           const {
             schedulesId,
@@ -315,7 +315,7 @@ export default {
             penaltyMan1,
             penaltyMan2,
             assistant1,
-            assistant2
+            assistant2,
           } = this.form;
           const data = {
             schedulesId,
@@ -335,10 +335,10 @@ export default {
             penaltyMan: penaltyMan2
               ? `${penaltyMan1},${penaltyMan2}`
               : penaltyMan1,
-            assistant: assistant2 ? `${assistant1},${assistant2}` : assistant1
+            assistant: assistant2 ? `${assistant1},${assistant2}` : assistant1,
           };
           this.$refs.loading.openLoading("操作进行中，请稍后。。");
-          refereeInfoSave(data).then(res => {
+          refereeInfoSave(data).then((res) => {
             this.$refs.loading.closeLoading();
             const result = res.data;
             if (result.code === 0) {
@@ -357,7 +357,7 @@ export default {
     handleCancel() {
       this.$refs.ruleForm.resetFields();
       this.visible = false;
-    }
-  }
+    },
+  },
 };
 </script>
