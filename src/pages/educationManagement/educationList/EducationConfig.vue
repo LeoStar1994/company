@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-03-10 19:11:44
+ * @LastEditTime: 2021-03-10 19:27:32
  * @LastEditors: Leo
 -->
 <template>
@@ -55,7 +55,7 @@
         </a-form-model-item>
         <!-- 培训机构 -->
         <a-form-model-item label="培训机构"
-                           v-show="form.toObject !== 'refeere'"
+                           v-show="form.toObject !== 'refeere' &&  form.toObject !== 'sporter'"
                            prop="organizationIds">
           <a-select style="width: 100%"
                     v-model="form.organizationIds"
@@ -71,7 +71,7 @@
         </a-form-model-item>
         <!-- 培训等级 -->
         <a-form-model-item label="培训等级"
-                           v-show="form.toObject === 'refeere'"
+                           v-show="form.toObject === 'refeere' || form.toObject === 'sporter'"
                            prop="educationLevel">
           <a-select style="width: 100%"
                     v-model="form.educationLevel"
@@ -210,7 +210,7 @@
         </a-form-model-item>
         <!-- 入住酒店 -->
         <a-form-model-item label="入住酒店"
-                           v-show="form.toObject === 'refeere'"
+                           v-show="form.toObject === 'refeere' || form.toObject === 'sporter'"
                            prop="hotelIds">
           <a-checkbox-group v-model="form.hotelIds"
                             v-if="hotelIdsList.length > 0"
@@ -243,7 +243,7 @@
         </a-form-model-item>
         <!-- 房间类型 -->
         <a-form-model-item label="房间类型"
-                           v-show="form.toObject === 'refeere'"
+                           v-show="form.toObject === 'refeere' || form.toObject === 'sporter' "
                            prop="roomType">
           <a-checkbox-group v-model="form.roomType"
                             style="width: 100%;vertical-align: middle;">
@@ -643,7 +643,7 @@ export default {
 
     isRefeere() {
       let { toObject } = this.form;
-      if (toObject === "refeere") {
+      if (toObject === "refeere" || toObject === "sporter") {
         // 清空rules规则
         delete this.rules.organizationIds;
         this.rules.educationLevel = [
