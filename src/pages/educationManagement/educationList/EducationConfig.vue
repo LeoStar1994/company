@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-03-10 18:56:16
+ * @LastEditTime: 2021-03-10 19:11:44
  * @LastEditors: Leo
 -->
 <template>
@@ -243,6 +243,7 @@
         </a-form-model-item>
         <!-- 房间类型 -->
         <a-form-model-item label="房间类型"
+                           v-show="form.toObject === 'refeere'"
                            prop="roomType">
           <a-checkbox-group v-model="form.roomType"
                             style="width: 100%;vertical-align: middle;">
