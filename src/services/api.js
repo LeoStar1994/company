@@ -49,6 +49,8 @@ module.exports = {
   REFEREEDETAIL: `${BASE_URL}/enducationJoin/refereeViewDetail`, // 查看裁判详细
   REFEREEDELETE: `${BASE_URL}/enducationJoin/refereeDetailDel`, // 删除裁判信息
   REFEREESEXPOTR: `${BASE_URL}/enducationJoin/exportDetail`, // 导出裁判信息
+  REFEREEAUDIT: `${BASE_URL}/enducationJoin/check`, // 审核通过|不通过
+  REFEREEUPLOAD: `${BASE_URL}/enducationJoin/upLoadCertificate`, // 上传证书
 
   // 赛事
   TRCPTABLEDATA: `${BASE_URL}/games/select`, // table查询

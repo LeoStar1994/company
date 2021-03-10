@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学列表.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-21 16:40:59
+ * @LastEditTime: 2021-03-10 18:55:49
  * @LastEditors: Leo
 -->
 <template>
@@ -234,6 +234,9 @@ export default {
         if (result.code === 0) {
           this.$refs.educationConfig.form = {
             ...result.data,
+            organizationIds: result.data.organizationIds
+              ? result.data.organizationIds
+              : [],
             needPreCode: result.data.needPreCode.toString(),
             saleStatus: result.data.saleStatus.toString(),
           };
@@ -253,6 +256,7 @@ export default {
               url: result.data.shareImageUrl,
             },
           ];
+          this.$refs.educationConfig.isRefeere();
         } else {
           this.$message.error(result.desc);
         }

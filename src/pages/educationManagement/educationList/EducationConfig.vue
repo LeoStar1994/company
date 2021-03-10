@@ -2,7 +2,7 @@
  * @Description: 教学管理 / 教学详情弹框.
  * @Author: Leo
  * @Date: 2020-12-23 14:52:44
- * @LastEditTime: 2021-02-05 15:35:57
+ * @LastEditTime: 2021-03-10 18:56:16
  * @LastEditors: Leo
 -->
 <template>
@@ -43,6 +43,7 @@
                            prop="toObject">
           <a-select style="width: 100%"
                     v-model="form.toObject"
+                    @change="isRefeere(form.toObject)"
                     allowClear
                     placeholder="请选择人群">
             <a-select-option v-for="(item,index) in toObjectList"
@@ -52,8 +53,25 @@
             </a-select-option>
           </a-select>
         </a-form-model-item>
+        <!-- 培训机构 -->
+        <a-form-model-item label="培训机构"
+                           v-show="form.toObject !== 'refeere'"
+                           prop="organizationIds">
+          <a-select style="width: 100%"
+                    v-model="form.organizationIds"
+                    mode="multiple"
+                    allowClear
+                    placeholder="请选择培训机构">
+            <a-select-option v-for="(item,index) in organizationIdsList"
+                             :key="index"
+                             :value="item.id">
+              {{item.name}}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
         <!-- 培训等级 -->
         <a-form-model-item label="培训等级"
+                           v-show="form.toObject === 'refeere'"
                            prop="educationLevel">
           <a-select style="width: 100%"
                     v-model="form.educationLevel"
@@ -192,6 +210,7 @@
         </a-form-model-item>
         <!-- 入住酒店 -->
         <a-form-model-item label="入住酒店"
+                           v-show="form.toObject === 'refeere'"
                            prop="hotelIds">
           <a-checkbox-group v-model="form.hotelIds"
                             v-if="hotelIdsList.length > 0"
@@ -238,7 +257,6 @@
             </a-row>
           </a-checkbox-group>
         </a-form-model-item>
-
         <!-- 宣传封面 -->
         <a-form-model-item label="宣传封面"
                            prop="imageUrl">
@@ -321,6 +339,14 @@
             </a-radio>
           </a-radio-group>
         </a-form-model-item>
+        <!-- 收费金额 -->
+        <a-form-model-item label="收费金额"
+                           prop="educationFee">
+          <a-input v-model="form.educationFee"
+                   allowClear
+                   placeholder="请输入收费金额(至多保留小数点后两位)"
+                   :maxLength="30" />
+        </a-form-model-item>
         <!-- buttons -->
         <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
           <a-button type="primary"
@@ -380,6 +406,7 @@ export default {
       educationMethodList: [], // 授课方式list
       roomTypeList: [], // 房间类型list
       saleStatusList: [], // 状态list
+      organizationIdsList: [], // 培训机构list
       form: {
         enrollStartTime: null, // 报名开始时间
         enrollEndTime: null, // 报名结束时间
@@ -387,6 +414,7 @@ export default {
         educationEndTime: null, // 培训结束时间
         yearOldStartTime: null,
         yearOldEndTime: null,
+        organizationIds: [], // 培训机构
         roomType: [], // 房间类型（可多选）
         hotelIds: [], // 入住酒店（可多选）
         toObject: undefined, // 面向人群
@@ -403,6 +431,7 @@ export default {
         shareText: undefined, // 分享文案
         educationIntroduction: undefined, // 活动详情
         hotelName: undefined, // 新增酒店名称
+        educationFee: undefined, // 收费金额
       },
       // 搜索项校验规则
       rules: {
@@ -412,12 +441,6 @@ export default {
             message: "请输入标题",
             trigger: "blur",
           },
-          // {
-          //   min: 3,
-          //   max: 10,
-          //   message: "Length should be 3 to 5",
-          //   trigger: "blur",
-          // },
         ],
         educationType: [
           {
@@ -433,10 +456,24 @@ export default {
             trigger: "change",
           },
         ],
+        organizationIds: [
+          {
+            required: true,
+            message: "请选择培训机构",
+            trigger: "change",
+          },
+        ],
         educationLevel: [
           {
             required: true,
             message: "请选择培训等级",
+            trigger: "change",
+          },
+        ],
+        hotelIds: [
+          {
+            required: true,
+            message: "请选择入住酒店",
             trigger: "change",
           },
         ],
@@ -545,13 +582,6 @@ export default {
             trigger: "blur",
           },
         ],
-        hotelIds: [
-          {
-            required: true,
-            message: "请选择入住酒店",
-            trigger: "change",
-          },
-        ],
         roomType: [
           {
             required: true,
@@ -564,6 +594,12 @@ export default {
             required: true,
             message: "请选择授课方式",
             trigger: "change",
+          },
+        ],
+        educationFee: [
+          {
+            trigger: "blur",
+            validator: this.handleCheckEducationFee,
           },
         ],
       },
@@ -593,6 +629,62 @@ export default {
       }
     },
 
+    // 校验价格
+    handleCheckEducationFee(rule, value, callback) {
+      const regExp = /^(\d+(?:\.\d{2})?)$/;
+      if (!this.$isEmpty(value)) {
+        if (!regExp.test(value)) {
+          callback("只能输入数字、小数点后俩位小数！");
+        }
+      }
+      callback();
+    },
+
+    isRefeere() {
+      let { toObject } = this.form;
+      if (toObject === "refeere") {
+        // 清空rules规则
+        delete this.rules.organizationIds;
+        this.rules.educationLevel = [
+          {
+            required: true,
+            message: "请选择培训等级",
+            trigger: "change",
+          },
+        ];
+        this.rules.hotelIds = [
+          {
+            required: true,
+            message: "请选择房间类型",
+            trigger: "change",
+          },
+        ];
+        this.rules.roomType = [
+          {
+            required: true,
+            message: "请选择入住酒店",
+            trigger: "change",
+          },
+        ];
+        // 清空已填写数据
+        this.form.organizationIds = [];
+      } else {
+        delete this.rules.educationLevel;
+        delete this.rules.hotelIds;
+        delete this.rules.roomType;
+        this.rules.organizationIds = [
+          {
+            required: true,
+            message: "请选择培训机构",
+            trigger: "change",
+          },
+        ];
+        this.form.hotelIds = [];
+        this.form.roomType = [];
+        this.form.educationLevel = undefined;
+      }
+    },
+
     // 初始化list数据
     getAllListData() {
       getTypeList().then((res) => {
@@ -606,6 +698,8 @@ export default {
           this.hotelIdsList = result.data.hotelListSelectedModel; // 酒店列表
           this.toObjectList = result.data.toObjectEnumSelectedModel; // 面向人群
           this.educationTypeList = result.data.typeSelectedModel; // 类型列表
+          this.organizationIdsList =
+            result.data.educationOrganizationEnumSelectedModel; // 机构列表
           this.needPreCodeList =
             result.data.educationNeedPreCodeEnumSelectedModel; // 是否需要验证码
         } else {
@@ -860,6 +954,7 @@ export default {
         yearOldEndTime: null,
         roomType: [], // 房间类型（可多选）
         hotelIds: [], // 入住酒店（可多选）
+        organizationIds: [], // 培训机构
         toObject: undefined, // 面向人群
         educationType: undefined, // 类型
         educationMethod: [], // 授课方式（可多选）
@@ -874,6 +969,7 @@ export default {
         shareText: undefined, // 分享文案
         educationIntroduction: undefined, // 活动详情
         hotelName: undefined, // 新增酒店名称
+        educationFee: undefined, // 收费金额
       };
       this.coverPictureList = []; // 宣传封面file list
       this.sharePictureList = []; // 分享图片file list

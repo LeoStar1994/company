@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-19 00:04:24
+ * @LastEditTime: 2021-03-10 15:27:29
  * @LastEditors: Leo
 -->
 <template>
@@ -187,7 +187,6 @@ export default {
       }
     },
   },
-  created() {},
   methods: {
     // 切换搜索框收起展开
     toggleAdvanced() {

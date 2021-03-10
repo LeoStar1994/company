@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-19 00:03:43
+ * @LastEditTime: 2021-03-10 18:16:39
  * @LastEditors: Leo
 -->
 <template>
@@ -71,7 +71,16 @@
                     class="mr-10"
                     type="primary">返回上一页</a-button>
           <a-button type="primary"
+                    class="mr-10"
                     @click="exportData">导出</a-button>
+          <a-upload name="file"
+                    :customRequest="customRequest"
+                    :showUploadList="false"
+                    accept=".zip"
+                    :multiple="true"
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76">
+            <a-button type="primary">导入证书</a-button>
+          </a-upload>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
@@ -95,6 +104,16 @@
                       type="primary"
                       @click="openDetails(record.id)">查看
             </a-button>
+            <a-button class="mr-12 greenButton"
+                      size="small"
+                      v-if="record.checkStatusStr === '待审核'"
+                      @click="openChangeAlarm(record, 1)">审核通过
+            </a-button>
+            <a-button class="mr-12 orangeButton"
+                      size="small"
+                      v-if="record.checkStatusStr === '待审核'"
+                      @click="openChangeAlarm(record, 2)">不通过
+            </a-button>
             <a-popconfirm title="是否删除该条数据?"
                           ok-text="确定"
                           cancel-text="取消"
@@ -107,6 +126,29 @@
         </standard-table>
       </div>
     </a-card>
+
+    <!-- 审核不通过弹框 -->
+    <a-modal title="审核反馈"
+             :visible="modalVisible"
+             :maskClosable="false"
+             @ok="handleOk"
+             @cancel="handleCancel">
+      <a-form-model ref="ruleForm"
+                    :model="checkStatusData"
+                    :rules="checkStatusrules"
+                    :wrapper-col="wrapperCol1">
+        <a-form-model-item prop="checkResult"
+                           style="margin-bottom: 0px;">
+          <a-textarea v-model="checkStatusData.checkResult"
+                      placeholder="请填写不通过原因"
+                      allowClear
+                      class="w100p"
+                      :maxLength="100"
+                      :auto-size="{ minRows: 4, maxRows: 6 }" />
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+
     <!-- 明细 -->
     <InfoDetails ref="infoDetails"
                  :infoData="infoData"
@@ -129,7 +171,9 @@ import {
   getRefereeDetail,
   deleteReferee,
   exportReferee,
-  getInfosTableData
+  getInfosTableData,
+  changeCheckStatus,
+  uploadCertificate,
 } from "@/services/train";
 import { downloadFile } from "@/utils/util";
 import InfoDetails from "@/components/infoDetails/InfoDetails";
@@ -142,141 +186,152 @@ const columns = [
   {
     title: "姓名",
     dataIndex: "refereeName",
-    scopedSlots: { customRender: "infoName" }
+    scopedSlots: { customRender: "infoName" },
   },
   {
     title: "性别",
-    dataIndex: "sexType"
+    dataIndex: "sexType",
   },
   {
     title: "出生日期",
-    dataIndex: "bornDate"
+    dataIndex: "bornDate",
   },
   {
     title: "手机号",
-    dataIndex: "telPhone"
+    dataIndex: "telPhone",
   },
   {
     title: "现裁判等级",
-    dataIndex: "refereeLevel"
+    dataIndex: "refereeLevel",
   },
   {
     title: "工作单位",
-    dataIndex: "workCompany"
+    dataIndex: "workCompany",
   },
   {
     title: "身份证号",
-    dataIndex: "identityCard"
+    dataIndex: "identityCard",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 const fieldsMapLabel = [
   {
     field: "sexType",
     labelName: "性别",
-    sort: 1
+    sort: 1,
   },
   {
     field: "refereeLevel",
     labelName: "现裁判等级",
-    sort: 2
+    sort: 2,
+  },
+  {
+    field: "organization",
+    labelName: "机构",
+    sort: 3,
   },
   {
     field: "nation",
     labelName: "民族",
-    sort: 3
+    sort: 4,
   },
   {
     field: "approvalDate",
     labelName: "批准日期",
-    sort: 4
+    sort: 5,
   },
   {
     field: "height",
     labelName: "身高",
-    sort: 5
+    sort: 6,
   },
   {
     field: "healthyLevel",
     labelName: "健康状况",
-    sort: 6
+    sort: 7,
   },
   {
     field: "bornDate",
     labelName: "出生日期",
-    sort: 7
+    sort: 8,
   },
   {
     field: "languageType",
     labelName: "外语能力",
-    sort: 8
+    sort: 9,
   },
   {
     field: "identityCard",
     labelName: "证件号码",
-    sort: 9
+    sort: 10,
   },
   {
     field: "telPhone",
     labelName: "手机号码",
-    sort: 10
+    sort: 11,
   },
   {
     field: "degreeLevel",
     labelName: "文化程度",
-    sort: 11
+    sort: 12,
   },
   {
     field: "weixinId",
     labelName: "微信号",
-    sort: 12
+    sort: 13,
   },
   {
     field: "identityImagePath",
     labelName: "证件照片",
-    sort: 13,
-    isOccupyAll: true
+    sort: 14,
+    isOccupyAll: true,
+  },
+  {
+    field: "certificateImagePath",
+    labelName: "证书",
+    sort: 15,
+    isOccupyAll: true,
   },
   {
     field: "political",
     labelName: "政治面貌",
-    sort: 14
+    sort: 16,
   },
   {
     field: "emailAddress",
     labelName: "电子邮箱",
-    sort: 15
+    sort: 17,
   },
   {
     field: "workCompany",
     labelName: "代表单位",
-    sort: 16
+    sort: 18,
   },
   {
     field: "workAddress",
     labelName: "单位地址",
-    sort: 17
+    sort: 18,
   },
   {
     field: "homeAddress",
     labelName: "现住址",
-    sort: 18,
-    isOccupyAll: true
+    sort: 20,
+    isOccupyAll: true,
   },
   {
     field: "hotelName",
     labelName: "选择酒店",
-    sort: 19
+    sort: 21,
   },
   {
     field: "roomType",
     labelName: "房间类型",
-    sort: 20
-  }
+    sort: 22,
+  },
 ];
 export default {
   name: "InfosTable",
@@ -284,13 +339,14 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       advanced: true,
       tableLoading: false,
+      modalVisible: false,
       columns: columns,
       useType: "train",
       dataSource: [],
@@ -302,22 +358,26 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
+      wrapperCol1: { span: 22, offset: 1 },
       refereeLevelList: [],
       form: {
         name: undefined,
         refereeLevel: undefined,
         educationId: null,
         educationName: null,
-        enrollStatus: null
+        enrollStatus: null,
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        refereeLevel: []
+        refereeLevel: [],
+      },
+      checkStatusrules: {
+        checkResult: [],
       },
       detailShow: false,
       // 详情数据
@@ -328,31 +388,77 @@ export default {
         judgeColumns: [
           {
             title: "赛季",
-            dataIndex: "gameSeason"
+            dataIndex: "gameSeason",
           },
           {
             title: "比赛名称",
-            dataIndex: "gameName"
+            dataIndex: "gameName",
           },
           {
             title: "比赛级别",
-            dataIndex: "gameLevel"
+            dataIndex: "gameLevel",
           },
           {
             title: "担任职务",
-            dataIndex: "position"
-          }
+            dataIndex: "position",
+          },
         ],
         // 执裁经历 tableData
         judgeTableData: [],
+
+        // 培训经历 columns
+        eductionColumns: [
+          {
+            title: "培训名称",
+            dataIndex: "enducationName",
+          },
+          {
+            title: "培训时间",
+            dataIndex: "enducationDate",
+          },
+          {
+            title: "培训单位",
+            dataIndex: "enducationCompany",
+          },
+        ],
+        // 培训经历 tableData
+        eductionTableData: [],
+
+        // 教练制裁经历 columns
+        refereeJudgeColumns: [
+          {
+            title: "执教单位",
+            dataIndex: "judgeCompany",
+          },
+          {
+            title: "所在区域",
+            dataIndex: "region",
+          },
+          {
+            title: "开始时间",
+            dataIndex: "startTime",
+          },
+          {
+            title: "结束时间",
+            dataIndex: "stopTime",
+          },
+        ],
+        // 教练制裁经历 tableData
+        refereeJudgeTableData: [],
         // 基础信息
-        descList: []
+        descList: [],
       },
-      fieldsMapLabel: fieldsMapLabel
+      fieldsMapLabel: fieldsMapLabel,
+      checkStatusData: {
+        joinId: undefined, // 教练员报名id
+        refereeId: undefined, // 教练员id
+        checkStatus: undefined, // 赛事报名id
+        checkResult: "", // 审核意见
+      },
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -372,10 +478,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getInfosTableData(data).then(res => {
+      getInfosTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.refereelVos.records;
@@ -411,12 +517,17 @@ export default {
 
     // 查看某一个数据列详情
     openDetails(id) {
-      getRefereeDetail(id).then(res => {
+      getRefereeDetail(id).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.infoData.name = result.data.refereeName;
           this.infoData.imgURL = result.data.imagePath;
-          this.infoData.judgeTableData = result.data.detailList;
+          this.infoData.judgeTableData = result.data.detailList; // 执裁经历
+          this.infoData.refereeJudgeTableData =
+            result.data.refereeJudgeDetailViewDetailVos; // 裁判执裁经历
+          this.infoData.eductionTableData = result.data.enducationDetailList; // 培训经历
+          this.infoData.isShowEnducationDetail =
+            result.data.isShowEnducationDetail;
           this.infoData.descList = this.formatDetailsData(result.data);
           this.detailShow = true;
         } else {
@@ -429,14 +540,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.fieldsMapLabel.forEach(item => {
-        detailKeys.forEach(item1 => {
+      this.fieldsMapLabel.forEach((item) => {
+        detailKeys.forEach((item1) => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1
+              span: item.isOccupyAll ? 2 : 1,
             });
           }
         });
@@ -448,10 +559,72 @@ export default {
       this.detailShow = false;
     },
 
+    // 打开审核弹框
+    openChangeAlarm(rowData, checkStatus) {
+      this.checkStatusData.checkStatus = checkStatus;
+      this.checkStatusData.joinId = rowData.joinId;
+      this.checkStatusData.refereeId = rowData.id;
+      let _this = this;
+      if (checkStatus === 1) {
+        this.$confirm({
+          title: "是否确定通过?",
+          // content: () => <div style="color:red;">Some descriptions</div>,
+          onOk() {
+            _this.changeCheckResult(_this.checkStatusData);
+          },
+          onCancel() {
+            _this.$message.info("已取消操作");
+          },
+          class: "test",
+        });
+      } else if (checkStatus === 2) {
+        // 不通过打开弹框输入意见
+        this.modalVisible = true;
+      }
+    },
+
+    // 审核通过 | 不通过
+    changeCheckResult(data) {
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      changeCheckStatus(data)
+        .then((res) => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.searchTableData();
+          } else {
+            this.$message.success(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
+    },
+
+    async handleOk() {
+      await this.changeCheckResult(this.checkStatusData);
+      this.modalVisible = false;
+      this.resetCheckStatusData();
+    },
+    handleCancel() {
+      this.$message.info("已取消操作");
+      this.modalVisible = false;
+      this.resetCheckStatusData();
+    },
+    resetCheckStatusData() {
+      this.checkStatusData = {
+        joinId: undefined, // 教练员报名id
+        refereeId: undefined, // 教练员id
+        checkStatus: undefined, // 赛事报名id
+        checkResult: "", // 审核意见
+      };
+    },
+
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteReferee(id).then(res => {
+      deleteReferee(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -467,6 +640,28 @@ export default {
       this.$message.warning("删除操作已取消");
     },
 
+    // 导入证书上传
+    customRequest(options) {
+      const formData = new FormData();
+      formData.append("file", options.file);
+      formData.append("endcationId", this.form.educationId);
+      this.$refs.loading.openLoading("文件正在上传，请稍后");
+      uploadCertificate(formData)
+        .then((res) => {
+          const result = res.data;
+          this.$refs.loading.closeLoading();
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          options.onError();
+          this.$refs.loading.closeLoading();
+        });
+    },
+
     // 导出
     exportData() {
       if (this.dataSource.length === 0) {
@@ -475,7 +670,7 @@ export default {
       }
       this.$refs.loading.openLoading("正在导出数据，请稍后。。");
       exportReferee(this.form.educationId)
-        .then(async res => {
+        .then(async (res) => {
           if (res.status === 200 && res.data) {
             let filename = "";
             const disposition = res.headers["content-disposition"];
@@ -501,8 +696,8 @@ export default {
       this.reset();
       this.$emit("closeConfig");
       this.$emit("searchTableData");
-    }
-  }
+    },
+  },
 };
 </script>
 

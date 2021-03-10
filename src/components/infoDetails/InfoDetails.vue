@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-02-05 15:30:09
+ * @LastEditTime: 2021-03-10 18:15:52
  * @LastEditors: Leo
 -->
 <template>
@@ -33,7 +33,7 @@
                              :key="index"
                              :label="item.label"
                              :span="item.span">
-          <span v-if="item.value.length > 0 && (item.value instanceof Array)">
+          <span v-if="(item.value instanceof Array)">
             <img v-for="(item1, index) in item.value"
                  :key="index"
                  :src="item1"
@@ -53,13 +53,33 @@
           <span v-else>{{item.value}}</span>
         </a-descriptions-item>
       </a-descriptions>
+      <!-- 培训经历 -->
+      <div v-if="infoData.eductionColumns && infoData.isShowEnducationDetail">
+        <h4 class="ant-descriptions-title mt-40">培训经历</h4>
+        <a-table :columns="infoData.eductionColumns"
+                 rowKey="gameName"
+                 :pagination="false"
+                 :data-source="infoData.eductionTableData"
+                 bordered>
+        </a-table>
+      </div>
       <!-- 执裁经历 -->
-      <div v-if="infoData.judgeColumns">
+      <div v-if="infoData.judgeColumns && !infoData.isShowEnducationDetail">
         <h4 class="ant-descriptions-title mt-40">执裁经历</h4>
         <a-table :columns="infoData.judgeColumns"
                  rowKey="gameName"
                  :pagination="false"
                  :data-source="infoData.judgeTableData"
+                 bordered>
+        </a-table>
+      </div>
+      <!-- 裁判执裁经历 -->
+      <div v-if="infoData.refereeJudgeColumns && infoData.isShowEnducationDetail">
+        <h4 class="ant-descriptions-title mt-40">执裁经历1</h4>
+        <a-table :columns="infoData.refereeJudgeColumns"
+                 rowKey="gameName"
+                 :pagination="false"
+                 :data-source="infoData.refereeJudgeTableData"
                  bordered>
         </a-table>
       </div>
