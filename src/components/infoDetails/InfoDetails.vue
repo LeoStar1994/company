@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-03-10 18:15:52
+ * @LastEditTime: 2021-03-11 10:23:31
  * @LastEditors: Leo
 -->
 <template>
@@ -75,7 +75,7 @@
       </div>
       <!-- 裁判执裁经历 -->
       <div v-if="infoData.refereeJudgeColumns && infoData.isShowEnducationDetail">
-        <h4 class="ant-descriptions-title mt-40">执裁经历1</h4>
+        <h4 class="ant-descriptions-title mt-40">执裁经历</h4>
         <a-table :columns="infoData.refereeJudgeColumns"
                  rowKey="gameName"
                  :pagination="false"
