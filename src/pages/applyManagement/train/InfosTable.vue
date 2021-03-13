@@ -173,7 +173,7 @@ import {
   exportReferee,
   getInfosTableData,
   changeCheckStatus,
-  uploadCertificate,
+  uploadCertificate
 } from "@/services/train";
 import { downloadFile } from "@/utils/util";
 import InfoDetails from "@/components/infoDetails/InfoDetails";
@@ -186,152 +186,162 @@ const columns = [
   {
     title: "姓名",
     dataIndex: "refereeName",
-    scopedSlots: { customRender: "infoName" },
+    scopedSlots: { customRender: "infoName" }
   },
   {
     title: "性别",
-    dataIndex: "sexType",
+    dataIndex: "sexType"
   },
   {
     title: "出生日期",
-    dataIndex: "bornDate",
+    dataIndex: "bornDate"
   },
   {
     title: "手机号",
-    dataIndex: "telPhone",
+    dataIndex: "telPhone"
   },
   {
     title: "现裁判等级",
-    dataIndex: "refereeLevel",
+    dataIndex: "refereeLevel"
   },
   {
     title: "工作单位",
-    dataIndex: "workCompany",
+    dataIndex: "workCompany"
   },
   {
     title: "身份证号",
-    dataIndex: "identityCard",
+    dataIndex: "identityCard"
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 
 const fieldsMapLabel = [
   {
     field: "sexType",
     labelName: "性别",
-    sort: 1,
+    sort: 1
   },
   {
     field: "refereeLevel",
     labelName: "现裁判等级",
-    sort: 2,
+    sort: 2
+  },
+  {
+    field: "country",
+    labelName: "国籍",
+    sort: 3
   },
   {
     field: "organization",
     labelName: "机构",
-    sort: 3,
+    sort: 4
   },
   {
     field: "nation",
     labelName: "民族",
-    sort: 4,
+    sort: 5
   },
   {
     field: "approvalDate",
     labelName: "批准日期",
-    sort: 5,
+    sort: 6
   },
   {
     field: "height",
     labelName: "身高",
-    sort: 6,
+    sort: 7
   },
   {
     field: "healthyLevel",
     labelName: "健康状况",
-    sort: 7,
+    sort: 8
   },
   {
     field: "bornDate",
     labelName: "出生日期",
-    sort: 8,
+    sort: 9
   },
   {
     field: "languageType",
     labelName: "外语能力",
-    sort: 9,
+    sort: 10
   },
   {
     field: "identityCard",
     labelName: "证件号码",
-    sort: 10,
+    sort: 11
   },
   {
     field: "telPhone",
     labelName: "手机号码",
-    sort: 11,
+    sort: 12
   },
   {
     field: "degreeLevel",
     labelName: "文化程度",
-    sort: 12,
+    sort: 13
   },
   {
     field: "weixinId",
     labelName: "微信号",
-    sort: 13,
+    sort: 14
+  },
+  {
+    field: "cardType",
+    labelName: "证件类型",
+    sort: 15
   },
   {
     field: "identityImagePath",
     labelName: "证件照片",
-    sort: 14,
-    isOccupyAll: true,
+    sort: 16,
+    isOccupyAll: true
   },
   {
     field: "certificateImagePath",
     labelName: "证书",
-    sort: 15,
-    isOccupyAll: true,
+    sort: 17,
+    isOccupyAll: true
   },
   {
     field: "political",
     labelName: "政治面貌",
-    sort: 16,
+    sort: 18
   },
   {
     field: "emailAddress",
     labelName: "电子邮箱",
-    sort: 17,
+    sort: 20
   },
   {
     field: "workCompany",
     labelName: "代表单位",
-    sort: 18,
+    sort: 21
   },
   {
     field: "workAddress",
     labelName: "单位地址",
-    sort: 18,
+    sort: 22
   },
   {
     field: "homeAddress",
     labelName: "现住址",
-    sort: 20,
-    isOccupyAll: true,
+    sort: 23,
+    isOccupyAll: true
   },
   {
     field: "hotelName",
     labelName: "选择酒店",
-    sort: 21,
+    sort: 24
   },
   {
     field: "roomType",
     labelName: "房间类型",
-    sort: 22,
-  },
+    sort: 25
+  }
 ];
 export default {
   name: "InfosTable",
@@ -339,8 +349,8 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
@@ -358,7 +368,7 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `共 ${total} 条数据`,
+        showTotal: total => `共 ${total} 条数据`
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
@@ -369,15 +379,15 @@ export default {
         refereeLevel: undefined,
         educationId: null,
         educationName: null,
-        enrollStatus: null,
+        enrollStatus: null
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        refereeLevel: [],
+        refereeLevel: []
       },
       checkStatusrules: {
-        checkResult: [],
+        checkResult: []
       },
       detailShow: false,
       // 详情数据
@@ -388,20 +398,20 @@ export default {
         judgeColumns: [
           {
             title: "赛季",
-            dataIndex: "gameSeason",
+            dataIndex: "gameSeason"
           },
           {
             title: "比赛名称",
-            dataIndex: "gameName",
+            dataIndex: "gameName"
           },
           {
             title: "比赛级别",
-            dataIndex: "gameLevel",
+            dataIndex: "gameLevel"
           },
           {
             title: "担任职务",
-            dataIndex: "position",
-          },
+            dataIndex: "position"
+          }
         ],
         // 执裁经历 tableData
         judgeTableData: [],
@@ -410,16 +420,20 @@ export default {
         eductionColumns: [
           {
             title: "培训名称",
-            dataIndex: "enducationName",
+            dataIndex: "enducationName"
           },
           {
             title: "培训时间",
-            dataIndex: "enducationDate",
+            dataIndex: "enducationDate"
           },
           {
             title: "培训单位",
-            dataIndex: "enducationCompany",
+            dataIndex: "enducationCompany"
           },
+          {
+            title: "证书图片",
+            scopedSlots: { customRender: "certificateImagePath" }
+          }
         ],
         // 培训经历 tableData
         eductionTableData: [],
@@ -428,37 +442,37 @@ export default {
         refereeJudgeColumns: [
           {
             title: "执教单位",
-            dataIndex: "judgeCompany",
+            dataIndex: "judgeCompany"
           },
           {
             title: "所在区域",
-            dataIndex: "region",
+            dataIndex: "region"
           },
           {
             title: "开始时间",
-            dataIndex: "startTime",
+            dataIndex: "startTime"
           },
           {
             title: "结束时间",
-            dataIndex: "stopTime",
-          },
+            dataIndex: "stopTime"
+          }
         ],
         // 教练制裁经历 tableData
         refereeJudgeTableData: [],
         // 基础信息
-        descList: [],
+        descList: []
       },
       fieldsMapLabel: fieldsMapLabel,
       checkStatusData: {
         joinId: undefined, // 教练员报名id
         refereeId: undefined, // 教练员id
         checkStatus: undefined, // 赛事报名id
-        checkResult: "", // 审核意见
-      },
+        checkResult: "" // 审核意见
+      }
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"]),
+    ...mapState("setting", ["pageMinHeight"])
   },
   created() {},
   methods: {
@@ -478,10 +492,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize,
+        pageSize: this.pagination.pageSize
       };
       this.tableLoading = true;
-      getInfosTableData(data).then((res) => {
+      getInfosTableData(data).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.refereelVos.records;
@@ -517,7 +531,7 @@ export default {
 
     // 查看某一个数据列详情
     openDetails(id) {
-      getRefereeDetail(id).then((res) => {
+      getRefereeDetail(id).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.infoData.name = result.data.refereeName;
@@ -540,14 +554,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.fieldsMapLabel.forEach((item) => {
-        detailKeys.forEach((item1) => {
+      this.fieldsMapLabel.forEach(item => {
+        detailKeys.forEach(item1 => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1,
+              span: item.isOccupyAll ? 2 : 1
             });
           }
         });
@@ -575,7 +589,7 @@ export default {
           onCancel() {
             _this.$message.info("已取消操作");
           },
-          class: "test",
+          class: "test"
         });
       } else if (checkStatus === 2) {
         // 不通过打开弹框输入意见
@@ -587,7 +601,7 @@ export default {
     changeCheckResult(data) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       changeCheckStatus(data)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -617,14 +631,14 @@ export default {
         joinId: undefined, // 教练员报名id
         refereeId: undefined, // 教练员id
         checkStatus: undefined, // 赛事报名id
-        checkResult: "", // 审核意见
+        checkResult: "" // 审核意见
       };
     },
 
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteReferee(id).then((res) => {
+      deleteReferee(id).then(res => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -647,7 +661,7 @@ export default {
       formData.append("endcationId", this.form.educationId);
       this.$refs.loading.openLoading("文件正在上传，请稍后");
       uploadCertificate(formData)
-        .then((res) => {
+        .then(res => {
           const result = res.data;
           this.$refs.loading.closeLoading();
           if (result.code === 0) {
@@ -670,7 +684,7 @@ export default {
       }
       this.$refs.loading.openLoading("正在导出数据，请稍后。。");
       exportReferee(this.form.educationId)
-        .then(async (res) => {
+        .then(async res => {
           if (res.status === 200 && res.data) {
             let filename = "";
             const disposition = res.headers["content-disposition"];
@@ -696,8 +710,8 @@ export default {
       this.reset();
       this.$emit("closeConfig");
       this.$emit("searchTableData");
-    },
-  },
+    }
+  }
 };
 </script>
 

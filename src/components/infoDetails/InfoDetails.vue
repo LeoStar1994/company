@@ -37,11 +37,11 @@
             <img v-for="(item1, index) in item.value"
                  :key="index"
                  :src="item1"
-                 title="点击下载图片"
+                 title="点击查看大图"
                  width="86px"
                  class="cursor-pointer w100 mr-10"
                  @click="viewImage(item1)"
-                 alt="">
+                 alt="图片">
           </span>
           <span v-else-if="item.label === '操作'">
             <a-button class="mr-12"
@@ -57,17 +57,23 @@
       <div v-if="infoData.eductionColumns && infoData.isShowEnducationDetail">
         <h4 class="ant-descriptions-title mt-40">培训经历</h4>
         <a-table :columns="infoData.eductionColumns"
-                 rowKey="gameName"
+                 rowKey="refereeDetail"
                  :pagination="false"
                  :data-source="infoData.eductionTableData"
                  bordered>
+          <div slot="certificateImagePath"
+               slot-scope="data">
+            <img :src="data.certificateImagePath"
+                 class="w100"
+                 alt="证书图片">
+          </div>
         </a-table>
       </div>
       <!-- 执裁经历 -->
       <div v-if="infoData.judgeColumns && !infoData.isShowEnducationDetail">
         <h4 class="ant-descriptions-title mt-40">执裁经历</h4>
         <a-table :columns="infoData.judgeColumns"
-                 rowKey="gameName"
+                 rowKey="refereeJudgeDetail"
                  :pagination="false"
                  :data-source="infoData.judgeTableData"
                  bordered>
@@ -77,7 +83,7 @@
       <div v-if="infoData.refereeJudgeColumns && infoData.isShowEnducationDetail">
         <h4 class="ant-descriptions-title mt-40">执裁经历</h4>
         <a-table :columns="infoData.refereeJudgeColumns"
-                 rowKey="gameName"
+                 rowKey="refereeJudgeDetail"
                  :pagination="false"
                  :data-source="infoData.refereeJudgeTableData"
                  bordered>
@@ -146,6 +152,27 @@
                   :detailShow="detailShow1"
                   @closeDetail="closeDetail"></InfosDetails>
 
+    <!-- 图片放大 -->
+    <a-modal :visible="previewImage"
+             centered
+             @cancel="handleCancel">
+      <img alt="图片"
+           class="mt-20"
+           style="width: 100%"
+           :style="{transform: `rotate(${rotateDeg}deg)`}"
+           :src="previewImagePath" />
+      <template slot="footer"
+                style="text-align:center;">
+        <!-- <a-button type="primary"
+                  class="mr-10"
+                  @click="downloadImage(previewImagePath)">
+          <a-icon type="cloud-download" />下载原图</a-button> -->
+        <a-button type="primary"
+                  @click="rotateImage">
+          <a-icon type="reload" />旋转图片</a-button>
+      </template>
+    </a-modal>
+
     <!-- 球队修改 -->
     <TeamModal ref="teamModal"
                @refreshAllInfoData="refreshAllInfoData"
@@ -186,28 +213,28 @@ import {
   getAllDicData,
   getYearTypeList,
   deleteOfficer,
-  deletePlayer,
+  deletePlayer
 } from "@/services/competition";
 export default {
   name: "InfosDetails",
   components: {
     OfficerModal,
     TeamModal,
-    PlayerModal,
+    PlayerModal
   },
   props: {
     detailShow: {
       type: Boolean,
-      default: false,
+      default: false
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object(),
+      default: new Object()
     },
     useType: {
-      type: String,
-    },
+      type: String
+    }
   },
   mounted() {
     if (this.useType === "competition") {
@@ -221,7 +248,7 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: [],
+        descList: []
       },
       yearTypeList: [], //年龄组list
       dicData: {
@@ -230,12 +257,18 @@ export default {
         hokeyGamesTeamDetailPosition: [],
         hokeyGamesTeamDetailHoldingRod: [],
         hokeyGamesSexType: [],
-        hokeyGamesTrainPosition: [],
+        hokeyGamesTrainPosition: []
       }, // 字典表下拉list
+      previewImage: false,
+      previewImagePath: null,
+      baseRotateDeg: 0
     };
   },
   computed: {
     ...mapState("setting", ["pageMinHeight"]),
+    rotateDeg() {
+      return this.baseRotateDeg % 360;
+    }
   },
   methods: {
     // 返回上一级页面
@@ -244,9 +277,25 @@ export default {
       this.$emit("searchTableData");
     },
 
-    // 打开图片
+    // 点击查看大图
     viewImage(imgUrl) {
+      this.baseRotateDeg = 0;
+      this.previewImage = true;
+      this.previewImagePath = imgUrl;
+    },
+
+    // 旋转图片
+    rotateImage() {
+      this.baseRotateDeg += 90;
+    },
+
+    // 下载原图
+    downloadImage(imgUrl) {
       window.open(imgUrl);
+    },
+
+    handleCancel() {
+      this.previewImage = false;
     },
 
     // 官员table查看
@@ -261,14 +310,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach((item) => {
-        detailKeys.forEach((item1) => {
+      this.infoData.fieldsMapLabelSon.forEach(item => {
+        detailKeys.forEach(item1 => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1,
+              span: item.isOccupyAll ? 2 : 1
             });
           }
         });
@@ -284,7 +333,7 @@ export default {
 
     // 获取所有字典表下拉list
     getAllDicData() {
-      getAllDicData().then((res) => {
+      getAllDicData().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.dicData = result.data;
@@ -296,7 +345,7 @@ export default {
 
     // 通过赛事id获取球队基础信息年龄组下拉list
     getYearTypeList() {
-      getYearTypeList(this.infoData.hockeyGamesId).then((res) => {
+      getYearTypeList(this.infoData.hockeyGamesId).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.yearTypeList = result.data;
@@ -313,11 +362,11 @@ export default {
     // 删除官员信息
     deleteOfficer(data) {
       const postData = {
-        trainId: data.id,
+        trainId: data.id
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deleteOfficer(postData)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -339,11 +388,11 @@ export default {
     // 删除运动员信息
     deletePlayer(data) {
       const postData = {
-        teamDetailId: data.id,
+        teamDetailId: data.id
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deletePlayer(postData)
-        .then((res) => {
+        .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -368,8 +417,8 @@ export default {
 
     closeDetail() {
       this.detailShow1 = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
