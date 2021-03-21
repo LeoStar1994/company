@@ -10,17 +10,22 @@
     <a-card :style="`min-height: ${pageMinHeight}px`"
             v-show="!configshow">
       <!-- header content -->
-      <ol class="d-flex mb-30">
+      <ol class="d-flex flex-wrap mb-30">
         <li v-for="(item, index) in headerContentArr"
             :key="index"
             class="content-item">
-          <div class="h40 lh-40 d-flex ai-center jc-center">
-            <a-icon :type="item.icon"
-                    class="fz-20"
-                    :style="{color: item.iconColor}" />
-            <span class="ml-10">{{item.label}}</span>
+          <div class="w30p">
+            <div class="icon-wrap d-flex ai-center jc-center"
+                 :style="{backgroundColor: item.iconColor}">
+              <a-icon :type="item.icon"
+                      class="content-icon text-white" />
+            </div>
           </div>
-          <p class="fw-700 fz-16">{{item.value}}</p>
+
+          <div class="flex-1 text-right pr-10">
+            <p class="fw-700 fz-18">{{item.value}}</p>
+            <span class="fz-12 ">{{item.label}}</span>
+          </div>
         </li>
       </ol>
       <!-- search -->
@@ -56,20 +61,21 @@
                   </div>
                 </a-form-model-item>
               </a-col>
-            </a-row>
-          </div>
-          <!-- 查询、重置、收起 -->
-          <span style="float: right; margin-top: 3px;">
-            <a-button type="primary"
-                      @click="searchTableData">查询</a-button>
-            <a-button style="margin-left: 8px"
-                      @click="reset">重置</a-button>
-            <!-- <a @click="toggleAdvanced"
+              <!-- 查询、重置、收起 -->
+              <span style="float: right; margin-top: 3px;">
+                <a-button @click="reset">重置</a-button>
+                <a-button type="primary"
+                          style="margin-left: 8px"
+                          @click="searchTableData">查询</a-button>
+                <!-- <a @click="toggleAdvanced"
                style="margin-left: 8px">
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
             </a> -->
-          </span>
+              </span>
+            </a-row>
+          </div>
+
         </a-form-model>
       </div>
       <!-- table -->
@@ -198,31 +204,31 @@ export default {
           label: "今日收入",
           value: "",
           icon: "pay-circle",
-          iconColor: "orange"
+          iconColor: "#00d6b8"
         },
         {
           label: "月收入",
           value: "",
           icon: "money-collect",
-          iconColor: "orange"
+          iconColor: "#f9cb00"
         },
         {
-          label: "订单总数（月）",
+          label: "月订单总数",
           value: "",
           icon: "shopping-cart",
-          iconColor: "red"
+          iconColor: "#8e47ff"
         },
         {
-          label: "未支付订单（月）",
+          label: "月未支付订单",
           value: "",
           icon: "shopping-cart",
-          iconColor: "gray"
+          iconColor: "#ff076a"
         },
         {
           label: "年度收入",
           value: "",
-          icon: "money-collect",
-          iconColor: "red"
+          icon: "fund",
+          iconColor: "#0095ff"
         }
       ]
     };
@@ -397,11 +403,30 @@ export default {
 
 <style lang="less" scoped>
 .content-item {
-  flex: 1;
-  border: 2px solid #d9d9d9;
-  border-radius: 6px;
-  margin-right: 30px;
+  display: flex;
+  width: 18%;
+  min-width: 164px;
+  border: 2px solid #f4f4f4;
+  border-radius: 8px;
+  margin-right: 2%;
   min-height: 100px;
+  align-items: center;
+  padding-left: 10px;
   text-align: center;
+  margin-bottom: 10px;
+  background-color: #f4f4f4;
+  @media screen and (max-width: 1160px) {
+    width: 23%;
+    margin-right: 2%;
+  }
+  .icon-wrap {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  .content-icon {
+    font-size: 26px;
+  }
 }
 </style>

@@ -11,19 +11,19 @@
     <a-card :body-style="{padding: '24px 32px'}"
             :bordered="false"
             :style="`min-height: ${pageMinHeight}px`">
-      <div style="width: 600px;">
-        <h3>订单管理 > 订单详情</h3>
+      <div style="width: 400px;">
+        <h3 class="pl-10">订单管理 > 订单详情</h3>
         <!-- 内容详情 -->
         <ul class="content my-20">
           <li v-for="(item,index) in contentData"
               :key="index"
               class="h30 lh-30 d-flex">
-            <span class="text-right w70 d-block">{{item.label}}：</span>
-            <span :class="[item.value === '已支付' ? 'text-blue': '', item.value === '已退款' ? 'text-red': '']">{{item.value}}</span>
+            <span class="text-right w80 d-block">{{item.label}}：</span>
+            <span :class="[(item.value === '已支付' || item.value === '支付成功') ? 'text-blue': '', (item.value === '已退款' || item.label === '订单金额') ? 'text-red': '']">{{item.value}}</span>
           </li>
         </ul>
         <!-- 按钮 -->
-        <div class="buttons">
+        <div class="buttons pl-10">
           <a-popconfirm title="是否确定退款?"
                         ok-text="确定"
                         cancel-text="取消"
@@ -33,7 +33,7 @@
                         @cancel="cancel">
             <a-button type="danger">退款</a-button>
           </a-popconfirm>
-          <a-button @click="comeBack">取消</a-button>
+          <a-button @click="comeBack">返回</a-button>
         </div>
       </div>
     </a-card>
