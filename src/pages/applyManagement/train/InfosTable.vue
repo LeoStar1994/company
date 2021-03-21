@@ -74,6 +74,7 @@
                     class="mr-10"
                     @click="exportData">导出</a-button>
           <a-upload name="file"
+                    class="mr-10"
                     :customRequest="customRequest"
                     :showUploadList="false"
                     accept=".zip"
@@ -81,6 +82,9 @@
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76">
             <a-button type="primary">导入证书</a-button>
           </a-upload>
+          <a-button type="primary"
+                    class="mr-10"
+                    @click="exportTemplate">导出证书模板</a-button>
         </div>
         <!-- table -->
         <standard-table :columns="columns"
@@ -173,7 +177,8 @@ import {
   exportReferee,
   getInfosTableData,
   changeCheckStatus,
-  uploadCertificate
+  uploadCertificate,
+  exportTemplate
 } from "@/services/train";
 import { downloadFile } from "@/utils/util";
 import InfoDetails from "@/components/infoDetails/InfoDetails";
@@ -672,6 +677,30 @@ export default {
         })
         .catch(() => {
           options.onError();
+          this.$refs.loading.closeLoading();
+        });
+    },
+
+    // 导出证书模板
+    exportTemplate() {
+      this.$refs.loading.openLoading("正在导出模板，请稍后。。");
+      exportTemplate(this.form.educationId)
+        .then(async res => {
+          if (res.status === 200 && res.data) {
+            let filename = "";
+            const disposition = res.headers["content-disposition"];
+            if (disposition) {
+              const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+              const matches = filenameRegex.exec(disposition);
+              if (matches != null && matches[1]) {
+                filename = matches[1].replace(/['"]/g, "");
+              }
+            }
+            await downloadFile(res.data, filename);
+            this.$refs.loading.closeLoading();
+          }
+        })
+        .catch(() => {
           this.$refs.loading.closeLoading();
         });
     },

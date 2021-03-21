@@ -51,6 +51,7 @@ module.exports = {
   REFEREESEXPOTR: `${BASE_URL}/enducationJoin/exportDetail`, // 导出裁判信息
   REFEREEAUDIT: `${BASE_URL}/enducationJoin/check`, // 审核通过|不通过
   REFEREEUPLOAD: `${BASE_URL}/enducationJoin/upLoadCertificate`, // 上传证书
+  EXPOTRTTEMPLATE: `${BASE_URL}/enducationJoin/exportCertificate`, // 导出证书模板
 
   // 赛事
   TRCPTABLEDATA: `${BASE_URL}/games/select`, // table查询
@@ -165,4 +166,10 @@ module.exports = {
   /* 小程序管理 */
   APPLETTABLEDATA: `${WECHAT_BASE_URL}/wxapplet-admin/api/bss/miniprogram/query`, // table查询
   APPLETUPDATEVERSION: `${WECHAT_BASE_URL}/wxapplet-admin/api/bss/miniprogram/upgrade`, // 获取类型列表
+
+  /* 订单管理 */
+  ORDERTABLEDATA: `${BASE_URL}/order/query`, // table查询
+  ORDERINITDATA: `${BASE_URL}/order`, // 初始化数据
+  ORDERREFUND: `${BASE_URL}/order/refundById`, // 退款
+  ORDERDETAIL: `${BASE_URL}/order/queryById` // 查看详情
 };

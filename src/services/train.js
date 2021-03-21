@@ -7,6 +7,7 @@ import {
   REFEREESEXPOTR,
   REFEREEAUDIT,
   REFEREEUPLOAD,
+  EXPOTRTTEMPLATE
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -71,4 +72,13 @@ export async function deleteReferee(id) {
  */
 export async function exportReferee(id) {
   return request(REFEREESEXPOTR + `/${id}`, METHOD.GET, null, "blob");
+}
+
+/**
+ * 裁判证书模板导出
+ * @param id {int}
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export async function exportTemplate(id) {
+  return request(EXPOTRTTEMPLATE + `/${id}`, METHOD.GET, null, "blob");
 }
