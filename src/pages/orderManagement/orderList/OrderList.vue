@@ -307,6 +307,15 @@ export default {
           this.$refs.orderConfig.contentData[6].value = result.data.payTime
             ? result.data.payTime
             : ""; // 支付时间
+          this.$refs.orderConfig.contentData[7].value = result.data.refereeName
+            ? result.data.refereeName
+            : ""; // 姓名英文
+          this.$refs.orderConfig.contentData[8].value = result.data.identityCard
+            ? result.data.identityCard
+            : ""; // 身份证号英文
+          this.$refs.orderConfig.contentData[9].value = result.data.telPhone
+            ? result.data.telPhone
+            : ""; // 手机号英文
         } else {
           this.$message.error(result.desc);
         }

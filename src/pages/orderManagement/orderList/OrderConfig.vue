@@ -91,6 +91,18 @@ export default {
         {
           label: "支付时间",
           value: ""
+        },
+        {
+          label: "姓名",
+          value: ""
+        },
+        {
+          label: "身份证号",
+          value: ""
+        },
+        {
+          label: "手机号",
+          value: ""
         }
       ]
     };
