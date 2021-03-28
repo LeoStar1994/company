@@ -101,6 +101,11 @@
                  alt="">
             <span class="ml-6">{{text}}</span>
           </div>
+          <div slot="payStatusDesc"
+               slot-scope="{text}">
+            <span :class="[text === '支付成功'  ? 'text-blue' : '', text === '未支付'  ? 'text-orange' : '', text === '已退款'  ? 'text-red' : '']">{{text}}</span>
+          </div>
+          <!-- 操作 -->
           <div slot="action"
                slot-scope="{record}">
             <a-button class="mr-12"
@@ -159,6 +164,7 @@
                  :detailShow="detailShow"
                  :useType="useType"
                  @searchTableData="searchTableData"
+                 @refreshInfoData="refreshInfoData"
                  @closeDetail="closeDetail"></InfoDetails>
 
     <!-- loading -->
@@ -184,10 +190,6 @@ import { downloadFile } from "@/utils/util";
 import InfoDetails from "@/components/infoDetails/InfoDetails";
 // table columns data
 const columns = [
-  // {
-  //   title: "记录ID",
-  //   dataIndex: "id"
-  // },
   {
     title: "姓名",
     dataIndex: "refereeName",
@@ -218,6 +220,11 @@ const columns = [
     dataIndex: "identityCard"
   },
   {
+    title: "付款状态",
+    dataIndex: "payStatusDesc",
+    scopedSlots: { customRender: "payStatusDesc" }
+  },
+  {
     title: "操作",
     scopedSlots: { customRender: "action" }
   }
@@ -225,129 +232,114 @@ const columns = [
 
 const fieldsMapLabel = [
   {
+    field: "refereeNameEnglish",
+    labelName: "英文名"
+  },
+  {
     field: "sexType",
-    labelName: "性别",
-    sort: 1
+    labelName: "性别"
   },
   {
     field: "refereeLevel",
-    labelName: "现裁判等级",
-    sort: 2
+    labelName: "现裁判等级"
   },
   {
     field: "country",
-    labelName: "国籍",
-    sort: 3
+    labelName: "国籍"
   },
   {
     field: "organization",
-    labelName: "机构",
-    sort: 4
+    labelName: "机构"
   },
   {
     field: "nation",
-    labelName: "民族",
-    sort: 5
+    labelName: "民族"
   },
   {
     field: "approvalDate",
-    labelName: "批准日期",
-    sort: 6
+    labelName: "批准日期"
   },
   {
     field: "height",
-    labelName: "身高",
-    sort: 7
+    labelName: "身高"
   },
   {
     field: "healthyLevel",
-    labelName: "健康状况",
-    sort: 8
+    labelName: "健康状况"
   },
   {
     field: "bornDate",
-    labelName: "出生日期",
-    sort: 9
+    labelName: "出生日期"
   },
   {
     field: "languageType",
-    labelName: "外语能力",
-    sort: 10
+    labelName: "外语能力"
   },
   {
     field: "identityCard",
-    labelName: "证件号码",
-    sort: 11
+    labelName: "证件号码"
   },
   {
     field: "telPhone",
-    labelName: "手机号码",
-    sort: 12
+    labelName: "手机号码"
+  },
+  {
+    field: "contactAddress",
+    labelName: "联系地址"
   },
   {
     field: "degreeLevel",
-    labelName: "文化程度",
-    sort: 13
+    labelName: "文化程度"
   },
   {
     field: "weixinId",
-    labelName: "微信号",
-    sort: 14
+    labelName: "微信号"
   },
   {
     field: "cardType",
-    labelName: "证件类型",
-    sort: 15
+    labelName: "证件类型"
   },
   {
     field: "identityImagePath",
     labelName: "证件照片",
-    sort: 16,
     isOccupyAll: true
   },
   {
     field: "certificateImagePath",
     labelName: "证书",
-    sort: 17,
     isOccupyAll: true
   },
   {
     field: "political",
-    labelName: "政治面貌",
-    sort: 18
+    labelName: "政治面貌"
   },
   {
     field: "emailAddress",
-    labelName: "电子邮箱",
-    sort: 20
+    labelName: "电子邮箱"
   },
   {
     field: "workCompany",
-    labelName: "代表单位",
-    sort: 21
+    labelName: "代表单位"
   },
   {
     field: "workAddress",
-    labelName: "单位地址",
-    sort: 22
+    labelName: "单位地址"
   },
   {
     field: "homeAddress",
     labelName: "现住址",
-    sort: 23,
     isOccupyAll: true
   },
   {
     field: "hotelName",
-    labelName: "选择酒店",
-    sort: 24
+    labelName: "选择酒店"
   },
   {
     field: "roomType",
-    labelName: "房间类型",
-    sort: 25
+    labelName: "房间类型"
   }
 ];
+
 export default {
   name: "InfosTable",
   components: { StandardTable, InfoDetails },
@@ -399,6 +391,7 @@ export default {
       infoData: {
         name: "",
         imgURL: "",
+        id: "",
         // 执裁经历 columns
         judgeColumns: [
           {
@@ -442,6 +435,20 @@ export default {
         ],
         // 培训经历 tableData
         eductionTableData: [],
+
+        // 运动员经历
+        playerExperienceColumns: [
+          {
+            title: "运动队名称",
+            dataIndex: "sportsTeamName"
+          },
+          {
+            title: "运动年限",
+            dataIndex: "sportsYear"
+          }
+        ],
+
+        playerExperienceTableData: [],
 
         // 教练制裁经历 columns
         refereeJudgeColumns: [
@@ -534,17 +541,24 @@ export default {
       this.resetPagination();
     },
 
+    refreshInfoData(id) {
+      this.openDetails(id);
+    },
+
     // 查看某一个数据列详情
     openDetails(id) {
       getRefereeDetail(id).then(res => {
         const result = res.data;
         if (result.code === 0) {
+          this.infoData.id = id;
           this.infoData.name = result.data.refereeName;
           this.infoData.imgURL = result.data.imagePath;
           this.infoData.judgeTableData = result.data.detailList; // 执裁经历
           this.infoData.refereeJudgeTableData =
             result.data.refereeJudgeDetailViewDetailVos; // 裁判执裁经历
           this.infoData.eductionTableData = result.data.enducationDetailList; // 培训经历
+          this.infoData.playerExperienceTableData =
+            result.data.refereeSportDetailViewDetailVos; // 运动员经历
           this.infoData.isShowEnducationDetail =
             result.data.isShowEnducationDetail;
           this.infoData.descList = this.formatDetailsData(result.data);
@@ -565,7 +579,6 @@ export default {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
-              sort: item.sort,
               span: item.isOccupyAll ? 2 : 1
             });
           }
@@ -613,7 +626,7 @@ export default {
             this.$message.success(result.desc);
             this.searchTableData();
           } else {
-            this.$message.success(result.desc);
+            this.$message.error(result.desc);
           }
         })
         .catch(() => {

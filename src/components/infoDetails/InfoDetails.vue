@@ -50,6 +50,15 @@
                       @click="openBaseInfoModal">修改
             </a-button>
           </span>
+          <!-- 英文名 -->
+          <span v-else-if="item.label === '英文名'">
+            {{item.value}}
+            <a-button class="ml-10"
+                      type="primary"
+                      size="small"
+                      @click="openEnglishNameModal">修改
+            </a-button>
+          </span>
           <span v-else>{{item.value}}</span>
         </a-descriptions-item>
       </a-descriptions>
@@ -67,6 +76,16 @@
                  class="w100"
                  alt="证书图片">
           </div>
+        </a-table>
+      </div>
+      <!-- 运动员经历 -->
+      <div v-if="infoData.playerExperienceColumns && infoData.isShowEnducationDetail">
+        <h4 class="ant-descriptions-title mt-40">运动员经历</h4>
+        <a-table :columns="infoData.playerExperienceColumns"
+                 rowKey="refereeSportDetail"
+                 :pagination="false"
+                 :data-source="infoData.playerExperienceTableData"
+                 bordered>
         </a-table>
       </div>
       <!-- 执裁经历 -->
@@ -197,6 +216,27 @@
                  :cardTypeList="dicData.hokeyGamesCardType"></PlayerModal>
     <!-- 性别、持杆手、位置、证件类型 -->
 
+    <!-- 修改英文名弹框 -->
+    <a-modal title="修改英文名"
+             :visible="modalVisible"
+             :maskClosable="false"
+             @ok="handleOk"
+             @cancel="handleCancel1">
+      <a-form-model ref="ruleForm"
+                    :model="englishNameData"
+                    :rules="englishNameRules"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol">
+        <a-form-model-item prop="englishName"
+                           label="英文名">
+          <a-input v-model="englishNameData.englishName"
+                   allowClear
+                   :maxLength="30"
+                   placeholder="请输入英文名"></a-input>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+
     <!-- loading -->
     <transition name="el-fade-in">
       <loading ref="loading"></loading>
@@ -215,6 +255,7 @@ import {
   deleteOfficer,
   deletePlayer
 } from "@/services/competition";
+import { initEnglishName, updateEnglishName } from "@/services/train";
 export default {
   name: "InfosDetails",
   components: {
@@ -261,7 +302,15 @@ export default {
       }, // 字典表下拉list
       previewImage: false,
       previewImagePath: null,
-      baseRotateDeg: 0
+      baseRotateDeg: 0,
+
+      modalVisible: false,
+      labelCol: { span: 3 },
+      wrapperCol: { span: 20, offset: 1 },
+      englishNameRules: {},
+      englishNameData: {
+        englishName: undefined
+      }
     };
   },
   computed: {
@@ -316,7 +365,6 @@ export default {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
-              sort: item.sort,
               span: item.isOccupyAll ? 2 : 1
             });
           }
@@ -329,6 +377,53 @@ export default {
     openBaseInfoModal() {
       this.getYearTypeList();
       this.$refs.teamModal.setOpenType(this.infoData.teamId);
+    },
+
+    // 打开修改英文名弹框
+    openEnglishNameModal() {
+      initEnglishName(this.infoData.id).then(res => {
+        const result = res.data;
+        if (result.code === 0) {
+          this.englishNameData.englishName = result.data;
+          this.modalVisible = true;
+        } else {
+          this.$message.error(result.desc);
+        }
+      });
+    },
+
+    async handleOk() {
+      await this.updateEnglishName();
+      this.modalVisible = false;
+      // this.resetCheckStatusData();
+    },
+
+    // 修改英文名
+    updateEnglishName() {
+      const data = {
+        englishName: this.englishNameData.englishName,
+        id: this.infoData.id
+      };
+      this.$refs.loading.openLoading("操作进行中，请稍后。。");
+      updateEnglishName(data)
+        .then(res => {
+          this.$refs.loading.closeLoading();
+          const result = res.data;
+          if (result.code === 0) {
+            this.$message.success(result.desc);
+            this.$emit("refreshInfoData", this.infoData.id);
+          } else {
+            this.$message.error(result.desc);
+          }
+        })
+        .catch(() => {
+          this.$refs.loading.closeLoading();
+        });
+    },
+
+    handleCancel1() {
+      this.$message.info("已取消操作");
+      this.modalVisible = false;
     },
 
     // 获取所有字典表下拉list

@@ -7,7 +7,9 @@ import {
   REFEREESEXPOTR,
   REFEREEAUDIT,
   REFEREEUPLOAD,
-  EXPOTRTTEMPLATE
+  EXPOTRTTEMPLATE,
+  INITENGLISHNAME,
+  UPDATEENGLISHNAME
 } from "@/services/api";
 import { request, METHOD } from "@/utils/request";
 
@@ -81,4 +83,22 @@ export async function exportReferee(id) {
  */
 export async function exportTemplate(id) {
   return request(EXPOTRTTEMPLATE + `/${id}`, METHOD.GET, null, "blob");
+}
+
+/**
+ * 修改英文名称初始化
+ * @param id {int}
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export async function initEnglishName(id) {
+  return request(INITENGLISHNAME + `/${id}`, METHOD.GET);
+}
+
+/**
+ * 修改英文名称
+ * @param id {int}
+ * @returns {Promise<AxiosResponse<T>>}
+ */
+export async function updateEnglishName(data) {
+  return request(UPDATEENGLISHNAME, METHOD.GET, data);
 }
