@@ -2,7 +2,7 @@
  * @Description: 详细信息页
  * @Author: Leo
  * @Date: 2020-12-28 16:56:50
- * @LastEditTime: 2021-03-11 10:23:31
+ * @LastEditTime: 2021-03-23 11:02:21
  * @LastEditors: Leo
 -->
 <template>
@@ -169,7 +169,8 @@
           <a-icon type="cloud-download" />下载原图</a-button> -->
         <a-button type="primary"
                   @click="rotateImage">
-          <a-icon type="reload" />旋转图片</a-button>
+          <a-icon type="reload" />旋转图片
+        </a-button>
       </template>
     </a-modal>
 
@@ -213,28 +214,28 @@ import {
   getAllDicData,
   getYearTypeList,
   deleteOfficer,
-  deletePlayer
+  deletePlayer,
 } from "@/services/competition";
 export default {
   name: "InfosDetails",
   components: {
     OfficerModal,
     TeamModal,
-    PlayerModal
+    PlayerModal,
   },
   props: {
     detailShow: {
       type: Boolean,
-      default: false
+      default: false,
     },
     infoData: {
       type: Object,
       required: true,
-      default: new Object()
+      default: new Object(),
     },
     useType: {
-      type: String
-    }
+      type: String,
+    },
   },
   mounted() {
     if (this.useType === "competition") {
@@ -248,7 +249,7 @@ export default {
         name: "",
         imgURL: "",
         // 基础信息
-        descList: []
+        descList: [],
       },
       yearTypeList: [], //年龄组list
       dicData: {
@@ -257,18 +258,18 @@ export default {
         hokeyGamesTeamDetailPosition: [],
         hokeyGamesTeamDetailHoldingRod: [],
         hokeyGamesSexType: [],
-        hokeyGamesTrainPosition: []
+        hokeyGamesTrainPosition: [],
       }, // 字典表下拉list
       previewImage: false,
       previewImagePath: null,
-      baseRotateDeg: 0
+      baseRotateDeg: 0,
     };
   },
   computed: {
     ...mapState("setting", ["pageMinHeight"]),
     rotateDeg() {
       return this.baseRotateDeg % 360;
-    }
+    },
   },
   methods: {
     // 返回上一级页面
@@ -310,14 +311,14 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.infoData.fieldsMapLabelSon.forEach(item => {
-        detailKeys.forEach(item1 => {
+      this.infoData.fieldsMapLabelSon.forEach((item) => {
+        detailKeys.forEach((item1) => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
               sort: item.sort,
-              span: item.isOccupyAll ? 2 : 1
+              span: item.isOccupyAll ? 2 : 1,
             });
           }
         });
@@ -333,7 +334,7 @@ export default {
 
     // 获取所有字典表下拉list
     getAllDicData() {
-      getAllDicData().then(res => {
+      getAllDicData().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dicData = result.data;
@@ -345,7 +346,7 @@ export default {
 
     // 通过赛事id获取球队基础信息年龄组下拉list
     getYearTypeList() {
-      getYearTypeList(this.infoData.hockeyGamesId).then(res => {
+      getYearTypeList(this.infoData.hockeyGamesId).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.yearTypeList = result.data;
@@ -362,11 +363,11 @@ export default {
     // 删除官员信息
     deleteOfficer(data) {
       const postData = {
-        trainId: data.id
+        trainId: data.id,
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deleteOfficer(postData)
-        .then(res => {
+        .then((res) => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -388,11 +389,11 @@ export default {
     // 删除运动员信息
     deletePlayer(data) {
       const postData = {
-        teamDetailId: data.id
+        teamDetailId: data.id,
       };
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       deletePlayer(postData)
-        .then(res => {
+        .then((res) => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -417,8 +418,8 @@ export default {
 
     closeDetail() {
       this.detailShow1 = false;
-    }
-  }
+    },
+  },
 };
 </script>
 
