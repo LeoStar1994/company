@@ -120,7 +120,7 @@ export default {
     // 退款
     refund() {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      orderRefund(this.id)
+      orderRefund({ id: this.id })
         .then(res => {
           this.$refs.loading.closeLoading();
           const result = res.data;

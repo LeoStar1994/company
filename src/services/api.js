@@ -52,6 +52,8 @@ module.exports = {
   REFEREEAUDIT: `${BASE_URL}/enducationJoin/check`, // 审核通过|不通过
   REFEREEUPLOAD: `${BASE_URL}/enducationJoin/upLoadCertificate`, // 上传证书
   EXPOTRTTEMPLATE: `${BASE_URL}/enducationJoin/exportCertificate`, // 导出证书模板
+  INITENGLISHNAME: `${BASE_URL}/enducationJoin/refereeModEnglishNameInit`, // 英文名初始化
+  UPDATEENGLISHNAME: `${BASE_URL}/enducationJoin/refereeModEnglishName`, // 修改英文名
 
   // 赛事
   TRCPTABLEDATA: `${BASE_URL}/games/select`, // table查询
