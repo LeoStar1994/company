@@ -2,7 +2,7 @@
  * @Description: 订单管理 / 订单详情.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-21 16:39:59
+ * @LastEditTime: 2021-03-29 15:08:59
  * @LastEditors: Leo
 -->
 <template>
@@ -91,15 +91,10 @@
                     class="mr-12"
                     @click="openAlarm(record.id, record.isRefund)"
                     type="primary">查看</a-button>
-          <a-popconfirm title="是否确定退款?"
-                        ok-text="确定"
-                        v-if="record.isRefund"
-                        cancel-text="取消"
-                        @confirm="refund(record.id)"
-                        @cancel="cancel">
-            <a-button size="small"
-                      type="danger">退款</a-button>
-          </a-popconfirm>
+          <a-button size="small"
+                    @click="refund(record.id)"
+                    v-if="record.isRefund"
+                    type="danger">退款</a-button>
         </div>
       </standard-table>
     </a-card>
@@ -109,6 +104,10 @@
                  :configshow="configshow"
                  @closeConfig='closeConfig'
                  @searchTableData='searchTableData'></OrderConfig>
+
+    <!-- 退款弹框 -->
+    <OrderRefundModal ref="orderRefundModal"
+                      @searchTableData='searchTableData'></OrderRefundModal>
 
     <!-- loading -->
     <transition name="el-fade-in">
@@ -121,53 +120,49 @@
 import { mapState, mapGetters } from "vuex";
 import StandardTable from "@/components/table/StandardTable";
 import OrderConfig from "./OrderConfig";
-import {
-  getTableData,
-  initData,
-  orderRefund,
-  orderDetail
-} from "@/services/order";
+import OrderRefundModal from "./OrderRefundModal";
+import { getTableData, initData, orderDetail } from "@/services/order";
 
 // table columns data
 const columns = [
   {
     title: "订单号",
-    dataIndex: "outTradeNo"
+    dataIndex: "outTradeNo",
   },
   {
     title: "订单信息",
-    dataIndex: "description"
+    dataIndex: "description",
   },
   {
     title: "业务类型",
-    dataIndex: "businessType"
+    dataIndex: "businessType",
   },
   {
     title: "状态",
-    dataIndex: "tradeStateDesc"
+    dataIndex: "tradeStateDesc",
     // scopedSlots: { customRender: "action" }
   },
   {
     title: "支付金额",
-    dataIndex: "payerTotal"
+    dataIndex: "payerTotal",
   },
   {
     title: "下单时间",
-    dataIndex: "createTime"
+    dataIndex: "createTime",
   },
   {
     title: "支付时间",
-    dataIndex: "payTime"
+    dataIndex: "payTime",
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 export default {
   name: "orderDetail",
-  components: { StandardTable, OrderConfig },
+  components: { StandardTable, OrderConfig, OrderRefundModal },
   data() {
     return {
       advanced: true,
@@ -182,13 +177,13 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 19, offset: 1 },
       form: {
         payOrderStateId: undefined,
-        description: undefined
+        description: undefined,
       },
       // 搜索项校验规则
       rules: {},
@@ -204,38 +199,38 @@ export default {
           label: "今日收入",
           value: "",
           icon: "pay-circle",
-          iconColor: "#00d6b8"
+          iconColor: "#00d6b8",
         },
         {
           label: "月收入",
           value: "",
           icon: "money-collect",
-          iconColor: "#f9cb00"
+          iconColor: "#f9cb00",
         },
         {
           label: "月订单总数",
           value: "",
           icon: "shopping-cart",
-          iconColor: "#8e47ff"
+          iconColor: "#8e47ff",
         },
         {
           label: "月未支付订单",
           value: "",
           icon: "shopping-cart",
-          iconColor: "#ff076a"
+          iconColor: "#ff076a",
         },
         {
           label: "年度收入",
           value: "",
           icon: "fund",
-          iconColor: "#0095ff"
-        }
-      ]
+          iconColor: "#0095ff",
+        },
+      ],
     };
   },
   computed: {
     ...mapState("setting", ["pageMinHeight"]),
-    ...mapGetters("account", ["user"])
+    ...mapGetters("account", ["user"]),
   },
   created() {
     // this.getInitData();
@@ -248,7 +243,7 @@ export default {
 
     // 获取初始化数据
     getInitData() {
-      initData().then(res => {
+      initData().then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.queryData.records;
@@ -281,7 +276,7 @@ export default {
     // 查看返显数据
     orderConfigDetail(id) {
       this.$refs.loading.openLoading("数据查询中，请稍后。。");
-      orderDetail({ id }).then(res => {
+      orderDetail({ id }).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -309,13 +304,21 @@ export default {
             : ""; // 支付时间
           this.$refs.orderConfig.contentData[7].value = result.data.refereeName
             ? result.data.refereeName
-            : ""; // 姓名英文
+            : ""; // 姓名
           this.$refs.orderConfig.contentData[8].value = result.data.identityCard
             ? result.data.identityCard
-            : ""; // 身份证号英文
+            : ""; // 身份证号
           this.$refs.orderConfig.contentData[9].value = result.data.telPhone
             ? result.data.telPhone
-            : ""; // 手机号英文
+            : ""; // 手机号
+          if (result.data.wxSerialNumber) {
+            this.$refs.orderConfig.contentData[10].value =
+              result.data.wxSerialNumber;
+            this.$refs.orderConfig.contentData[10].isShow = true;
+          } else {
+            this.$refs.orderConfig.contentData[10].value = "";
+            this.$refs.orderConfig.contentData[10].isShow = false;
+          }
         } else {
           this.$message.error(result.desc);
         }
@@ -327,11 +330,11 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
       getTableData(data)
-        .then(res => {
+        .then((res) => {
           const result = res.data;
           if (result.code === 0) {
             this.dataSource = result.data.records;
@@ -348,25 +351,7 @@ export default {
 
     // 退款
     refund(id) {
-      this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      orderRefund({ id })
-        .then(res => {
-          this.$refs.loading.closeLoading();
-          const result = res.data;
-          if (result.code === 0) {
-            this.$message.success(result.desc);
-            this.searchTableData();
-          } else {
-            this.$message.error(result.desc);
-          }
-        })
-        .catch(() => {
-          this.$refs.loading.closeLoading();
-        });
-    },
-
-    cancel() {
-      this.$message.warning("操作已取消");
+      this.$refs.orderRefundModal.setOpenType(id);
     },
 
     // 分页
@@ -393,7 +378,7 @@ export default {
     // 关闭详情config
     closeConfig() {
       this.configshow = false;
-    }
+    },
   },
   // 监听页面离开事件， 清空页面数据
   beforeRouteLeave(to, from, next) {
@@ -403,10 +388,10 @@ export default {
     next();
   },
   beforeRouteEnter(to, from, next) {
-    next(vm => {
+    next((vm) => {
       vm.getInitData();
     });
-  }
+  },
 };
 </script>
 

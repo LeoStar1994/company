@@ -2,7 +2,7 @@
  * @Description: 角色管理详情
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-01-25 17:45:30
+ * @LastEditTime: 2021-03-29 15:41:25
  * @LastEditors: Leo
 -->
 <template>
@@ -16,27 +16,27 @@
         <!-- 内容详情 -->
         <ul class="content my-20">
           <li v-for="(item,index) in contentData"
+              v-show="item.isShow"
               :key="index"
               class="h30 lh-30 d-flex">
-            <span class="text-right w80 d-block">{{item.label}}：</span>
-            <span :class="[(item.value === '已支付' || item.value === '支付成功') ? 'text-blue': '', (item.value === '已退款' || item.label === '订单金额') ? 'text-red': '']">{{item.value}}</span>
+            <span class="text-right w90 d-block">{{item.label}}：</span>
+            <span :class="[(item.value === '已支付' || item.value === '支付成功') ? 'text-blue': '', (item.value === '已退款' || item.label === '订单金额' || item.label === '退款流水号') ? 'text-red': '']">{{item.value}}</span>
           </li>
         </ul>
         <!-- 按钮 -->
         <div class="buttons pl-10">
-          <a-popconfirm title="是否确定退款?"
-                        ok-text="确定"
-                        cancel-text="取消"
-                        v-if="isRefund"
-                        @confirm="refund"
-                        class="mr-10"
-                        @cancel="cancel">
-            <a-button type="danger">退款</a-button>
-          </a-popconfirm>
+          <a-button @click="refund"
+                    class="mr-10"
+                    v-if="isRefund"
+                    type="danger">退款</a-button>
           <a-button @click="comeBack">返回</a-button>
         </div>
       </div>
     </a-card>
+
+    <!-- 退款弹框 -->
+    <OrderRefundModal ref="orderRefundModal"
+                      @searchTableData='searchTableData'></OrderRefundModal>
 
     <!-- loading -->
     <transition name="el-fade-in">
@@ -47,15 +47,18 @@
 
 <script>
 import { mapState } from "vuex";
-import { orderRefund } from "@/services/order";
+import OrderRefundModal from "./OrderRefundModal";
 
 export default {
   name: "OrderConfig",
   props: {
     configshow: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+  },
+  components: {
+    OrderRefundModal,
   },
   data() {
     return {
@@ -66,49 +69,63 @@ export default {
       contentData: [
         {
           label: "订单号",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "订单",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "业务类型",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "订单状态",
-          value: ""
+          value: "",
         },
         {
           label: "订单金额",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "下单时间",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "支付时间",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "姓名",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "身份证号",
-          value: ""
+          value: "",
+          isShow: true,
         },
         {
           label: "手机号",
-          value: ""
-        }
-      ]
+          value: "",
+          isShow: true,
+        },
+        {
+          label: "退款流水号",
+          value: "",
+          isShow: false,
+        },
+      ],
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -119,34 +136,18 @@ export default {
 
     // 退款
     refund() {
-      this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      orderRefund({ id: this.id })
-        .then(res => {
-          this.$refs.loading.closeLoading();
-          const result = res.data;
-          if (result.code === 0) {
-            this.$message.success(result.desc);
-            this.searchTableData();
-          } else {
-            this.$message.error(result.desc);
-          }
-        })
-        .catch(() => {
-          this.$refs.loading.closeLoading();
-        });
+      this.$refs.orderRefundModal.setOpenType(this.id);
     },
 
-    cancel() {
-      this.$message.warning("操作已取消");
+    searchTableData() {
+      this.$emit("closeConfig");
+      this.$emit("searchTableData");
     },
 
     // 返回
     comeBack() {
       this.$emit("closeConfig");
-    }
-  }
+    },
+  },
 };
 </script>
-
-<style lang="less" scoped>
-</style>
