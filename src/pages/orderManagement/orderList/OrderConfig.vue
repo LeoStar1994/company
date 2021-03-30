@@ -2,7 +2,7 @@
  * @Description: 角色管理详情
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-03-29 15:41:25
+ * @LastEditTime: 2021-03-29 19:03:07
  * @LastEditors: Leo
 -->
 <template>
@@ -11,7 +11,7 @@
     <a-card :body-style="{padding: '24px 32px'}"
             :bordered="false"
             :style="`min-height: ${pageMinHeight}px`">
-      <div style="width: 400px;">
+      <div>
         <h3 class="pl-10">订单管理 > 订单详情</h3>
         <!-- 内容详情 -->
         <ul class="content my-20">

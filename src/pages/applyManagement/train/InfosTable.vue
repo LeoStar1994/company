@@ -2,7 +2,7 @@
  * @Description: 报名管理 / 培训 / 查看详情table
  * @Author: Leo
  * @Date: 2020-12-25 11:00:00
- * @LastEditTime: 2021-03-10 18:16:39
+ * @LastEditTime: 2021-03-30 16:29:30
  * @LastEditors: Leo
 -->
 <template>
@@ -184,7 +184,7 @@ import {
   getInfosTableData,
   changeCheckStatus,
   uploadCertificate,
-  exportTemplate
+  exportTemplate,
 } from "@/services/train";
 import { downloadFile } from "@/utils/util";
 import InfoDetails from "@/components/infoDetails/InfoDetails";
@@ -193,151 +193,151 @@ const columns = [
   {
     title: "姓名",
     dataIndex: "refereeName",
-    scopedSlots: { customRender: "infoName" }
+    scopedSlots: { customRender: "infoName" },
   },
   {
     title: "性别",
-    dataIndex: "sexType"
+    dataIndex: "sexType",
   },
   {
     title: "出生日期",
-    dataIndex: "bornDate"
+    dataIndex: "bornDate",
   },
   {
     title: "手机号",
-    dataIndex: "telPhone"
+    dataIndex: "telPhone",
   },
   {
     title: "现裁判等级",
-    dataIndex: "refereeLevel"
+    dataIndex: "refereeLevel",
   },
   {
     title: "工作单位",
-    dataIndex: "workCompany"
+    dataIndex: "workCompany",
   },
   {
     title: "身份证号",
-    dataIndex: "identityCard"
+    dataIndex: "identityCard",
   },
   {
     title: "付款状态",
     dataIndex: "payStatusDesc",
-    scopedSlots: { customRender: "payStatusDesc" }
+    scopedSlots: { customRender: "payStatusDesc" },
   },
   {
     title: "操作",
-    scopedSlots: { customRender: "action" }
-  }
+    scopedSlots: { customRender: "action" },
+  },
 ];
 
 const fieldsMapLabel = [
   {
     field: "refereeNameEnglish",
-    labelName: "英文名"
+    labelName: "英文名",
   },
   {
     field: "sexType",
-    labelName: "性别"
+    labelName: "性别",
   },
   {
     field: "refereeLevel",
-    labelName: "现裁判等级"
+    labelName: "现裁判等级",
   },
   {
     field: "country",
-    labelName: "国籍"
+    labelName: "国籍",
   },
   {
     field: "organization",
-    labelName: "机构"
+    labelName: "机构",
   },
   {
     field: "nation",
-    labelName: "民族"
+    labelName: "民族",
   },
   {
     field: "approvalDate",
-    labelName: "批准日期"
+    labelName: "批准日期",
   },
   {
     field: "height",
-    labelName: "身高"
+    labelName: "身高",
   },
   {
     field: "healthyLevel",
-    labelName: "健康状况"
+    labelName: "健康状况",
   },
   {
     field: "bornDate",
-    labelName: "出生日期"
+    labelName: "出生日期",
   },
   {
     field: "languageType",
-    labelName: "外语能力"
+    labelName: "外语能力",
   },
   {
     field: "identityCard",
-    labelName: "证件号码"
+    labelName: "证件号码",
   },
   {
     field: "telPhone",
-    labelName: "手机号码"
+    labelName: "手机号码",
   },
   {
     field: "contactAddress",
-    labelName: "联系地址"
+    labelName: "通信地址",
   },
   {
     field: "degreeLevel",
-    labelName: "文化程度"
+    labelName: "文化程度",
   },
   {
     field: "weixinId",
-    labelName: "微信号"
+    labelName: "微信号",
   },
   {
     field: "cardType",
-    labelName: "证件类型"
+    labelName: "证件类型",
   },
   {
     field: "identityImagePath",
     labelName: "证件照片",
-    isOccupyAll: true
+    isOccupyAll: true,
   },
   {
     field: "certificateImagePath",
     labelName: "证书",
-    isOccupyAll: true
+    isOccupyAll: true,
   },
   {
     field: "political",
-    labelName: "政治面貌"
+    labelName: "政治面貌",
   },
   {
     field: "emailAddress",
-    labelName: "电子邮箱"
+    labelName: "电子邮箱",
   },
   {
     field: "workCompany",
-    labelName: "代表单位"
+    labelName: "代表单位",
   },
   {
     field: "workAddress",
-    labelName: "单位地址"
+    labelName: "单位地址",
   },
   {
     field: "homeAddress",
     labelName: "现住址",
-    isOccupyAll: true
+    isOccupyAll: true,
   },
   {
     field: "hotelName",
-    labelName: "选择酒店"
+    labelName: "选择酒店",
   },
   {
     field: "roomType",
-    labelName: "房间类型"
-  }
+    labelName: "房间类型",
+  },
 ];
 
 export default {
@@ -346,8 +346,8 @@ export default {
   props: {
     configshow: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -365,7 +365,7 @@ export default {
         pageSizeOptions: ["10", "15", "20"],
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: total => `共 ${total} 条数据`
+        showTotal: (total) => `共 ${total} 条数据`,
       },
       labelCol: { span: 5 },
       wrapperCol: { span: 18, offset: 1 },
@@ -376,15 +376,15 @@ export default {
         refereeLevel: undefined,
         educationId: null,
         educationName: null,
-        enrollStatus: null
+        enrollStatus: null,
       },
       // 搜索项校验规则
       rules: {
         name: [],
-        refereeLevel: []
+        refereeLevel: [],
       },
       checkStatusrules: {
-        checkResult: []
+        checkResult: [],
       },
       detailShow: false,
       // 详情数据
@@ -396,20 +396,20 @@ export default {
         judgeColumns: [
           {
             title: "赛季",
-            dataIndex: "gameSeason"
+            dataIndex: "gameSeason",
           },
           {
             title: "比赛名称",
-            dataIndex: "gameName"
+            dataIndex: "gameName",
           },
           {
             title: "比赛级别",
-            dataIndex: "gameLevel"
+            dataIndex: "gameLevel",
           },
           {
             title: "担任职务",
-            dataIndex: "position"
-          }
+            dataIndex: "position",
+          },
         ],
         // 执裁经历 tableData
         judgeTableData: [],
@@ -418,20 +418,20 @@ export default {
         eductionColumns: [
           {
             title: "培训名称",
-            dataIndex: "enducationName"
+            dataIndex: "enducationName",
           },
           {
             title: "培训时间",
-            dataIndex: "enducationDate"
+            dataIndex: "enducationDate",
           },
           {
             title: "培训单位",
-            dataIndex: "enducationCompany"
+            dataIndex: "enducationCompany",
           },
           {
             title: "证书图片",
-            scopedSlots: { customRender: "certificateImagePath" }
-          }
+            scopedSlots: { customRender: "certificateImagePath" },
+          },
         ],
         // 培训经历 tableData
         eductionTableData: [],
@@ -440,12 +440,12 @@ export default {
         playerExperienceColumns: [
           {
             title: "运动队名称",
-            dataIndex: "sportsTeamName"
+            dataIndex: "sportsTeamName",
           },
           {
             title: "运动年限",
-            dataIndex: "sportsYear"
-          }
+            dataIndex: "sportsYear",
+          },
         ],
 
         playerExperienceTableData: [],
@@ -454,37 +454,37 @@ export default {
         refereeJudgeColumns: [
           {
             title: "执教单位",
-            dataIndex: "judgeCompany"
+            dataIndex: "judgeCompany",
           },
           {
             title: "所在区域",
-            dataIndex: "region"
+            dataIndex: "region",
           },
           {
             title: "开始时间",
-            dataIndex: "startTime"
+            dataIndex: "startTime",
           },
           {
             title: "结束时间",
-            dataIndex: "stopTime"
-          }
+            dataIndex: "stopTime",
+          },
         ],
         // 教练制裁经历 tableData
         refereeJudgeTableData: [],
         // 基础信息
-        descList: []
+        descList: [],
       },
       fieldsMapLabel: fieldsMapLabel,
       checkStatusData: {
         joinId: undefined, // 教练员报名id
         refereeId: undefined, // 教练员id
         checkStatus: undefined, // 赛事报名id
-        checkResult: "" // 审核意见
-      }
+        checkResult: "", // 审核意见
+      },
     };
   },
   computed: {
-    ...mapState("setting", ["pageMinHeight"])
+    ...mapState("setting", ["pageMinHeight"]),
   },
   created() {},
   methods: {
@@ -504,10 +504,10 @@ export default {
       const data = {
         ...this.form,
         pageNo: this.pagination.pageNo,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
       };
       this.tableLoading = true;
-      getInfosTableData(data).then(res => {
+      getInfosTableData(data).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.dataSource = result.data.refereelVos.records;
@@ -547,7 +547,7 @@ export default {
 
     // 查看某一个数据列详情
     openDetails(id) {
-      getRefereeDetail(id).then(res => {
+      getRefereeDetail(id).then((res) => {
         const result = res.data;
         if (result.code === 0) {
           this.infoData.id = id;
@@ -573,13 +573,13 @@ export default {
     formatDetailsData(data) {
       const detailKeys = Object.keys(data);
       const finallyData = [];
-      this.fieldsMapLabel.forEach(item => {
-        detailKeys.forEach(item1 => {
+      this.fieldsMapLabel.forEach((item) => {
+        detailKeys.forEach((item1) => {
           if (item.field === item1) {
             finallyData.push({
               label: item.labelName,
               value: data[item1],
-              span: item.isOccupyAll ? 2 : 1
+              span: item.isOccupyAll ? 2 : 1,
             });
           }
         });
@@ -607,7 +607,7 @@ export default {
           onCancel() {
             _this.$message.info("已取消操作");
           },
-          class: "test"
+          class: "test",
         });
       } else if (checkStatus === 2) {
         // 不通过打开弹框输入意见
@@ -619,7 +619,7 @@ export default {
     changeCheckResult(data) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
       changeCheckStatus(data)
-        .then(res => {
+        .then((res) => {
           this.$refs.loading.closeLoading();
           const result = res.data;
           if (result.code === 0) {
@@ -649,14 +649,14 @@ export default {
         joinId: undefined, // 教练员报名id
         refereeId: undefined, // 教练员id
         checkStatus: undefined, // 赛事报名id
-        checkResult: "" // 审核意见
+        checkResult: "", // 审核意见
       };
     },
 
     // 删除
     deleteInfo(id) {
       this.$refs.loading.openLoading("操作进行中，请稍后。。");
-      deleteReferee(id).then(res => {
+      deleteReferee(id).then((res) => {
         this.$refs.loading.closeLoading();
         const result = res.data;
         if (result.code === 0) {
@@ -679,7 +679,7 @@ export default {
       formData.append("endcationId", this.form.educationId);
       this.$refs.loading.openLoading("文件正在上传，请稍后");
       uploadCertificate(formData)
-        .then(res => {
+        .then((res) => {
           const result = res.data;
           this.$refs.loading.closeLoading();
           if (result.code === 0) {
@@ -698,7 +698,7 @@ export default {
     exportTemplate() {
       this.$refs.loading.openLoading("正在导出模板，请稍后。。");
       exportTemplate(this.form.educationId)
-        .then(async res => {
+        .then(async (res) => {
           if (res.status === 200 && res.data) {
             let filename = "";
             const disposition = res.headers["content-disposition"];
@@ -726,7 +726,7 @@ export default {
       }
       this.$refs.loading.openLoading("正在导出数据，请稍后。。");
       exportReferee(this.form.educationId)
-        .then(async res => {
+        .then(async (res) => {
           if (res.status === 200 && res.data) {
             let filename = "";
             const disposition = res.headers["content-disposition"];
@@ -752,8 +752,8 @@ export default {
       this.reset();
       this.$emit("closeConfig");
       this.$emit("searchTableData");
-    }
-  }
+    },
+  },
 };
 </script>
 
