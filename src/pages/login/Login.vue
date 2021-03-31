@@ -9,12 +9,10 @@
 <template>
   <common-layout>
     <!-- logo、title -->
-    <div class="top">
-      <div class="header">
-        <img alt="logo"
-             class="logo"
-             src="@/assets/img/mocap_logo.png" />
-      </div>
+    <div class="header">
+      <img alt="logo"
+           class="logo"
+           src="@/assets/img/mocap_logo.png" />
     </div>
     <div class="main">
       <img src="@/assets/img/login_welcome.png"
@@ -174,7 +172,7 @@ import {
   SMSCode,
   loginByPhone,
   getRoutesConfig,
-  getUserInfo,
+  getUserInfo
 } from "@/services/user";
 import { setAuthorization } from "@/utils/request";
 import { loadRoutes } from "@/utils/routerUtil";
@@ -189,35 +187,35 @@ const userInfo = {
     CN: "前端工程师 | 蚂蚁金服-计算服务事业群-VUE平台",
     HK: "前端工程師 | 螞蟻金服-計算服務事業群-VUE平台",
     US:
-      "Front-end engineer | Ant Financial - Computing services business group - VUE platform",
-  },
+      "Front-end engineer | Ant Financial - Computing services business group - VUE platform"
+  }
 };
 const timeList = [
   {
     CN: "早上好",
     HK: "早晨啊",
-    US: "Good morning",
+    US: "Good morning"
   },
   {
     CN: "上午好",
     HK: "上午好",
-    US: "Good morning",
+    US: "Good morning"
   },
   {
     CN: "中午好",
     HK: "中午好",
-    US: "Good afternoon",
+    US: "Good afternoon"
   },
   {
     CN: "下午好",
     HK: "下午好",
-    US: "Good afternoon",
+    US: "Good afternoon"
   },
   {
     CN: "晚上好",
     HK: "晚上好",
-    US: "Good evening",
-  },
+    US: "Good evening"
+  }
 ];
 
 export default {
@@ -236,7 +234,7 @@ export default {
       countDownSceonds: 60,
       timer: null,
       verifyCodeImgUrl: null,
-      verifyCodeToken: null,
+      verifyCodeToken: null
     };
   },
   created() {
@@ -295,7 +293,7 @@ export default {
 
     // 获取图形验证码
     fetchVerifyCode() {
-      verifyCode().then((res) => {
+      verifyCode().then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.verifyCodeImgUrl = `data:image/png;base64,${result.data.vPngBase64}`;
@@ -327,13 +325,13 @@ export default {
     // 账户密码点击登录
     onSubmit(e) {
       e.preventDefault();
-      this.form.validateFields((err) => {
+      this.form.validateFields(err => {
         if (!err) {
           this.logging = true;
           const allValues = this.form.getFieldsValue();
           const data = {
             ...allValues,
-            verifyCodeToken: this.verifyCodeToken,
+            verifyCodeToken: this.verifyCodeToken
           };
           login(data)
             .then(this.afterLogin)
@@ -351,7 +349,7 @@ export default {
         ...res.data,
         expireAt: new Date(new Date(new Date().getTime() + 4 * 60 * 60 * 1000)), // 设置cookie失效时间
         user: { ...userInfo },
-        message: this.timeFix().CN + "，欢迎回来",
+        message: this.timeFix().CN + "，欢迎回来"
       };
       if (loginRes.code == 0) {
         // const { user, permissions, roles } = loginRes.data;
@@ -360,10 +358,10 @@ export default {
         // 设置token认证信息
         setAuthorization({
           token: loginRes.data,
-          expireAt: new Date(loginRes.expireAt),
+          expireAt: new Date(loginRes.expireAt)
         });
         // 获取userInfo
-        getUserInfo({ loginToken: loginRes.data }).then((res) => {
+        getUserInfo({ loginToken: loginRes.data }).then(res => {
           const result = res.data;
           if (result.code === 0) {
             loginRes.user.userIdentify = result.data.userIdentify;
@@ -372,36 +370,36 @@ export default {
           }
         });
         // 获取路由配置
-        getRoutesConfig().then((result) => {
+        getRoutesConfig().then(result => {
           if (result.data.code === 0) {
             // 过滤menu数组
             const mapRoutesArr = result.data.data.menuTree
-              ? result.data.data.menuTree.map((item) => {
+              ? result.data.data.menuTree.map(item => {
                   return {
                     router: item.registerName,
                     name: item.name,
-                    children: item.children.map((item1) => {
+                    children: item.children.map(item1 => {
                       return {
                         router: item1.registerName,
-                        name: item1.name,
+                        name: item1.name
                       };
-                    }),
+                    })
                   };
                 })
               : [];
             const welcome = {
               router: "welcome",
-              name: "欢迎页面",
+              name: "欢迎页面"
             };
             const auditPassword = {
               router: "auditPassword",
-              name: "修改密码",
+              name: "修改密码"
             };
             const routesConfig = [
               {
                 router: "root",
-                children: [welcome, auditPassword, ...mapRoutesArr],
-              },
+                children: [welcome, auditPassword, ...mapRoutesArr]
+              }
             ];
             loginRes.user.name = result.data.data.account;
             this.setUser(loginRes.user); // 设置user信息
@@ -425,7 +423,7 @@ export default {
     // 手机号登录
     onSubmitByPhone(e) {
       e.preventDefault();
-      this.form1.validateFields((err) => {
+      this.form1.validateFields(err => {
         if (!err) {
           this.logging = true;
           const allValues = this.form1.getFieldsValue();
@@ -452,7 +450,7 @@ export default {
       }, 1000);
       const mobile = this.form1.getFieldValue("mobile");
       // ajax
-      SMSCode({ mobile }).then((res) => {
+      SMSCode({ mobile }).then(res => {
         const result = res.data;
         if (result.code === 0) {
           this.$message.success("短信验证码已发送，请注意查收");
@@ -465,29 +463,42 @@ export default {
     // 忘记密码
     forgetPassword() {
       this.$refs.forgetPassword.visible = true;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="less">
 @import "../../less/_variables.less";
 .common-layout {
-  .top {
-    text-align: center;
-    .header {
-      position: absolute;
-      top: 80 * @1hx;
-      right: 70 * @1wx;
-      a {
-        text-decoration: none;
-      }
-      .logo {
-        width: 53px;
-        height: 52px;
-        cursor: pointer;
-        vertical-align: top;
-      }
+  .header {
+    position: absolute;
+    top: 8vh;
+    right: 3vw;
+    @media screen and (max-width: 1024px) {
+      top: 15vh;
+      right: 4vw;
+    }
+    @media (min-width: 1024px) and (max-width: 1440px) {
+      right: 4vw;
+    }
+    @media (min-width: 1440px) and (max-width: 1680px) {
+      right: 5vw;
+    }
+    @media screen and (min-width: 1680px) {
+      right: 7vw;
+    }
+    @media screen and (min-width: 1920px) {
+      right: 10vw;
+    }
+    a {
+      text-decoration: none;
+    }
+    .logo {
+      width: 53px;
+      height: 52px;
+      cursor: pointer;
+      vertical-align: top;
     }
   }
   .main {

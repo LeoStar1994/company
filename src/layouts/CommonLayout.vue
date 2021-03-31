@@ -16,8 +16,8 @@ export default {
   name: "CommonLayout",
   components: { PageFooter },
   computed: {
-    ...mapState("setting", ["footerLinks", "copyright"]),
-  },
+    ...mapState("setting", ["footerLinks", "copyright"])
+  }
 };
 </script>
 
@@ -35,7 +35,7 @@ export default {
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
-    background-size: 100% 100%;
+    background-size: contain;
     position: relative;
   }
 }
