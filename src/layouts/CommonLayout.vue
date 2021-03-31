@@ -27,18 +27,16 @@ export default {
   flex-direction: column;
   height: 100vh;
   overflow: auto;
-  background-color: @layout-body-background;
-  background-image: url("../assets/img/bg.png");
-  background-repeat: no-repeat;
-  background-position-x: center;
-  background-position-y: center;
-  background-size: cover;
+  background-color: #001529;
   .content {
-    padding: 32px 0;
+    margin: 5vh 5vw 5px;
     flex: 1;
-    @media (min-width: 768px) {
-      padding: 112px 0 24px;
-    }
+    background-image: url("../assets/img/bg.png");
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 100% 100%;
+    position: relative;
   }
 }
 </style>

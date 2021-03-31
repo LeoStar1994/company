@@ -3,7 +3,7 @@
     <div class="copyright"
          :class="[$route.path.includes('/login') ? 'text-white': '']">
       {{copyright}}
-      <p>客服电话：400-12345678</p>
+      <!-- <p>客服电话：400-12345678</p> -->
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
  * @Description: login登录页面.
  * @Author: Leo
  * @Date: 2020-12-17 17:39:10
- * @LastEditTime: 2021-01-22 15:20:01
+ * @LastEditTime: 2021-03-31 15:56:25
  * @LastEditors: Leo
 -->
 
@@ -13,145 +13,150 @@
       <div class="header">
         <img alt="logo"
              class="logo"
-             src="@/assets/img/logo.png" />
-        <h1 class="title">动捕后台管理</h1>
+             src="@/assets/img/mocap_logo.png" />
       </div>
     </div>
-    <!-- login form -->
-    <div class="login"
-         @keydown="keydownLogin">
-      <a-tabs size="large"
-              :tabBarStyle="{textAlign: 'center'}"
-              @change="tabChange"
-              style="padding: 0 2px;">
-        <!-- 账户密码登录 -->
-        <a-tab-pane tab="账户密码登录"
-                    key="commonLogin">
-          <a-alert type="error"
-                   v-show="error"
-                   :message="error"
-                   showIcon
-                   style="margin-bottom: 24px;" />
-          <a-form @submit="onSubmit"
-                  :form="form">
-            <a-form-item>
-              <!-- 账户名 -->
-              <a-input autocomplete="autocomplete"
-                       size="default"
-                       :maxLength="30"
-                       placeholder="请输入您的账号"
-                       v-decorator="['account', {rules: [{ required: true, whitespace: true, validator: handleCheckAccount }]}]">
-                <a-icon slot="prefix"
-                        type="user" />
-              </a-input>
-            </a-form-item>
-            <!-- 密码 -->
-            <a-form-item>
-              <a-input size="default"
-                       placeholder="请输入密码"
-                       :maxLength="30"
-                       autocomplete="autocomplete"
-                       :type="passwordType"
-                       v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]">
-                <a-icon slot="prefix"
-                        type="lock" />
-                <a-tooltip slot="suffix"
-                           title="查看密码">
-                  <a-icon type="eye"
-                          v-if="form.getFieldValue('password')"
-                          @click="passwordType = 'text'"
-                          style="color: rgba(0,0,0,.45)" />
-                </a-tooltip>
-              </a-input>
-            </a-form-item>
-            <!-- 图形验证码 -->
-            <a-form-item>
-              <div class="d-flex ai-center">
-                <a-input size="default"
-                         placeholder="请输入验证码"
-                         style="width: 60%; margin-right: 5%"
-                         :maxLength="4"
-                         v-decorator="['verifyCode', {rules: [{ required: true, message: '请输入验证码', whitespace: true}]}]">
+    <div class="main">
+      <img src="@/assets/img/login_welcome.png"
+           class="img-welcome"
+           alt="welcome">
+      <h1 class="title">中国冰球协会管理系统</h1>
+
+      <!-- login form -->
+      <div class="login"
+           @keydown="keydownLogin">
+        <a-tabs size="large"
+                :tabBarStyle="{textAlign: 'center'}"
+                @change="tabChange"
+                style="padding: 0 2px;">
+          <!-- 账户密码登录 -->
+          <a-tab-pane tab="账户密码登录"
+                      key="commonLogin">
+            <a-alert type="error"
+                     v-show="error"
+                     :message="error"
+                     showIcon
+                     style="margin-bottom: 24px;" />
+            <a-form @submit="onSubmit"
+                    :form="form">
+              <a-form-item>
+                <!-- 账户名 -->
+                <a-input autocomplete="autocomplete"
+                         size="default"
+                         :maxLength="30"
+                         placeholder="请输入您的账号"
+                         v-decorator="['account', {rules: [{ required: true, whitespace: true, validator: handleCheckAccount }]}]">
+                  <a-icon slot="prefix"
+                          type="user" />
                 </a-input>
-                <img :src="verifyCodeImgUrl"
-                     style="width: 35%"
-                     class="h30 cursor-pointer"
-                     @click="fetchVerifyCode"
-                     alt="图形验证码">
-              </div>
-            </a-form-item>
-          </a-form>
-        </a-tab-pane>
-        <!-- 手机号登录 -->
-        <a-tab-pane tab="手机号登录"
-                    key="phoneLogin">
-          <a-alert type="error"
-                   v-show="errorByPhone"
-                   :message="errorByPhone"
-                   showIcon
-                   style="margin-bottom: 24px;" />
-          <a-form @submit="onSubmitByPhone"
-                  :form="form1">
-            <!-- 手机号 -->
-            <a-form-item>
-              <a-input size="default"
-                       placeholder="请输入手机号"
-                       :maxLength="30"
-                       v-decorator="['mobile', {rules: [{ required: true, validator: handleCheckMobile, whitespace: true}]}]">
-                <a-icon slot="prefix"
-                        type="mobile" />
-              </a-input>
-            </a-form-item>
-            <!-- 验证码 -->
-            <a-form-item>
-              <a-row :gutter="8"
-                     style="margin: 0 -4px">
-                <a-col :span="14">
+              </a-form-item>
+              <!-- 密码 -->
+              <a-form-item>
+                <a-input size="default"
+                         placeholder="请输入密码"
+                         :maxLength="30"
+                         autocomplete="autocomplete"
+                         :type="passwordType"
+                         v-decorator="['password', {rules: [{ required: true, message: '请输入密码', whitespace: true}]}]">
+                  <a-icon slot="prefix"
+                          type="lock" />
+                  <a-tooltip slot="suffix"
+                             title="查看密码">
+                    <a-icon type="eye"
+                            v-if="form.getFieldValue('password')"
+                            @click="passwordType = 'text'"
+                            style="color: rgba(0,0,0,.45)" />
+                  </a-tooltip>
+                </a-input>
+              </a-form-item>
+              <!-- 图形验证码 -->
+              <a-form-item>
+                <div class="d-flex ai-center">
                   <a-input size="default"
                            placeholder="请输入验证码"
+                           style="width: 60%; margin-right: 5%"
                            :maxLength="4"
                            v-decorator="['verifyCode', {rules: [{ required: true, message: '请输入验证码', whitespace: true}]}]">
-                    <a-icon slot="prefix"
-                            type="mail" />
                   </a-input>
-                </a-col>
-                <a-col :span="10"
-                       style="padding-left: 4px">
-                  <a-button style="width: 100%"
-                            class="captcha-button"
-                            type="primary"
-                            @click="getVerificationCode"
-                            :disabled="!$isRihgtPhone(form1.getFieldValue('mobile')) || fetchingCode"
-                            size="default">
-                    <span v-if="!fetchingCode"
-                          style="font-size: 12px;">获取验证码</span>
-                    <span v-else
-                          style="font-size: 12px;">{{countDownSceonds}}s后重新发送</span>
-                  </a-button>
-                </a-col>
-              </a-row>
-            </a-form-item>
-          </a-form>
-        </a-tab-pane>
-      </a-tabs>
-      <div>
-        <a-form-item>
-          <a-button :loading="logging"
-                    class="login-btn"
-                    size="default"
-                    @click="loginSubmit"
-                    type="primary">
-            <span style="font-size: 16px; width: 180px;">登录</span>
-            <a-icon type="arrow-right" />
-          </a-button>
-        </a-form-item>
-      </div>
+                  <img :src="verifyCodeImgUrl"
+                       style="width: 35%"
+                       class="h30 cursor-pointer"
+                       @click="fetchVerifyCode"
+                       alt="图形验证码">
+                </div>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+          <!-- 手机号登录 -->
+          <a-tab-pane tab="手机号登录"
+                      key="phoneLogin">
+            <a-alert type="error"
+                     v-show="errorByPhone"
+                     :message="errorByPhone"
+                     showIcon
+                     style="margin-bottom: 24px;" />
+            <a-form @submit="onSubmitByPhone"
+                    :form="form1">
+              <!-- 手机号 -->
+              <a-form-item>
+                <a-input size="default"
+                         placeholder="请输入手机号"
+                         :maxLength="30"
+                         v-decorator="['mobile', {rules: [{ required: true, validator: handleCheckMobile, whitespace: true}]}]">
+                  <a-icon slot="prefix"
+                          type="mobile" />
+                </a-input>
+              </a-form-item>
+              <!-- 验证码 -->
+              <a-form-item>
+                <a-row :gutter="8"
+                       style="margin: 0 -4px">
+                  <a-col :span="14">
+                    <a-input size="default"
+                             placeholder="请输入验证码"
+                             :maxLength="4"
+                             v-decorator="['verifyCode', {rules: [{ required: true, message: '请输入验证码', whitespace: true}]}]">
+                      <a-icon slot="prefix"
+                              type="mail" />
+                    </a-input>
+                  </a-col>
+                  <a-col :span="10"
+                         style="padding-left: 4px">
+                    <a-button style="width: 100%"
+                              class="captcha-button"
+                              type="primary"
+                              @click="getVerificationCode"
+                              :disabled="!$isRihgtPhone(form1.getFieldValue('mobile')) || fetchingCode"
+                              size="default">
+                      <span v-if="!fetchingCode"
+                            style="font-size: 12px;">获取验证码</span>
+                      <span v-else
+                            style="font-size: 12px;">{{countDownSceonds}}s后重新发送</span>
+                    </a-button>
+                  </a-col>
+                </a-row>
+              </a-form-item>
+            </a-form>
+          </a-tab-pane>
+        </a-tabs>
+        <div>
+          <a-form-item>
+            <a-button :loading="logging"
+                      class="login-btn"
+                      size="default"
+                      @click="loginSubmit"
+                      type="primary">
+              <span style="font-size: 16px; width: 180px;">登录</span>
+              <a-icon type="arrow-right" />
+            </a-button>
+          </a-form-item>
+        </div>
 
-      <!-- 忘记密码 -->
-      <div class="forgetPassword">
-        密码忘记了？
-        <a @click="forgetPassword"
-           class="text-white">忘记密码</a>
+        <!-- 忘记密码 -->
+        <div class="forgetPassword">
+          密码忘记了？
+          <a @click="forgetPassword">找回密码</a>
+        </div>
       </div>
     </div>
 
@@ -465,90 +470,103 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 @import "../../less/_variables.less";
 .common-layout {
   .top {
     text-align: center;
     .header {
-      position: fixed;
-      top: 58 * @1hx;
-      left: 68 * @1wx;
+      position: absolute;
+      top: 80 * @1hx;
+      right: 70 * @1wx;
       a {
         text-decoration: none;
       }
       .logo {
-        width: 310px;
+        width: 53px;
         height: 52px;
         cursor: pointer;
         vertical-align: top;
       }
-      .title {
-        font-size: 40px;
-        color: white;
-        font-family: "Myriad Pro", "Helvetica Neue", Arial, Helvetica,
-          sans-serif;
-        font-weight: 400;
-        position: fixed;
-        top: 230 * @1hx;
-        left: 50%;
-        transform: translateX(-50%);
-        @media screen and (min-width: 1440px) and(max-width: 1600px) {
-          font-size: 44px;
+    }
+  }
+  .main {
+    position: absolute;
+    top: 200 * @1hx;
+    right: 155 * @1wx;
+    .img-welcome {
+      position: absolute;
+      width: 259 * @1wx;
+      top: -34 * @1hx;
+      left: 10 * @1wx;
+    }
+    .title {
+      font-size: 40px;
+      color: #202631;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 400;
+      padding-left: 20px;
+      @media screen and (max-width: 1400px) {
+        font-size: 32px;
+      }
+    }
+    .login {
+      width: 340px;
+      min-height: 252px;
+      padding: 20px 24px 0;
+      background-color: #fff;
+      // box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.08);
+      // border-radius: 5px;
+      @media screen and (max-width: 576px) {
+        width: 95%;
+      }
+      @media screen and (max-width: 320px) {
+        .captcha-button {
+          font-size: 14px;
         }
-        @media screen and (min-width: 1680px) {
-          font-size: 48px;
+      }
+      h2 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 500;
+      }
+      .login-btn {
+        position: absolute;
+        width: 292px;
+        bottom: -48px;
+        height: 40px;
+        background: #2e4b9c;
+        // box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+        // border-radius: 100px;
+      }
+      .forgetPassword {
+        position: absolute;
+        bottom: -50px;
+        transform: translateX(50%);
+        text-align: center;
+        height: 17px;
+        line-height: 17px;
+        font-size: 13px;
+        color: #8f9bb3;
+        a {
+          color: #2e4b9c !important;
         }
       }
     }
   }
-  .login {
-    position: fixed;
-    top: 364 * @1hx;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 340px;
-    min-height: 252px;
-    padding: 20px 24px 0;
-    background-color: #fff;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.08);
-    border-radius: 5px;
-    @media screen and (max-width: 576px) {
-      width: 95%;
-    }
-    @media screen and (max-width: 320px) {
-      .captcha-button {
-        font-size: 14px;
+
+  .ant-tabs-nav {
+    .ant-tabs-tab {
+      &:hover {
+        color: #2e4b9c !important;
       }
     }
-    h2 {
-      text-align: center;
-      font-size: 24px;
-      font-weight: 500;
+    .ant-tabs-tab-active {
+      color: #2e4b9c !important;
     }
-    .login-btn {
-      position: absolute;
-      width: 270px;
-      bottom: -48px;
-      left: 10px;
-      height: 46px;
-      background: #0077ff;
-      box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
-      border-radius: 100px;
-    }
-    .forgetPassword {
-      position: absolute;
-      bottom: -50px;
-      transform: translateX(50%);
-      text-align: center;
-      height: 17px;
-      line-height: 17px;
-      font-size: 13px;
-      color: white;
-      a:hover {
-        color: #1890ff !important;
-      }
-    }
+  }
+  .ant-tabs-ink-bar {
+    background-color: #2e4b9c !important;
   }
 }
 </style>
