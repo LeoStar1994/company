@@ -145,7 +145,7 @@
                       @click="loginSubmit"
                       type="primary">
               <span style="font-size: 16px; width: 180px;">登录</span>
-              <a-icon type="arrow-right" />
+              <!-- <a-icon type="arrow-right" /> -->
             </a-button>
           </a-form-item>
         </div>
@@ -512,6 +512,8 @@ export default {
       left: 10 * @1wx;
     }
     .title {
+      position: relative;
+      z-index: 999;
       font-size: 40px;
       color: #202631;
       font-family: PingFangSC-Semibold, PingFang SC;
@@ -578,6 +580,16 @@ export default {
   }
   .ant-tabs-ink-bar {
     background-color: #2e4b9c !important;
+  }
+
+  .ant-input {
+    &::placeholder {
+      color: #8f9bb3 !important;
+    }
+  }
+
+  .ant-input:focus {
+    border-color: #2e4b9c !important;
   }
 }
 </style>
